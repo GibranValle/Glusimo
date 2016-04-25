@@ -83,4 +83,11 @@
     <string name="pop_boton_aceptar">Aceptar</string>
     <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
 
+    <string-array name="tabs">
+        <item> Medición Simple </item>
+        <item> Tendencias </item>
+        <item> Registro </item>
+        <item> Configuración </item>
+    </string-array>
+
 </resources>

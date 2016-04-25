@@ -13,19 +13,20 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:src="@drawable/upibis" />
 
     <TextView
+        style="@style/textoPequeñoClaroNegrita"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/nav_titulo"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:text="@string/nav_titulo" />
 
     <TextView
         android:id="@+id/textView"
+        style="@style/textoPequeñoClaro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_subtitulo" />

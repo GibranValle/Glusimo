@@ -17,4 +17,100 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!--Tipos de letras -->
+    <style name="textoPequeño">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="textoPequeñoNegrita">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="textoPequeñoClaro">
+        <item name="android:textColor">@color/colorFondo</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="textoPequeñoClaroNegrita">
+        <item name="android:textColor">@color/colorFondo</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <!--Tipos de letras -->
+    <style name="tituloB">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">11pt</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="titulo">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">9pt</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="textoPaciente">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">12pt</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="textoConexion">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">10pt</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="letraSaludable">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="letraEnfermo">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="letra">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="letrahint">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="letramediana">
+        <item name="android:textColor">@color/colorLetra</item>
+        <item name="android:textSize">10pt</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="textoBoton">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+        <item name="android:textSize">8pt</item>
+    </style>
+
+
 </resources>

@@ -1,5 +1,6 @@
 package app.proyectoterminal.upibi.glusimo;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,18 +12,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class Interfaz extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    // CONSTANTES PARA SLIDINGTABVIW
+    final int NUMERO_DE_TABS = 4;
 
     // VARIABLES PARA SLIDINGTABVIEW
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private MyFragmentAdapter mMyFragmentAdapter;
     private ViewPager mViewPager;
     private Toolbar toolbar;
 
@@ -35,11 +40,11 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mMyFragmentAdapter = new MyFragmentAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setAdapter(mMyFragmentAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -85,22 +90,22 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class MyFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
+        public MyFragment() {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static MyFragment newInstance(int sectionNumber) {
+            MyFragment fragment = new MyFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -111,8 +116,6 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_interfaz, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
@@ -121,36 +124,35 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class MyFragmentAdapter extends FragmentPagerAdapter {
+        int[] icons = {R.drawable.ic_menu_view, R.drawable.ic_menu_today, R.drawable.ic_menu_search, R.drawable.ic_menu_manage};
+        String[] tabText = getResources().getStringArray(R.array.tabs);
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public MyFragmentAdapter(FragmentManager fm) {
             super(fm);
+            tabText = getResources().getStringArray(R.array.tabs);
         }
 
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            // Return a MyFragment (defined as a static inner class below).
+            return MyFragment.newInstance(position + 1);
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return NUMERO_DE_TABS;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-            }
-            return null;
+            Drawable drawable = getResources().getDrawable(icons[position]);
+            ImageSpan imageSpan = new ImageSpan(drawable);
+            SpannableString spannableString = new SpannableString(tabText[position]);
+            spannableString.setSpan(imageSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return tabText[position];
         }
     }
 }
