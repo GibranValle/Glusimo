@@ -5,36 +5,41 @@
         <item
             android:id="@+id/nav_check"
             android:icon="@drawable/ic_menu_view"
-            android:title="Import" />
+            android:title="@string/nav_check" />
         <item
             android:id="@+id/nav_reg"
             android:icon="@drawable/ic_menu_today"
-            android:title="Gallery" />
+            android:title="@string/nav_registro" />
         <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_menu_search"
-            android:title="Slideshow" />
+            android:title="@string/nav_search" />
         <item
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="@string/nav_config" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/nav_comu">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="@string/nav_share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="@string/nav_send" />
         </menu>
     </item>
 
-    <item android:title="Communicate">
-        <menu></menu>
+    <item android:title="@string/nav_acerca">
+        <menu>
+            <item
+                android:id="@+id/nav_acerca"
+                android:icon="@drawable/ic_menu_info_details"
+                android:title="@string/nav_glusimo" />
+        </menu>
     </item>
 
 </menu>
