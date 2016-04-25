@@ -1,7 +1,86 @@
 <resources>
     <string name="app_name">Glusimo</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Configuración</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- Navigation Drawer-->
+    <string name="nav_titulo">Glusimo tu monitor inteligente</string>
+    <string name="nav_subtitulo">UPIBI IPN 2016</string>
+    <string name="navigation_drawer_open">Abriendo</string>
+    <string name="navigation_drawer_close">Cerrando</string>
+
+    navigation_drawer_open
+    <string name="nav_check">Medición Instantánea</string>
+    <string name="nav_registro">Ver Tendencias</string>
+    <string name="nav_search">Buscar particularidad</string>
+
+    <string name="nav_acerca">Acerca de</string>
+    <string name="nav_glusimo">Glusimo</string>
+    <string name="nav_comu">Comunicación</string>
+    <string name="nav_share">Compartir</string>
+    <string name="nav_send">Enviar</string>
+    <string name="nav_config">Configuraciones</string>
+    <string name="nav_conectar">Conectar a:</string>
+
+    <!-- Interfaz -->
+    <string name="estado_inicial">Desconectado</string>
+    <string name="menu_setting">Configuracion</string>
+
+    <!--  texto de TextView -->
+    <string name="novinculados">No se encontraron dispositivos vinculados</string>
+    <string name="noencontrados">No se encontraron dispositivos</string>
+    <string name="velocidad">Velocidad: 50%</string>
+
+    <!-- textos textview -->
+    <string name="beats">BPM: - - \nConectar Electrodos</string>
+    <string name="Paciente">Andrade Bacilio Orlando Alonzo\n25 años</string>
+
+    <!-- textos BT -->
+    <string name="bt_DC">Desconectado</string>
+    <string name="bt_CT">Conectado</string>
+    <string name="bt_CTING">Conectando</string>
+    <string name="bt_read"> Desconocida</string>
+    <string name="bt_consola">Sin conexión</string>
+
+    <!-- textos DeviceList-->
+    <string name="dialog_vinculados">Dispositivos Vinculados</string>
+    <string name="dialog_encontados">Dispositivos Encontrados</string>
+
+    <!-- textos Menu-->
+    <string name="conectar">Conectar a Dosificador</string>
+    <string name="buscar">Buscar Dosificador</string>
+    <string name="visible">Hacer Visible</string>
+    <string name="datos">Editar Datos Paciente</string>
+    <string name="demo">Demo</string>
+    <string name="info">Acerca de</string>
+    <string name="config">Configuracion de monitor</string>
+
+    <!-- textos Salud paciente -->
+    <string name="paciente_saludable">Saludable (Homeostasis)</string>
+    <string name="paciente_warning">Principio de Hiperglucemia</string>
+    <string name="paciente_emergency">Hiperglucemia \n Severa</string>
+    <string name="paciente_emergency_hipo">Hipoglucemia detectada</string>
+    <string name="paciente_comprobando">Comprobando \n medición</string>
+
+
+    <!-- textos PopUp -->
+    <string name="pop_ingresa">Ingresar datos paciente</string>
+    <string name="pop_titulo">UPIBI - IPN</string>
+    <string name="pop_config">Configurar monitor</string>
+    <string name="pop_nombre">Nombre:</string>
+    <string name="pop_hint_nombre">Paciente</string>
+    <string name="pop_edad">Edad:</string>
+    <string name="pop_hint_edad">Años</string>
+    <string name="pop_boton_actualizar">Actualizar</string>
+    <string name="pop_boton_cancelar">Cancelar</string>
+    <string name="pop_paso">Paso:</string>
+    <string name="pop_hint_paso">(1 a 3)</string>
+    <string name="pop_amplitud">Umbral QRS:</string>
+    <string name="pop_hint_amplitud">(0 a 240)</string>
+    <string name="pop_amplificacion">Gain x 1</string>
+    <string name="pop_derivacion">Derivación:</string>
+    <string name="pop_invertir">Invertir: </string>
+    <string name="pop_autoset">Autoset: </string>
+    <string name="pop_boton_aceptar">Aceptar</string>
+    <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
+
 </resources>
