@@ -1,17 +1,16 @@
 <resources>
     <string name="app_name">Glusimo</string>
     <string name="action_settings">Configuración</string>
+
+
     <!-- Navigation Drawer-->
     <string name="nav_titulo">Glusimo tu monitor inteligente</string>
     <string name="nav_subtitulo">UPIBI IPN 2016</string>
     <string name="navigation_drawer_open">Abriendo</string>
     <string name="navigation_drawer_close">Cerrando</string>
-
-    navigation_drawer_open
     <string name="nav_check">Hacer Medición</string>
     <string name="nav_registro">Ver Tendencias</string>
     <string name="nav_search">Buscar particularidad</string>
-
     <string name="nav_acerca">Acerca de</string>
     <string name="nav_glusimo">Glusimo</string>
     <string name="nav_comu">Comunicación</string>
@@ -21,24 +20,18 @@
     <string name="nav_conectar">Conectar a:</string>
 
     <!-- Interfaz -->
-    <string name="estado_inicial">Desconectado</string>
     <string name="menu_setting">Configuracion</string>
 
     <!--  texto de TextView -->
     <string name="novinculados">No se encontraron dispositivos vinculados</string>
     <string name="noencontrados">No se encontraron dispositivos</string>
-    <string name="velocidad">Velocidad: 50%</string>
-
-    <!-- textos textview -->
-    <string name="beats">BPM: - - \nConectar Electrodos</string>
-    <string name="Paciente">Andrade Bacilio Orlando Alonzo\n25 años</string>
 
     <!-- textos BT -->
-    <string name="bt_DC">Desconectado</string>
-    <string name="bt_CT">Conectado</string>
-    <string name="bt_CTING">Conectando</string>
-    <string name="bt_read"> Desconocida</string>
-    <string name="bt_consola">Sin conexión</string>
+    <string name="bt_dc">DESCONECTADO</string>
+    <string name="bt_ct">CONECTADO</string>
+    <string name="bt_cting">CONECTANDO</string>
+    <string name="bt_off">SIN\nCONEXIÓN</string>
+    <string name="bt_button">Iniciar\nConexión</string>
 
     <!-- textos DeviceList-->
     <string name="dialog_vinculados">Dispositivos Vinculados</string>
@@ -59,10 +52,13 @@
     <string name="paciente_emergency">Hiperglucemia \n Severa</string>
     <string name="paciente_emergency_hipo">Hipoglucemia detectada</string>
     <string name="paciente_comprobando">Comprobando \n medición</string>
+    <string name="sufijo">mg/dL</string>
+    <string name="texto_arco">Glucómetro</string>
 
 
     <string name="pop_boton_aceptar">Aceptar</string>
     <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
+    <string name="pop_titulo">UPIBI - IPN</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">TAB DE FRAGMENT MEDICION</string>

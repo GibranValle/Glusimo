@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+    <!--TITULO-->
+    <LinearLayout
+        android:id="@+id/titulo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/margen_pequeño"
+            android:layout_marginTop="@dimen/margen_pequeño"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dispositivotext"
+                style="@style/titulo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:text="@string/dialog_vinculados" />
+
+            <ProgressBar
+                android:id="@+id/bolita"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"
+            android:background="@color/colorLetra" />
+
+        <ListView
+            android:id="@+id/lista_encontrados"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margen_pequeño"
+            android:layout_weight="4" />
+    </LinearLayout>
+    <!--TITULO-->
+
+    <!--SUBTITULO-->
+    <LinearLayout
+        android:id="@+id/subtitulo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/nuevos"
+            style="@style/letra"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:text="@string/dialog_encontados" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.05"
+            android:background="@color/colorLetra" />
+
+        <ListView
+            android:id="@+id/lista_nuevos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+    <!--SUBTITULO-->
+    <LinearLayout
+        android:id="@+id/layout_boton"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5">
+
+        <Button
+            android:id="@+id/b_buscar"
+            style="@style/textoBoton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/conectar" />
+    </LinearLayout>
+
+</LinearLayout>

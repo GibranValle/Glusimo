@@ -17,6 +17,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- ESTILO DE CONSOLA DE BLUETOOTH -->
+    <style name="consola">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <!--Tipos de letras -->
     <style name="textoPequeño">
         <item name="android:textColor">@color/colorLetra</item>
