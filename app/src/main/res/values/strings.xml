@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Glusimo</string>
     <string name="action_settings">Configuración</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <!-- Navigation Drawer-->
     <string name="nav_titulo">Glusimo tu monitor inteligente</string>
     <string name="nav_subtitulo">UPIBI IPN 2016</string>
@@ -9,7 +8,7 @@
     <string name="navigation_drawer_close">Cerrando</string>
 
     navigation_drawer_open
-    <string name="nav_check">Medición Instantánea</string>
+    <string name="nav_check">Hacer Medición</string>
     <string name="nav_registro">Ver Tendencias</string>
     <string name="nav_search">Buscar particularidad</string>
 
@@ -62,32 +61,13 @@
     <string name="paciente_comprobando">Comprobando \n medición</string>
 
 
-    <!-- textos PopUp -->
-    <string name="pop_ingresa">Ingresar datos paciente</string>
-    <string name="pop_titulo">UPIBI - IPN</string>
-    <string name="pop_config">Configurar monitor</string>
-    <string name="pop_nombre">Nombre:</string>
-    <string name="pop_hint_nombre">Paciente</string>
-    <string name="pop_edad">Edad:</string>
-    <string name="pop_hint_edad">Años</string>
-    <string name="pop_boton_actualizar">Actualizar</string>
-    <string name="pop_boton_cancelar">Cancelar</string>
-    <string name="pop_paso">Paso:</string>
-    <string name="pop_hint_paso">(1 a 3)</string>
-    <string name="pop_amplitud">Umbral QRS:</string>
-    <string name="pop_hint_amplitud">(0 a 240)</string>
-    <string name="pop_amplificacion">Gain x 1</string>
-    <string name="pop_derivacion">Derivación:</string>
-    <string name="pop_invertir">Invertir: </string>
-    <string name="pop_autoset">Autoset: </string>
     <string name="pop_boton_aceptar">Aceptar</string>
     <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
 
-    <string-array name="tabs">
-        <item> Medición Simple </item>
-        <item> Tendencias </item>
-        <item> Registro </item>
-        <item> Configuración </item>
-    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">TAB DE FRAGMENT MEDICION</string>
+    <string name="hello_blank_fragment2">TAB DE FRAGMENT TENDENCIAS</string>
+    <string name="hello_blank_fragment3">TAB DE FRAGMENT LISTA</string>
+    <string name="hello_blank_fragment4">TAB DE FRAGMENT CONFIG</string>
 
 </resources>
