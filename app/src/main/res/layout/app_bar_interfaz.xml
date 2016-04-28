@@ -41,18 +41,18 @@
         android:layout_weight="1"
         android:background="@color/colorBottomDark"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/margen_mini"
-        android:paddingTop="@dimen/margen_mini">
+        android:paddingBottom="@dimen/margen_chiquis"
+        android:paddingTop="@dimen/margen_chiquis">
 
         <TextView
             android:id="@+id/consola"
             style="@style/consola"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margen_mini"
-            android:layout_marginRight="@dimen/margen_mini"
+            android:layout_marginLeft="@dimen/margen_chiquis"
+            android:layout_marginRight="@dimen/margen_chiquis"
             android:layout_weight="1"
-            android:background="@drawable/rect_gris"
+            android:background="@color/colorOff"
             android:gravity="center"
             android:text="@string/bt_off" />
 
@@ -60,20 +60,19 @@
             android:id="@+id/consola_paciente"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margen_mini"
-            android:layout_marginRight="@dimen/margen_mini"
+            android:layout_marginRight="@dimen/margen_chiquis"
             android:layout_weight="1"
-            android:background="@drawable/rect_gris" />
+            android:background="@color/colorOff"
+            />
 
         <Button
             android:id="@+id/boton_conexion"
             style="@style/consola"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/margen_mini"
-            android:layout_marginRight="@dimen/margen_mini"
+            android:layout_marginRight="@dimen/margen_chiquis"
             android:layout_weight="1"
-            android:background="@drawable/rect_gris"
+            android:background="@color/colorOff"
             android:text="@string/bt_button" />
 
     </LinearLayout>

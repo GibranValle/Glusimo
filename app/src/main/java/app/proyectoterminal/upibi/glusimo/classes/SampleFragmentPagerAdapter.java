@@ -1,4 +1,4 @@
-package app.proyectoterminal.upibi.glusimo;
+package app.proyectoterminal.upibi.glusimo.classes;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -12,6 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import app.proyectoterminal.upibi.glusimo.R;
+import app.proyectoterminal.upibi.glusimo.fragments.Configuracion;
+import app.proyectoterminal.upibi.glusimo.fragments.Lista;
+import app.proyectoterminal.upibi.glusimo.fragments.Medicion;
+import app.proyectoterminal.upibi.glusimo.fragments.Tendencias;
 
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 

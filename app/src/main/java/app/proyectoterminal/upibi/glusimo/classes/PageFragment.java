@@ -1,4 +1,4 @@
-package app.proyectoterminal.upibi.glusimo;
+package app.proyectoterminal.upibi.glusimo.classes;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

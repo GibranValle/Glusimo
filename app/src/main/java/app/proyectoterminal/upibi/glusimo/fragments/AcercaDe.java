@@ -1,4 +1,4 @@
-package app.proyectoterminal.upibi.glusimo;
+package app.proyectoterminal.upibi.glusimo.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.os.Vibrator;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+
+import app.proyectoterminal.upibi.glusimo.R;
 
 /**
  * ESTA ACTIVITY TIENE APARIENCIA DE DIALOGO (CONFIGURADA EN EL MANIFEST)

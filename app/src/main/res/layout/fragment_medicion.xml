@@ -3,9 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/fondoapp"
+    android:id="@+id/fragment_medicion"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/texto_arco"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -16,19 +18,34 @@
         android:textStyle="bold" />
 
     <com.github.lzyzsd.circleprogress.ArcProgress
-        android:id="@+id/arc_progress"
+        android:id="@+id/medidor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/margen_grande"
         android:layout_marginLeft="@dimen/margen_mediano"
         android:layout_marginRight="@dimen/margen_mediano"
         android:layout_weight="6"
         app:arc_finished_color="@color/colorLight"
         app:arc_stroke_width="@dimen/arco_ancho"
         app:arc_suffix_text="@string/sufijo"
-        app:arc_suffix_text_padding="@dimen/margen_mini"
+        app:arc_suffix_text_padding="@dimen/margen_mediano"
+        app:arc_text_size="25pt"
         app:arc_text_color="@color/colorLetraClara"
         app:arc_unfinished_color="@color/colorPrimaryDark"
-
+        app:arc_progress="0"
+        app:arc_max="500"
         />
+
+    <TextView
+        android:layout_marginLeft="@dimen/margen_chiquis"
+        android:layout_marginRight="@dimen/margen_chiquis"
+        android:background="@color/colorOff"
+        android:id="@+id/diagnostico"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"
+        android:gravity="center"
+        android:text="@string/sin_conexion"
+        android:textColor="@color/colorLetraClara"
+        android:textSize="10pt"
+        android:textStyle="bold" />
 </LinearLayout>

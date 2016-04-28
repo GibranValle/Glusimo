@@ -89,7 +89,7 @@
         android:layout_weight="0.5">
 
         <Button
-            android:id="@+id/b_buscar"
+            android:id="@+id/boton_lista_devices"
             style="@style/textoBoton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

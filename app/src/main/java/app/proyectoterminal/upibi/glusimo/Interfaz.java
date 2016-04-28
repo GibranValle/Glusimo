@@ -1,14 +1,10 @@
 package app.proyectoterminal.upibi.glusimo;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Vibrator;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -26,8 +22,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Interfaz extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
+import app.proyectoterminal.upibi.glusimo.Bluetooth.BluetoothSPP;
+import app.proyectoterminal.upibi.glusimo.Bluetooth.BluetoothState;
+import app.proyectoterminal.upibi.glusimo.Bluetooth.DeviceList;
+import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
+import app.proyectoterminal.upibi.glusimo.Bus.EnviarStringEvent;
+import app.proyectoterminal.upibi.glusimo.classes.SampleFragmentPagerAdapter;
+import app.proyectoterminal.upibi.glusimo.fragments.AcercaDe;
+
+public class Interfaz extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     /** /////////////////////////// CONSTANTES  ///////////////////////////////////*/
     public static final String TAG = "Interfaz";
     private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 80};
@@ -36,39 +42,16 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     private static final int tiempo[] = {0, 30, 60, 90, 120, 150};
     /** /////////////////////////// CONSTANTES  ///////////////////////////////////*/
 
-
-    /** ////////////// CONSTANTES PARA BLUETOOTH  ///////////////////////////////////*/
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    private static final int REQUEST_ENABLE_BT = 3;
-    private static final boolean D = true;
-    /** ////////////// CONSTANTES PARA BLUETOOTH  ///////////////////////////////////*/
-
-    /** ////////////// VARIABLES PARA BLUETOOTH  ///////////////////////////////////*/
-    private StringBuffer outStringBuffer;
-    // Local Bluetooth adapter
-    private BluetoothAdapter BTadaptador = null;
-    // Member object for the chat services
-    private BluetoothManager BTservice = null;
-    // Name of the connected device
-    private String connectedDeviceName = null;
-    /** ////////////// VARIABLES PARA BLUETOOTH  ///////////////////////////////////*/
-
-
-
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
-    String lectura;
     ViewPager viewPager;
-    SharedPreferences respaldo;             // VARIABLE PARA RECUPERAR DATOS
+    SharedPreferences respaldo;
+    SharedPreferences.Editor editor;
     TextView estado_conexion, estado_paciente;
     Button boton_conexion;
+    EventBus bus = EventBus.getDefault();
+    BluetoothSPP bt;
+    String address, name;
+    boolean conectado = false;
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
 
 
@@ -79,10 +62,105 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interfaz);
 
+        bus.register(this);
+
         estado_conexion = (TextView) findViewById(R.id.consola);
         estado_paciente = (TextView) findViewById(R.id.consola_paciente);
         boton_conexion = (Button) findViewById(R.id.boton_conexion);
 
+        //  ----------------- BLUETOOTH -----------------------------------------//
+        bt = new BluetoothSPP(this);
+        if(!bt.isBluetoothAvailable())
+        {
+            Toast.makeText(getApplicationContext()
+                    , "Bluetooth is not available"
+                    , Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
+
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
+            public void onDataReceived(byte[] data, String message) {
+                //textRead.append(message + "\n");
+            }
+        });
+
+
+        bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener()
+        {
+            public void onDeviceDisconnected()
+            {
+                // CAMBIAR TEXTO DE CONSOLA CONEXION
+                estado_conexion.setText(R.string.bt_dc);
+                estado_conexion.setBackgroundResource(R.color.colorOff);
+                boton_conexion.setVisibility(View.VISIBLE);
+                Log.e(TAG,"SE PERDIÓ LA CONEXION");
+                /*
+                textStatus.setText("Status : Not connect");
+                menu.clear();
+                getMenuInflater().inflate(R.menu.menu_connection, menu);
+                */
+            }
+
+            public void onDeviceConnectionFailed()
+            {
+                // CAMBIAR TEXTO DE CONSOLA CONEXION
+                estado_conexion.setText(R.string.bt_dc);
+                estado_conexion.setBackgroundResource(R.color.colorOff);
+                boton_conexion.setVisibility(View.VISIBLE);
+                Toast.makeText(Interfaz.this, getResources().getString(R.string.bt_error),
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG,"LISTENER FALLIDO");
+                conectado = false;
+            }
+
+            public void onDeviceConnected(String name, String address)
+            {
+
+            }
+        });
+
+        bt.setBluetoothStateListener(new BluetoothSPP.BluetoothStateListener()
+        {
+            public void onServiceStateChanged(int state)
+            {
+                if(state == BluetoothState.STATE_CONNECTED)
+                {
+                    // Do something when successfully connected
+                    // CAMBIAR TEXTO DE CONSOLA CONEXION
+                    estado_conexion.setText(R.string.bt_ct);
+                    estado_conexion.setBackgroundResource(R.color.colorOn);
+                    // ESCONDER BOTON DE CONEXION
+                    boton_conexion.setVisibility(View.GONE);
+                    Toast.makeText(Interfaz.this, getResources().
+                            getString(R.string.bt_exito)+" "+name,
+                            Toast.LENGTH_SHORT).show();
+                    conectado = true;
+                    bt.send("C",true);
+                }
+                else if(state == BluetoothState.STATE_CONNECTING)
+                {
+                    // Do something while connecting
+                    estado_conexion.setText(R.string.bt_cting);
+                    estado_conexion.setBackgroundResource(R.color.colorConecting);
+                    // ESCONDER BOTON DE CONEXION
+                    boton_conexion.setVisibility(View.GONE);
+                    // ENVIAR MENSAJE PARA AVISAR DE LA CONEXION EXITOSA
+                }
+                else if(state == BluetoothState.STATE_LISTEN)
+                {
+                    // Do something when device is waiting for connection
+                }
+                else if(state == BluetoothState.STATE_NONE)
+                {
+                    // Do something when device don't have any connection
+                }
+            }
+        });
+        //  ----------------- BLUETOOTH -----------------------------------------//
+
+
+        // medidor
         // AL INICIAR OCULTA LA CONSOLA DE PACIENTE NO EXISTE, OCULTARLA Y MOSTRAR BOTON
         estado_conexion.setVisibility(View.VISIBLE);
         estado_paciente.setVisibility(View.GONE);
@@ -113,7 +191,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                vibrar(100);
+                vibrar(50);
                 viewPager.setCurrentItem(tab.getPosition());
             }
 
@@ -124,7 +202,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                vibrar(100);
+                vibrar(50);
             }
         });
 
@@ -138,60 +216,43 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         /* NAVIGATION DRAWER */
-
-        /*  BLUETOOTH   */
-        // Obtener el adaptador y comprobar soporte de BT
-        BTadaptador = BluetoothAdapter.getDefaultAdapter();
-        if (BTadaptador == null) {
-            Log.e(TAG, "NO SOPORTA BT");
-            finish();
-        }
-        /*  BLUETOOTH   */
     }
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "On Resume");
-        // carga datos y los despliega en el textview
-        cargarDatos();
-
-
-        //////////////////*BLUETOOH ////////////////*/////////////////*/////////////////*/////////////////*/
-        if (!BTadaptador.isEnabled())//habilitar si no lo esta
+        Log.v(TAG, "On Resume");
+        if (!bt.isBluetoothEnabled()) // no habilitado
         {
-            BTadaptador.enable();
+            // para arrancar el bluetooth sin pedir permiso:
+            bt.enable();
+
+            // PARA PEDIR PERMISO PARA REALIZAR LA CONEXION:
+            /*
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(intent, BluetoothState.REQUEST_ENABLE_BT);
+            */
         }
-        if (BTservice != null)  //si ya se configuró el servicio de BT
+        else
         {
-            //iniciar si no se ha iniciado
-            if (BTservice.getState() == BluetoothManager.STATE_NONE) {
-                BTservice.start();
-                //Toast.makeText(this, "Encendiendo Bluetooth", Toast.LENGTH_SHORT).show();
+            if(!bt.isServiceAvailable())
+            {
+                bt.setupService();
+                bt.startService(BluetoothState.DEVICE_OTHER);
             }
         }
+        cargarDatos();
 
-        // configurar el servicio de BT
-        if (BTservice == null) configurar();
-
-        //////////////////*BLUETOOH ////////////////*/////////////////*/////////////////*/////////////////*/
     }
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "On Destroy");
-        if (BTadaptador.isEnabled())//apagar bluetooth
+
+        if (bt.isBluetoothEnabled()) // no habilitado
         {
-            BTadaptador.disable();
-        }
-        if (BTservice != null)  //si ya se configuró el servicio de BT
-        {
-            //iniciar si no se ha iniciado
-            if (BTservice.getState() == BluetoothManager.STATE_CONNECTED) {
-                BTservice.stop();
-            }
+            bt.stopService();
+            bt.disconnect();
+            bt.disable();
         }
     }
     /** -------------------- METODOS DE ETAPAS --------------------------------*/
-
-
 
 
 
@@ -227,8 +288,9 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        vibrar(100);
-        if (id == R.id.nav_check) {
+        vibrar(50);
+        if (id == R.id.nav_check)
+        {
             // LA POSICION 0 ES MEDICION
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
             viewPager.setCurrentItem(0);
@@ -246,9 +308,20 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
             viewPager.setCurrentItem(3);
         } else if (id == R.id.nav_share) {
             Toast.makeText(Interfaz.this, "ESPÉRALO EN FUTURAS VERSIONES", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_send) {
+        }
+        else if (id == R.id.nav_send)
+        {
             Toast.makeText(Interfaz.this, "ESPÉRALO EN FUTURAS VERSIONES", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_acerca) {
+        }
+        else if (id == R.id.nav_conect)
+        {
+            // COMO NO ES UN DISPOSITIVO ANDROID USAR:
+            bt.setDeviceTarget(BluetoothState.DEVICE_OTHER);
+            // bt.setDeviceTarget(BluetoothState.DEVICE_ANDROID);
+            Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
+        }
+        else if (id == R.id.nav_acerca) {
             startActivity(new Intent(this, AcercaDe.class));
         }
 
@@ -265,175 +338,130 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     /** -------------------- METODOS DE IMPLEMENTS --------------------------------*/
     public void onClick(View v)
     {
-        if (v.getId() == R.id.boton_conexion) {
+        if (v.getId() == R.id.boton_conexion)
+        {
             vibrar(100);
-            //Toast.makeText(this,"conectar", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "ABRIR FRAGMENT");
-            startActivityForResult(new Intent(this, DeviceList.class), REQUEST_CONNECT_DEVICE_SECURE);
+            Intent intent = new Intent(getApplicationContext(), DeviceList.class);
+            startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
         }
     }
     /** -------------------- METODOS DE IMPLEMENTS --------------------------------*/
 
 
-
-
-
     /** ////////////////////////// METODOS PERSONALIZADOS ////////////////////////////// */
-    void cargarDatos() {
+    void cargarDatos()
+    {
         // RECUPERAR LOS DATOS GUARDADOS POR EL USUARIO PREVIAMENTE
         respaldo = getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
-
+        //conectado = respaldo.getBoolean("conectado",false);
         //paso = Integer.parseInt(respaldo.getString("paso", "2"));
     }
     void vibrar(int ms) {
-        Vibrator vibrador = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);        // Vibrate for 500 milliseconds
+        Vibrator vibrador = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibrador.vibrate(ms);
     }
     /** ////////////////////////// METODOS PERSONALIZADOS ////////////////////////////// */
 
-
-
-
-
-
-    /** /////////////////////// METODOS BLUETOOTH ///////////////////////////////// */
-    private void configurar() {
-        Log.d(TAG, "setupChat()");
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        BTservice = new BluetoothManager(this, mHandler);
-        // Initialize the buffer for outgoing messages
-        outStringBuffer = new StringBuffer("");
-    }// The Handler that gets information back from the BluetoothChatService
-    private void enviarMensaje(String mensaje) //recibeel mensaje enviar de tipo string
+    /** ////////////////////////// METODOS EXTRAS DE BLUETOOTH ////////////////////////////// */
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        //checar la conexion antes de enviar
-        if (BTservice.getState() != BluetoothManager.STATE_CONNECTED) {
-            Toast.makeText(this, "NO CONECTADO", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "NO CONECTADO");
-            return;
-        }
-        //comprobar que haya algo para enviar
-        if (mensaje.length() > 0) {
-            //convertir a bytes para enviar por serial
-            byte[] send = mensaje.getBytes();
-            BTservice.write(send);
-            Log.d(TAG, "ENVIANDO MENSAJE: " + mensaje);
-        }
-    }
-    private void conectarDevice(Intent data, boolean secure) {
-        // RECUPERAR LA DIRECCIÓN MAC
-        String address = data.getExtras().getString(DeviceList.EXTRA_DEVICE_ADDRESS);
-        String nombre = data.getExtras().getString(DeviceList.EXTRA_DEVICE_NAME);
-        // Recupera el objeto BluetoothDevice
-        BluetoothDevice device = BTadaptador.getRemoteDevice(address);
-        // Intentar conectar el device
-        BTservice.connect(device, secure);
-        Log.d(TAG, "CONECTANDO A DEVICE.... " + device);
-        Log.d(TAG, "CONECTANDO A DEVICE.... " + nombre);
-        Toast.makeText(this, "Conectando a " + nombre, Toast.LENGTH_LONG).show();
-    }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (D) Log.d(TAG, "onActivityResult " + resultCode);
-        switch (requestCode) {
-            case REQUEST_CONNECT_DEVICE_SECURE:
-                // When DeviceListActivity returns with a device to connect
-                if (resultCode == Activity.RESULT_OK) {
-                    conectarDevice(data, true);
-                    Log.d(TAG, "CONEXION SEGURA, DISPOSITIVO");
-                }
-                break;
-            case REQUEST_CONNECT_DEVICE_INSECURE:
-                // When DeviceListActivity returns with a device to connect
-                if (resultCode == Activity.RESULT_OK) {
-                    conectarDevice(data, false);
-                    Log.d(TAG, "CONEXION SEGURA, INSEGURA");
-                }
-                break;
-            case REQUEST_ENABLE_BT:
-                // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    configurar();
-                } else {
-                    // User did not enable Bluetooth or an error occurred
-                    Log.e(TAG, "ERROR DE CONEXION");
-                    Toast.makeText(this, "ERROR DE CONEXION", Toast.LENGTH_SHORT).show();
-                    finish();
-                    //
-                }
-        }
-    }
-    private final Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                // APLICAR LOS CAMBIOS DE COLOR EN LA INTERFAZ CUANDO DETECTA UN CAMBIO EN ESTADO
-                case MESSAGE_STATE_CHANGE:
-                    if (D) Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothManager.STATE_CONNECTED:
-                            estado_conexion.setText(R.string.bt_ct);
-                            estado_conexion.setBackgroundResource(R.drawable.rect_verde);
-                            Log.d(TAG, " BT CONECTADO");
-                            Log.i(TAG, "RECIBIENDO DATOS, ESPERANDO ASISTOLIA");
-                            break;
-                        case BluetoothManager.STATE_CONNECTING:
-                            //stopTimer();
-                            estado_conexion.setText(R.string.bt_cting);
-                            estado_conexion.setBackgroundResource(R.drawable.rect_azul);
-                            Log.d(TAG, " BT CONECTANDO");
-                            break;
-                        case BluetoothManager.STATE_LISTEN:
-                            estado_conexion.setText(R.string.bt_dc);
-                            estado_conexion.setBackgroundResource(R.drawable.rect_gris);
-                            Log.d(TAG, " BT DESCONECTADO");
-                            break;
-                        case BluetoothManager.STATE_NONE:
-                            estado_conexion.setBackgroundResource(R.drawable.rect_gris);
-                            estado_conexion.setText(R.string.bt_dc);
-                            Log.d(TAG, " BT DESCONECTADO");
-                            enviarMensaje("F");
-                            break;
-                    }
-                    break;
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    String writeMessage = new String(writeBuf);
-                    break;
-                case MESSAGE_READ:
-                    String readMessage = (String) msg.obj;
-                    //Log.e(TAG, "mensaje llegando: " + readMessage);
-                    int largo = readMessage.length();
-                    int inicio = readMessage.indexOf("V");
-                    int fin = inicio + 4;
-                    int palabrasEnteras = largo / 4;
+        Log.v(TAG, "onActivityResult " + resultCode);
 
-                    //Log.e(TAG, "largo : " + largo +" inicio: "+inicio +" fin: "+fin);
-                    if (largo >= 4 && largo <= 1000 && inicio >= 0) {
-                        if (!readMessage.endsWith("\r") || !readMessage.endsWith("\n")) {
-                            palabrasEnteras = palabrasEnteras - 1;
-                        }
-                        //Log.e(TAG, "palabras enteras : " + palabrasEnteras);
-                        for (int j = 1; j <= palabrasEnteras; j++) {
-
-                            lectura = readMessage.substring(inicio + 1, fin);
-                            //Log.e(TAG, "palabraSeparada : " + lectura+" punto: "+punto);
-                            readMessage = readMessage.replaceFirst(readMessage, readMessage);
-                            inicio = inicio + 4;
-                            fin = fin + 4;
-                        }
-                    }
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    connectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), "Conectado a " + connectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
-                            Toast.LENGTH_SHORT).show();
-                    break;
+        switch (requestCode)
+        {
+            case BluetoothState.REQUEST_CONNECT_DEVICE:
+            // DeviceList Regresa información para conectarse a dispositivo
+            if (resultCode == Activity.RESULT_OK)
+            {
+                address = data.getExtras().getString(BluetoothState.EXTRA_DEVICE_ADDRESS);
+                name = data.getExtras().getString(BluetoothState.EXTRA_DEVICE_NAME);
+                Log.v(TAG,"address del dispositivo: "+address);
+                bt.connect(data);
+                //bt.connect();
+                //conectarDevice(data, true);
+                //Log.d(TAG, "CONEXION SEGURA, DISPOSITIVO");
             }
         }
-    };
-    /**   /////////////////////////// METODOS BLUETOOTH /////////////////////////////////////*/
+
+        /*
+        if(requestCode == BluetoothState.REQUEST_CONNECT_DEVICE)
+        {
+            if(resultCode == Activity.RESULT_OK)
+            {
+                Log.d(TAG,"Interfaz Activity Result ok");
+                bt.connect(data);
+            }
+
+        }
+        else if(requestCode == BluetoothState.REQUEST_ENABLE_BT)
+        {
+            if(resultCode == Activity.RESULT_OK)
+            {
+                bt.setupService();
+                bt.startService(BluetoothState.DEVICE_ANDROID);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext()
+                        , "Bluetooth no habilitado"
+                        , Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+        */
+    }
+
+    /** ////////////////////////// METODOS EXTRAS DE BLUETOOTH ////////////////////////////// */
+
+
+    /** ////////////////////////// METODOS PARA COMUNICACION FRAGMENT ////////////////////////////// */
+    @Subscribe
+    public void onEvent(EnviarStringEvent event) {
+        // Esperar a recibir string de algun fragment
+        // crear una variable para recibir datos
+        String datos = event.mensaje;
+        String id = datos.substring(0,1);
+        Log.d(TAG,"mensaje recibido en Activity: "+datos+" con id: "+id);
+        // Procesar la primera letra para saber de que fragment viene
+
+        // FRAGMENT DE MEDICION
+        if(id.equals("M"))
+        {
+            String mensaje = datos.substring(1,datos.length());
+            Log.d(TAG,"Mensaje desde medición "+mensaje);
+
+            if(mensaje.startsWith("C"))
+            {
+                // Medicion necesita saber el estado de conexion
+                if(conectado)
+                {
+                    bt.send("M",true);
+                }
+                else
+                {
+                    Log.d(TAG,"sin conexion, mensaje no enviado");
+                    Toast.makeText(Interfaz.this, getResources().getString(R.string.conectar),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            // realizar tarea segun el mensaje desde medicion
+        }
+
+        /*
+        String dato;
+        Log.d(TAG,"enviando mensaje: "+event.mensaje);
+        if(event.mensaje.startsWith("M"))
+        {
+            dato = event.mensaje.substring(1,event.mensaje.length());
+            Log.d(TAG,"texto corregido en bus: "+dato);
+        }
+        */
+    }
+
+    @Subscribe
+    public void onEvent(EnviarIntEvent event) {
+        Log.d(TAG,"numero recibido en bus: "+event.numero);
+    }
+    /** ////////////////////////// METODOS PARA COMUNICACION FRAGMENT ////////////////////////////// */
 }

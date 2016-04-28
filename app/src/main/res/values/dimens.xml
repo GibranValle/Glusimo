@@ -10,6 +10,7 @@
     <dimen name="nav_header_height">160dp</dimen>
 
     <!-- FABS -->
+    <dimen name="margen_chiquis">10dp</dimen>
     <dimen name="margen_mini">5dp</dimen>
     <dimen name="margen_pequeño">15dp</dimen>
     <dimen name="margen_mediano">30dp</dimen>
@@ -18,6 +19,6 @@
     <dimen name="fab_margin3">135dp</dimen>
 
     <!-- ARCO -->
-    <dimen name="arco_ancho">20dp</dimen>
+    <dimen name="arco_ancho">30dp</dimen>
 
 </resources>

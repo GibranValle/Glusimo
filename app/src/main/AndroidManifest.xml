@@ -24,10 +24,11 @@
         </activity>
 
         <activity
-            android:name=".DeviceList"
+            android:name=".fragments.AcercaDe"
             android:theme="@android:style/Theme.Holo.Dialog" />
+
         <activity
-            android:name=".AcercaDe"
+            android:name=".Bluetooth.DeviceList"
             android:theme="@android:style/Theme.Holo.Dialog" />
 
     </application>

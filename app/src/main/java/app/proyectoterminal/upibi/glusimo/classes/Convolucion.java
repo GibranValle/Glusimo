@@ -1,4 +1,4 @@
-package app.proyectoterminal.upibi.glusimo;
+package app.proyectoterminal.upibi.glusimo.classes;
 
 /**
  * Created by Gibran on 20/04/2016.
