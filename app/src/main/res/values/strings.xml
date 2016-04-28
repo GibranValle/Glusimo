@@ -34,6 +34,7 @@
     <string name="bt_button">Iniciar\nConexión</string>
     <string name="bt_error">Conexión Fallida</string>
     <string name="bt_exito">Conectado correctamente a: </string>
+
     <!-- textos DeviceList-->
     <string name="dialog_vinculados">Dispositivos Vinculados</string>
     <string name="dialog_encontados">Dispositivos Encontrados</string>
@@ -62,6 +63,10 @@
     <string name="pop_boton_aceptar">Aceptar</string>
     <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
     <string name="pop_titulo">UPIBI - IPN</string>
+
+    <!-- textos Salud paciente -->
+    <string name="titulo_tendencias">Gráfica de tendencias</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">TAB DE FRAGMENT MEDICION</string>

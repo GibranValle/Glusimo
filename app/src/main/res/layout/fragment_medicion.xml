@@ -13,9 +13,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/texto_arco"
-        android:textColor="@color/colorLetraClara"
-        android:textSize="10pt"
-        android:textStyle="bold" />
+        style="@style/tituloFragment"
+    />
 
     <com.github.lzyzsd.circleprogress.ArcProgress
         android:id="@+id/medidor"

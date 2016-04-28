@@ -55,6 +55,14 @@
     </style>
 
     <!--Tipos de letras -->
+
+    <style name="tituloFragment">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">10pt</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="tituloB">
         <item name="android:textColor">@color/colorLetra</item>
         <item name="android:textSize">11pt</item>
