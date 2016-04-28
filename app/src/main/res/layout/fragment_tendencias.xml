@@ -6,7 +6,7 @@
 
     <TextView
         android:layout_weight="1"
-        android:id="@+id/titulo_tendencias"
+        android:id="@+id/consola_tendencias"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         style="@style/tituloFragment"
@@ -14,13 +14,14 @@
 
     <LinearLayout
         android:layout_weight="8"
-        android:layout_marginLeft="@dimen/margen_mediano"
         android:layout_marginRight="@dimen/margen_mediano"
+        android:layout_marginLeft="@dimen/margen_mediano"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_weight="7"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/canvas"
             android:layout_gravity="center_vertical"
@@ -30,9 +31,9 @@
 
     <TextView
         android:layout_weight="1"
-        android:id="@+id/consola_tendencias"
+        android:id="@+id/eje_tiempo"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         style="@style/tituloFragment"
-        android:text="@string/titulo_tendencias" />
+        android:text="@string/eje_tiempo" />
 </LinearLayout>

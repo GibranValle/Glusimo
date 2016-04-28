@@ -66,7 +66,8 @@
 
     <!-- textos Salud paciente -->
     <string name="titulo_tendencias">Gráfica de tendencias</string>
-
+    <string name="eje_tiempo">tiempo [15min]</string>
+    <string name="eje_Y">Glucemia [mg/mL]</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">TAB DE FRAGMENT MEDICION</string>
