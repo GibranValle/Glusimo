@@ -80,8 +80,21 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
 
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() {
-            public void onDataReceived(byte[] data, String message) {
+            public void onDataReceived(byte[] data, String message)
+            {
+                String dato;
+                int valor;
                 //textRead.append(message + "\n");
+                if(message.startsWith("V"))
+                {
+                    Log.d(TAG,"mensaje recibido: "+message+" largo: "+message.length());
+                    dato = message.substring(1,message.length());
+                    valor = Integer.parseInt(dato);
+                    Log.d(TAG,"conversion correcta a entero: "+valor);
+                    bus.post(new EnviarIntEvent(valor));
+                }
+
+
             }
         });
 
@@ -95,6 +108,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 estado_conexion.setBackgroundResource(R.color.colorOff);
                 boton_conexion.setVisibility(View.VISIBLE);
                 Log.e(TAG,"SE PERDIÓ LA CONEXION");
+                bus.post(new EnviarStringEvent("ID"));
                 /*
                 textStatus.setText("Status : Not connect");
                 menu.clear();
@@ -137,6 +151,8 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                             Toast.LENGTH_SHORT).show();
                     conectado = true;
                     bt.send("C",true);
+                    // CAMBIAR INSTRUCCIÓN DEL FRAGMENT
+                    bus.post(new EnviarStringEvent("IC"));
                 }
                 else if(state == BluetoothState.STATE_CONNECTING)
                 {
@@ -293,6 +309,10 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         {
             // LA POSICION 0 ES MEDICION
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
+            if(conectado)
+            {
+                bt.send("M",true);
+            }
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_reg) {
             // LA POSICION 0 ES tendencias

@@ -48,13 +48,13 @@
     <string name="config">Configuracion de monitor</string>
 
     <!-- textos Salud paciente -->
-    <string name="paciente_saludable">Saludable (Homeostasis)</string>
+    <string name="paciente_saludable">Saludable\nNiveles normales</string>
     <string name="paciente_warning">Principio de Hiperglucemia</string>
-    <string name="paciente_emergency">Hiperglucemia \n Severa</string>
+    <string name="paciente_emergency">Hiperglucemia\nSevera</string>
     <string name="paciente_emergency_hipo">Hipoglucemia detectada</string>
-    <string name="paciente_comprobando">Comprobando \n medición</string>
     <string name="sin_medicion">De click en el arco para realizar una medición</string>
     <string name="sin_conexion">Conecte con el dosificador para empezar la medición</string>
+    <string name="midiendo">Realizando medición\nEspere por favor</string>
     <string name="sufijo">mg/dL</string>
     <string name="texto_arco">Glucómetro</string>
 
