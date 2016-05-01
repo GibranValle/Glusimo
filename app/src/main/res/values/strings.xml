@@ -38,11 +38,12 @@
     <string name="dialog_encontrados">Dispositivos Encontrados</string>
 
     <!-- textos Menu -->
-    <string name="menu_config">Configuracion</string>
+    <string name="menu_config">Configuración</string>
 
     <!-- textos Fragments pop up -->
     <string name="pop_boton_aceptar">Aceptar</string>
-    <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
+    <string name="pop_mensaje">Proyecto terminal III\n Simulación metabólica, monitorización
+        y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
     <string name="pop_titulo">UPIBI - IPN</string>
 
     <!-- textos Medicion Salud paciente paciente -->
@@ -79,6 +80,15 @@
         <item>Diciembre</item>
     </string-array>
 
+    <string-array name="dia">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
 
 
     <!-- TODO: Remove or change this placeholder text -->

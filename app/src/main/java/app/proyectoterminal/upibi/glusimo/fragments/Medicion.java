@@ -45,11 +45,11 @@ public class Medicion extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        Log.v(TAG,"Creando vista de medicion");
+        Log.v(TAG,"Creando vista de medición");
         // REGISTRAR SI NO SE HA REGISTRADO
         if (!bus.isRegistered(this))
         {
-            Log.v(TAG,"Registrando en bus  el fragment medicion");
+            Log.v(TAG,"Registrando en bus  el fragment medición");
             bus.register(this);
         }
         return inflater.inflate(R.layout.fragment_medicion, container, false);
@@ -61,7 +61,7 @@ public class Medicion extends Fragment implements View.OnClickListener
     {
         super.onActivityCreated(savedInstanceState);
 
-        Log.v(TAG,"OnActivityCreated Medicion");
+        Log.v(TAG,"OnActivityCreated Medición");
 
         diagnostico = (TextView) getActivity().findViewById(R.id.diagnostico);
         medidor = (ArcProgress) getActivity().findViewById(R.id.medidor);
@@ -96,7 +96,7 @@ public class Medicion extends Fragment implements View.OnClickListener
     public void onClick(View v)
     {
         vibrar(100);
-        Log.i(TAG,"peticion para enviar mensaje por bluetooth");
+        Log.i(TAG,"petición para enviar mensaje por bluetooth");
         bus.post(new EnviarStringEvent("MC"));
 
         /*
