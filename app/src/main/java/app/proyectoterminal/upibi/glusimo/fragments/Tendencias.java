@@ -22,11 +22,13 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.R;
+import app.proyectoterminal.upibi.glusimo.classes.InterpolacionLagrange;
 
 public class Tendencias extends Fragment implements View.OnClickListener {
 
@@ -37,6 +39,8 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     EventBus bus = EventBus.getDefault();
     SharedPreferences respaldo;
     SharedPreferences.Editor editor;
+    InterpolacionLagrange poly;
+
     int puntos = 0;
     float gain = 2.5f;
 
@@ -56,6 +60,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     final Handler handler = new Handler();  // VARIABLE PARA TIMER
 
     float xo,xf, yo, yf, pss;
+    double[] coeficientes;
 
     private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 80};
     private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 99};
@@ -65,6 +70,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        poly = new InterpolacionLagrange();
         // REGISTRAR SI NO SE HA REGISTRADO
         if (!bus.isRegistered(this))
         {
@@ -112,7 +118,6 @@ public class Tendencias extends Fragment implements View.OnClickListener {
                 obs.removeGlobalOnLayoutListener(this);
                 Log.i(TAG,"esperando que sirva este metodo alto: "+alto+" ancho: "+ancho);
 
-
                 // NECESARIO PARA ROTAR EL TEXTO 270° -.-!!!!
                 bitmap2 = Bitmap.createBitmap(ancho2, alto2, Bitmap.Config.ARGB_8888);
                 ejeY.setImageBitmap(bitmap2);
@@ -123,10 +128,10 @@ public class Tendencias extends Fragment implements View.OnClickListener {
                 //canvas2.drawText("Concentracion [mg/mL]",0,0,paint2);
                 canvas2.translate(-ancho2/3.5f, 0);
                 canvas2.rotate(-90,ancho2/1.2f,0);
+                // cambiar este parametro, da mucho ruido
                 paint2.setTextSize(40f);
                 paint2.setFakeBoldText(true);
                 canvas2.drawText(getResources().getString(R.string.eje_Y),0,0,paint2);
-
 
                 // PARA HACER LA GRÁFICA
                 bitmap = Bitmap.createBitmap(ancho, alto, Bitmap.Config.ARGB_8888);
@@ -143,23 +148,59 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     }
 
 
+    void graficarLagrange()
+    {
+        if( xo == 0 )
+        {
+            puntos = 0;
+            empezarCanvas();
+            paint.setColor(getResources().getColor(R.color.colorLetraClara));
+            paint.setStrokeWidth(4);
+            Log.i(TAG,"iniciando grafica");
+            // iniciar valores
+            yo = (float) (alto-(gain*poly.calcularPunto(coeficientes,puntos)));
+            xf = xo + pss;
+            yf = (float) (alto-(gain*poly.calcularPunto(coeficientes,puntos)));
+        }
+        if(xf >= ancho)
+        {
+            terminarGrafica();
+            Log.i(TAG,"parando timer");
+        }
+        else
+        {
+            puntos = puntos + 1;
+            // aumentar paso
+            xf = xo + pss;
+            yf = (float) (alto-(gain*poly.calcularPunto(coeficientes,puntos)));
+            Log.i(TAG,"graficando punto xo: "+xo+" xf: "+xf +" yo: "+yo +" yf: "+yf);
+            canvas.drawLine(xo,yo,xf,yf,paint);
+            // USAR ESTE METODO PARA ACTUALIZAR PANTALLA
+            espacio.invalidate();
+            // desplazar pasos
+            xo = xf;
+            yo = yf;
+        }
 
-    void graficar(int[] x, int[] y)
+    }
+
+    /*
+    void graficarDemo(int[] x)
     {
         if(xo == 0)
         {
             puntos = 0;
             empezarCanvas();
             paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(10);
+            paint.setStrokeWidth(4);
             Log.i(TAG,"iniciando grafica");
             // iniciar valores
-            yo = alto-(gain*curvaGlucosaDiabetes[puntos]);
+            yo = (float) (alto-(gain*poly.calcularPunto(coeficientes,xo)));
         }
 
         if(xf >= ancho || puntos >= x.length-1)
         {
-            Log.i(TAG,"parando timer");
+            //Log.i(TAG,"parando timer");
             xo = 0;
             terminarGrafica();
         }
@@ -180,16 +221,28 @@ public class Tendencias extends Fragment implements View.OnClickListener {
             yo = yf;
         }
     }
+    */
 
-    public void empezarGrafica(int[] x, int[] y)
+    public void empezarGrafica(int[] x, int[] y, int periodo)
     {
+        coeficientes = poly.polyLagrange(x,y);
+        int largo = x.length;
+        int tfinal = x[largo-1];
+        Log.i(TAG,"valor final tiempo: "+tfinal);
+        pss = (float) ancho/tfinal;
+        Log.i(TAG,"coeficientes encontrados: "+ Arrays.toString(coeficientes));
+        Log.i(TAG,"largo: "+largo + " paso: "+pss);
+
+        // reiniciar valores
         xo = 0;
+        puntos = 0;
+
         //instanciar nuevo timer
         timer = new Timer();
         //inicializar el timer
-        initializeTimerTask2(x,y);
+        initializeTimerTask2();
         //esperar 0ms para empezar, repetir cada 100ms
-        timer.schedule(timerTask, 0, 1000); //
+        timer.schedule(timerTask, 0, periodo); //
     }
 
     public void terminarGrafica() {
@@ -200,14 +253,15 @@ public class Tendencias extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void initializeTimerTask2(final int[] x, final int[] y) {
+    public void initializeTimerTask2() {
         timerTask = new TimerTask() {
             public void run() {
                 //use a handler to run a toast that shows the current timestamp
                 handler.post(new Runnable() {
                     public void run()
                     {
-                        graficar(x,y);
+                        //graficarDemo(x,y);
+                        graficarLagrange();
                     }
                 });
             }
@@ -218,7 +272,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     public void onClick(View v)
     {
         vibrar(100);
-        empezarGrafica(tiempo,curvaGlucosaDiabetes);
+        empezarGrafica(tiempo,curvaGlucosaDiabetes, 6);
     }
 
     public void empezarCanvas()
