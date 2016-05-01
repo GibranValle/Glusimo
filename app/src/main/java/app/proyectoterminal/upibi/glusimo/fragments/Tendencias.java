@@ -272,7 +272,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     public void onClick(View v)
     {
         vibrar(100);
-        empezarGrafica(tiempo,curvaGlucosaDiabetes, 6);
+        empezarGrafica(tiempo,curvaGlucosaDiabetes, 3);
     }
 
     public void empezarCanvas()

@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">Glusimo</string>
-    <string name="action_settings">Configuración</string>
+    <string name="nombre_app">Glusimo</string>
 
 
     <!-- Navigation Drawer-->
@@ -18,13 +17,7 @@
     <string name="nav_send">Enviar</string>
     <string name="nav_config">Configuraciones</string>
     <string name="nav_conectar">Conectar a:</string>
-
-    <!-- Interfaz -->
-    <string name="menu_setting">Configuracion</string>
-
-    <!--  texto de TextView -->
-    <string name="novinculados">No se encontraron dispositivos vinculados</string>
-    <string name="noencontrados">No se encontraron dispositivos</string>
+    <string name="info">Acerca de</string>
 
     <!-- textos BT -->
     <string name="bt_dc">DESCONECTADO</string>
@@ -34,21 +27,20 @@
     <string name="bt_button">Iniciar\nConexión</string>
     <string name="bt_error">Conexión Fallida</string>
     <string name="bt_exito">Conectado correctamente a: </string>
+    <string name="novinculados">No se encontraron dispositivos vinculados</string>
+    <string name="noencontrados">No se encontraron dispositivos</string>
+    <string name="conectar">Conectar a Dosificador</string>
+    <string name="buscar">Buscar Dosificador</string>
+    <string name="visible">Hacer Visible</string>
 
     <!-- textos DeviceList-->
     <string name="dialog_vinculados">Dispositivos Vinculados</string>
     <string name="dialog_encontados">Dispositivos Encontrados</string>
 
-    <!-- textos Menu-->
-    <string name="conectar">Conectar a Dosificador</string>
-    <string name="buscar">Buscar Dosificador</string>
-    <string name="visible">Hacer Visible</string>
-    <string name="datos">Editar Datos Paciente</string>
-    <string name="demo">Demo</string>
-    <string name="info">Acerca de</string>
-    <string name="config">Configuracion de monitor</string>
+    <!-- textos Menu -->
+    <string name="menu_config">Configuracion</string>
 
-    <!-- textos Salud paciente -->
+    <!-- textos Medicion Salud paciente paciente -->
     <string name="paciente_saludable">Saludable\nNiveles normales</string>
     <string name="paciente_warning">Principio de Hiperglucemia</string>
     <string name="paciente_emergency">Hiperglucemia\nSevera</string>
@@ -59,12 +51,12 @@
     <string name="sufijo">mg/dL</string>
     <string name="texto_arco">Glucómetro</string>
 
-
+    <!-- textos Fragments pop up -->
     <string name="pop_boton_aceptar">Aceptar</string>
     <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
     <string name="pop_titulo">UPIBI - IPN</string>
 
-    <!-- textos Salud paciente -->
+    <!-- textos Tedencias -->
     <string name="titulo_tendencias">Gráfica de tendencias</string>
     <string name="eje_tiempo">Tiempo [min]</string>
     <string name="eje_Y">Glucemia [mg/dL]</string>
@@ -72,9 +64,6 @@
 
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">TAB DE FRAGMENT MEDICION</string>
-    <string name="hello_blank_fragment2">TAB DE FRAGMENT TENDENCIAS</string>
-    <string name="hello_blank_fragment3">TAB DE FRAGMENT LISTA</string>
     <string name="hello_blank_fragment4">TAB DE FRAGMENT CONFIG</string>
 
 </resources>

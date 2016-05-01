@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="app.proyectoterminal.upibi.glusimo.Interfaz">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/menu_interfaz"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/menu_config"
         app:showAsAction="never" />
 </menu>
