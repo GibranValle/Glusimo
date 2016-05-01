@@ -30,15 +30,13 @@ import app.proyectoterminal.upibi.glusimo.R;
 
 public class Tendencias extends Fragment implements View.OnClickListener {
 
-    TextView consola_tendencias;
+    TextView consola_tendencias, info_tendencias;
     ImageView espacio,ejeY;
     Timer timer;
     TimerTask timerTask;
     EventBus bus = EventBus.getDefault();
     SharedPreferences respaldo;
     SharedPreferences.Editor editor;
-
-
     int puntos = 0;
     float gain = 2.5f;
 
@@ -81,14 +79,17 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
         consola_tendencias = (TextView) getActivity().findViewById(R.id.consola_tendencias);
+        info_tendencias = (TextView) getActivity().findViewById(R.id.tendencias_info);
         ejeY = (ImageView) getActivity().findViewById(R.id.eje_concentracion);
         espacio = (ImageView) getActivity().findViewById(R.id.canvas);
         espacio.setOnClickListener(this);
 
+        info_tendencias.setText(R.string.info_tendencias);
+
         respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
         gain = respaldo.getFloat("gain",2.5f);
+
 
         ViewTreeObserver vto = espacio.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
@@ -111,35 +112,29 @@ public class Tendencias extends Fragment implements View.OnClickListener {
                 obs.removeGlobalOnLayoutListener(this);
                 Log.i(TAG,"esperando que sirva este metodo alto: "+alto+" ancho: "+ancho);
 
-                /*
-                bitmap = Bitmap.createBitmap(ancho, alto, Bitmap.Config.ARGB_8888);
-                espacio.setImageBitmap(bitmap);
-                canvas = new Canvas(bitmap);
-                paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                */
 
+                // NECESARIO PARA ROTAR EL TEXTO 270° -.-!!!!
                 bitmap2 = Bitmap.createBitmap(ancho2, alto2, Bitmap.Config.ARGB_8888);
                 ejeY.setImageBitmap(bitmap2);
                 canvas2 = new Canvas(bitmap2);
                 paint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint2.setColor(Color.WHITE);
-                canvas2.drawText("Concentracion [mg/mL]",20,20,paint2);
-                canvas2.translate(ancho2/2, alto2/2);
-                canvas2.drawText("Concentracion [mg/mL]",20,20,paint2);
-                canvas2.translate(ancho2, alto2);
-                canvas2.drawText("Concentracion [mg/mL]",20,20,paint2);
-                /*
-                canvas2.translate(-ancho2/2, -alto2/2);
-                canvas2.drawText("Concentracion [mg/mL]",0,0,paint2);
-                canvas2.rotate(-10);
-                canvas2.drawText("Concentracion [mg/mL]",0,0,paint2);
-                canvas2.drawText("Concentracion [mg/mL]",ancho2,alto2,paint2);
-                canvas2.rotate(-10);
-                canvas2.drawText("Concentracion [mg/mL]",0,0,paint2);
-                canvas2.drawText("Concentracion [mg/mL]",ancho2,alto2,paint2);
-                paint2.setStyle(Paint.Style.FILL);
-                */
-                //empezarCanvas();
+                paint2.setColor(getResources().getColor(R.color.colorLetraClara));
+                canvas2.translate(ancho2/10, alto2/1.5f);
+                //canvas2.drawText("Concentracion [mg/mL]",0,0,paint2);
+                canvas2.translate(-ancho2/3.5f, 0);
+                canvas2.rotate(-90,ancho2/1.2f,0);
+                paint2.setTextSize(40f);
+                paint2.setFakeBoldText(true);
+                canvas2.drawText(getResources().getString(R.string.eje_Y),0,0,paint2);
+
+
+                // PARA HACER LA GRÁFICA
+                bitmap = Bitmap.createBitmap(ancho, alto, Bitmap.Config.ARGB_8888);
+                espacio.setImageBitmap(bitmap);
+                canvas = new Canvas(bitmap);
+                paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+                empezarCanvas();
 
                 // calcular el paso en X
                 ///////////// ASIGNACIONES PARA AGREGAR CANVAS ////////////////
@@ -156,7 +151,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
             puntos = 0;
             empezarCanvas();
             paint.setColor(Color.WHITE);
-            paint.setStrokeWidth(3);
+            paint.setStrokeWidth(10);
             Log.i(TAG,"iniciando grafica");
             // iniciar valores
             yo = alto-(gain*curvaGlucosaDiabetes[puntos]);
@@ -210,9 +205,8 @@ public class Tendencias extends Fragment implements View.OnClickListener {
             public void run() {
                 //use a handler to run a toast that shows the current timestamp
                 handler.post(new Runnable() {
-                    public void run() {
-                        //aquí va la acción a realizar
-                        //graficar(x , y);
+                    public void run()
+                    {
                         graficar(x,y);
                     }
                 });

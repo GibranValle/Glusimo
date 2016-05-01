@@ -15,7 +15,7 @@ public class InterpolacionLagrange {
 
     }
 
-    double calcularPunto(double[] coeficientes, double punto) {
+    public double calcularPunto(double[] coeficientes, double punto) {
         int largo = coeficientes.length - 1;
         int i;
         double resultado = 0;
@@ -35,7 +35,7 @@ public class InterpolacionLagrange {
         return resultado;
     }
 
-    double[] polyLagrange(int[] x, int[] y) {
+    public double[] polyLagrange(int[] x, int[] y) {
         Convolucion conv = new Convolucion();
         int j, k, l;
         int largo = x.length;
