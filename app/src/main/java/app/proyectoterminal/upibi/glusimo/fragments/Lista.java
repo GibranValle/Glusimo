@@ -14,8 +14,7 @@ import android.widget.Spinner;
 
 import app.proyectoterminal.upibi.glusimo.R;
 
-public class Lista extends Fragment
-{
+public class Lista extends Fragment implements AdapterView.OnItemSelectedListener {
     // LIST VIEW
     private ListView lista;
 
@@ -58,22 +57,21 @@ public class Lista extends Fragment
 
 
         // FUNCIONES PARA EL CLICK
-        mes.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-
-            }
-        });
-
-        dia.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-
-            }
-        });
+        mes.setOnItemSelectedListener(this);
     }
+
+    /**  ///////////////////////   METODOS DE SPINNER    /////////////////////////**/
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent)
+    {
+
+    }
+    /**  ///////////////////////   METODOS DE SPINNER    /////////////////////////**/
+
 }
