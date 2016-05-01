@@ -14,13 +14,14 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
     public static final String NOMBRE_TABLA = "ITEMYPRECIO";
     public static final String ID = "_id";
-    public static final String C_ELEMENTO = "ELEMENTO";
-    public static final String C_PRECIO = "PRECIO";
-    public static final String C_EXTRA = "EXTRA";
-    public static final String C_PRECIO_EXTRA = "PRECIOEXTRA";
-    public static final String C_INVENTARIO = "INVENTARIO";
+    public static final String C_FECHA = "FECHA";
+    public static final String C_AÑO = "AÑO";
+    public static final String C_MES = "MES";
+    public static final String C_DIA = "DÍA";
+    public static final String C_TIEMPO = "TIEMPO";
+    public static final String C_CONCENTRACIÓN = "CONCENTRACIÓN";
 
-    static final String TAG = "MANAGER";
+    static final String TAG = "Interfaz";
 
     public DataBaseManager(Context context)
     {
@@ -31,11 +32,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
     private static final String CREAR_TABLA =
             "CREATE TABLE "+ NOMBRE_TABLA + " ("+
                     ID + " INTEGER PRIMARY KEY,"+
-                    C_ELEMENTO + " TEXT,"+
-                    C_PRECIO + " INTEGER,"+
-                    C_EXTRA +" TEXT,"+
-                    C_PRECIO_EXTRA + " INTEGER,"+
-                    C_INVENTARIO + " INTEGER)" ;
+                    C_FECHA + " TEXT,"+
+                    C_AÑO + " INTEGER,"+
+                    C_MES + " INTEGER,"+
+                    C_DIA +" INTEGER,"+
+                    C_TIEMPO + " INTEGER,"+
+                    C_CONCENTRACIÓN + " INTEGER)" ;
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREAR_TABLA);
@@ -53,7 +55,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,"DESACTUALIZAR TABLA");
     }
 
-    public long insertarDatos(String elemento, String precio, String extra, String precioExtra, String inventario)
+    public long insertarDatos(String fecha ,String año, String mes, String dia, String tiempo, String concentración)
     {
         Log.d(TAG,"INSERTANDO DATOS...");
         //cargar la base de datos;
@@ -61,11 +63,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
         //crear el objeto contenido, para escribir los datos
         ContentValues contenido = new ContentValues();
         //ESCRIBIR EN LA COLUMNA, EL VALOR
-        contenido.put(C_ELEMENTO,elemento);
-        contenido.put(C_PRECIO,precio);
-        contenido.put(C_EXTRA,extra);
-        contenido.put(C_PRECIO_EXTRA,precioExtra);
-        contenido.put(C_INVENTARIO,inventario);
+        contenido.put(C_FECHA,fecha);
+        contenido.put(C_AÑO,año);
+        contenido.put(C_MES,mes);
+        contenido.put(C_DIA,dia);
+        contenido.put(C_TIEMPO,tiempo);
+        contenido.put(C_CONCENTRACIÓN,concentración);
 
         long id = db.insert(NOMBRE_TABLA,null,contenido); //insertar el contenido, regresando el id.
         return id;
@@ -86,7 +89,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return c;
     }
 
-    public int actualizarDatos(String elementoAnterior, String elemento, String precio, String extra, String precioExtra, String inventario) //ACTUALIZAR A PARTIR DEL NOMBRE
+    public int actualizarDatos(String fechaAnterior, String fecha,
+                               String año, String mes, String día, String tiempo,
+                               String concentración) //ACTUALIZAR A PARTIR DEL NOMBRE
     {
         Log.d(TAG,"ACTUALIZANDO DATOS");
         // CARGAR BASE DE DATOS PARA INICIAR LA EDICION
@@ -94,23 +99,26 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
         // CREAR UN OBJETO DE CONTENIDO PARA GUARDAR LOS DATOS
         ContentValues contenido = new ContentValues();
-        contenido.put(C_ELEMENTO,elemento);
-        contenido.put(C_PRECIO,precio);
-        contenido.put(C_EXTRA,extra);
-        contenido.put(C_PRECIO_EXTRA,precioExtra);
-        contenido.put(C_INVENTARIO,inventario);
+        contenido.put(C_FECHA,fecha);
+        contenido.put(C_AÑO,año);
+        contenido.put(C_MES,mes);
+        contenido.put(C_DIA,día);
+        contenido.put(C_TIEMPO,tiempo);
+        contenido.put(C_CONCENTRACIÓN,concentración);
 
         // EDITAR CONTENIDO DEL QUERRY AQUI
         String nombre = NOMBRE_TABLA;
-        String seleccion = C_ELEMENTO +" =?";
-        String argselec[] = {elementoAnterior};
+        String seleccion = C_FECHA +" =?";
+        String argselec[] = {fechaAnterior};
 
         //querry listo para no editar
-        int actualizado = db.update(nombre,contenido, seleccion, argselec); //regresa el numero de row actualizados
+        int actualizado = db.update(nombre,contenido,
+                seleccion, argselec);
+        //regresa el numero de row actualizados
         return actualizado;
     }
 
-    public int eliminarDatos(String elemento) // ELIMINAR A PARTIR DEL NOMBRE
+    public int eliminarDatos(String fecha) // ELIMINAR A PARTIR DEL NOMBRE
     {
         Log.d(TAG,"ELIMINANDO DATO...");
         // CARGAR BASE DE DATOS PARA INICIAR LA EDIC
@@ -118,18 +126,19 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
        // CREAR UN OBJETO DE CONTENIDO PARA GUARDAR LOS DATOS
         ContentValues contenido = new ContentValues();
-        contenido.put(C_ELEMENTO,elemento); //escribir en la columna elemento, el elemento recibido
+        contenido.put(C_FECHA,fecha);
+        //escribir en la columna elemento, el elemento recibido
 
         //editar contenido del querry aqui
         String nombre = NOMBRE_TABLA;
-        String seleccion = C_ELEMENTO +" =?";
-        String argselec[] = {elemento};
+        String seleccion = C_AÑO +" =?";
+        String argselec[] = {fecha};
         //querry listo para no editar
         int borrado = db.delete(nombre, seleccion, argselec);
         return borrado;
     }
 
-    public String comprobar(String nombre) //Comprobar que no exista otro elemento con el mismo nombre
+    public String comprobar(String fecha) //Comprobar que no exista otro elemento con el mismo nombre
     {
         Log.d(TAG, "COMPROBANDO...");
         //cargar la base de datos
@@ -137,11 +146,11 @@ public class DataBaseManager extends SQLiteOpenHelper {
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
         String id = ID;
-        String usuario = C_ELEMENTO;
+        String FECHA = C_FECHA;
 
         String [] columnas = {id};
-        String seleccion = usuario + "=?";
-        String[] args_selec ={nombre};
+        String seleccion = FECHA + "=?";
+        String[] args_selec ={fecha};
         //filtros
         String agrupar = null;
         String tener = null;
@@ -166,13 +175,14 @@ public class DataBaseManager extends SQLiteOpenHelper {
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
         String id = ID;
-        String elemento = C_ELEMENTO;
-        String precio = C_PRECIO;
-        String extra = C_EXTRA;
-        String precioExtra = C_PRECIO_EXTRA;
-        String inventario = C_INVENTARIO;
+        String fecha = C_FECHA;
+        String año = C_AÑO;
+        String mes = C_MES;
+        String dia = C_DIA;
+        String tiempo = C_TIEMPO;
+        String concentración = C_CONCENTRACIÓN;
 
-        String [] columnas = {elemento, precio, extra, precioExtra, inventario}; //datos a recuperar
+        String [] columnas = {fecha, año, mes, dia, tiempo, concentración}; //datos a recuperar
         String seleccion = id + "=?"; //a apartir del
         String[] args_selec ={String.valueOf(_id)}; //id entrante
         //filtros
@@ -182,21 +192,23 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
         //crear un cursor
         Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
-        int indexElemento = cursor.getColumnIndex(elemento);
-        int indexPrecio = cursor.getColumnIndex(precio);
-        int indexExtra = cursor.getColumnIndex(extra);
-        int indexPrecioExtra = cursor.getColumnIndex(precioExtra);
-        int indexInventario = cursor.getColumnIndex(inventario);
+        int indexFecha = cursor.getColumnIndex(fecha);
+        int indexAño = cursor.getColumnIndex(año);
+        int indexMes = cursor.getColumnIndex(mes);
+        int indexDía = cursor.getColumnIndex(dia);
+        int indexTiempo = cursor.getColumnIndex(tiempo);
+        int IndexConcentración = cursor.getColumnIndex(concentración);
 
         StringBuffer buffer = new StringBuffer();
         while (cursor.moveToNext())
         {
-            String cElemento = cursor.getString(indexElemento);
-            String cPrecio = cursor.getString(indexPrecio);
-            String cExtra = cursor.getString(indexExtra);
-            String cPrecioExtra = cursor.getString(indexPrecioExtra);
-            String cInventario = cursor.getString(indexInventario);
-            buffer.append(cElemento + "|" +cPrecio + "||" +cExtra + "|||" +cPrecioExtra + "||||" + cInventario + "\n");
+            String cFecha = cursor.getString(indexFecha);
+            String cAño = cursor.getString(indexAño);
+            String cMes = cursor.getString(indexMes);
+            String cDía = cursor.getString(indexDía);
+            String cTiempo = cursor.getString(indexTiempo);
+            String cConcentración = cursor.getString(IndexConcentración);
+            buffer.append(cFecha+"|"+cAño + "||" +cMes + "|||" +cDía + "||||" +cTiempo + "|||||" + cConcentración + "\n");
         }
         Log.d(TAG,buffer.toString());
         return buffer.toString();

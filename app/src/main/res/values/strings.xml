@@ -61,7 +61,7 @@
     <string name="titulo_tendencias">Gráfica de tendencias</string>
     <string name="eje_tiempo">Tiempo [min]</string>
     <string name="eje_Y">Glucemia [mg/dL]</string>
-    <string name="info_tendencias">Escala: 25mg/dL / 15min</string>
+    <string name="info_tendencias">"Escala:  25mg/dL  |  15min"</string>
 
     <!-- textos Lista -->
     <string name="titulo_lista">Registro de eventos</string>
@@ -88,6 +88,12 @@
         <item>Viernes</item>
         <item>Sábado</item>
         <item>Domingo</item>
+    </string-array>
+
+    <string-array name="años">
+        <item>2014</item>
+        <item>2015</item>
+        <item>2016</item>
     </string-array>
 
 
