@@ -27,18 +27,23 @@
     <string name="bt_button">Iniciar\nConexión</string>
     <string name="bt_error">Conexión Fallida</string>
     <string name="bt_exito">Conectado correctamente a: </string>
-    <string name="novinculados">No se encontraron dispositivos vinculados</string>
-    <string name="noencontrados">No se encontraron dispositivos</string>
+    <string name="no_vinculados">No se encontraron dispositivos vinculados</string>
+    <string name="no_encontrados">No se encontraron dispositivos</string>
     <string name="conectar">Conectar a Dosificador</string>
     <string name="buscar">Buscar Dosificador</string>
     <string name="visible">Hacer Visible</string>
 
     <!-- textos DeviceList-->
     <string name="dialog_vinculados">Dispositivos Vinculados</string>
-    <string name="dialog_encontados">Dispositivos Encontrados</string>
+    <string name="dialog_encontrados">Dispositivos Encontrados</string>
 
     <!-- textos Menu -->
     <string name="menu_config">Configuracion</string>
+
+    <!-- textos Fragments pop up -->
+    <string name="pop_boton_aceptar">Aceptar</string>
+    <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
+    <string name="pop_titulo">UPIBI - IPN</string>
 
     <!-- textos Medicion Salud paciente paciente -->
     <string name="paciente_saludable">Saludable\nNiveles normales</string>
@@ -51,16 +56,29 @@
     <string name="sufijo">mg/dL</string>
     <string name="texto_arco">Glucómetro</string>
 
-    <!-- textos Fragments pop up -->
-    <string name="pop_boton_aceptar">Aceptar</string>
-    <string name="pop_mensaje">Proyecto terminal III\n Simulación metabolica, monitorización y regulación de glucemia\n\nPiñones y Valle\n2016 - V1.0</string>
-    <string name="pop_titulo">UPIBI - IPN</string>
-
     <!-- textos Tedencias -->
     <string name="titulo_tendencias">Gráfica de tendencias</string>
     <string name="eje_tiempo">Tiempo [min]</string>
     <string name="eje_Y">Glucemia [mg/dL]</string>
-    <string name="info_tendencias">Escala: 5mg/dL / 5min</string>
+    <string name="info_tendencias">Escala: 25mg/dL / 15min</string>
+
+    <!-- textos Lista -->
+    <string name="titulo_lista">Registro de eventos</string>
+
+    <string-array name="meses">
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

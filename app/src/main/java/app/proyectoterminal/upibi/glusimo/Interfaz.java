@@ -285,7 +285,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_interfaz) {
             vibrar(100);
             // LA POSICION 3 ES CONFIG
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO

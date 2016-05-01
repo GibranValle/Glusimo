@@ -121,7 +121,7 @@ public class DeviceList extends Activity {
             }
         } else {
             // si no existen dispositivos vinculados, carga un string
-            String noDevices = getResources().getText(R.string.novinculados).toString();
+            String noDevices = getResources().getText(R.string.no_vinculados).toString();
             arrayDevicesVinculados.add(noDevices);
         }
     }
@@ -205,7 +205,7 @@ public class DeviceList extends Activity {
             {
                 bolita.setVisibility(View.GONE);
                 if (arrayDevicesEncontrados.getCount() == 0) {
-                    String noDevices = getResources().getText(R.string.noencontrados).toString();
+                    String noDevices = getResources().getText(R.string.no_encontrados).toString();
                     arrayDevicesEncontrados.add(noDevices);
                 }
             }
