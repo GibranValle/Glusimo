@@ -21,4 +21,9 @@
     <!-- ARCO -->
     <dimen name="arco_ancho">30dp</dimen>
 
+    <!-- SPINNER -->
+    <dimen name="alto_spinner">60dp</dimen>
+
+
+
 </resources>

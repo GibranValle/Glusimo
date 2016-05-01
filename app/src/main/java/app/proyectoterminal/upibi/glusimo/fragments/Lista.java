@@ -45,9 +45,9 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
         // adapters
         adaptermes = ArrayAdapter.createFromResource(getContext(),R.array.meses,
-                android.R.layout.simple_dropdown_item_1line);
+                R.layout.custom_spinner_layout);
         adapterdia = ArrayAdapter.createFromResource(getContext(),R.array.dia,
-                android.R.layout.simple_dropdown_item_1line);
+                R.layout.custom_spinner_layout);
 
         mes.setAdapter(adaptermes);
         dia.setAdapter(adapterdia);

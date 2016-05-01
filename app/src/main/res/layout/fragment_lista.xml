@@ -46,19 +46,23 @@
         >
 
         <Spinner
+            android:paddingRight="@dimen/margen_mini"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/filtro_mes"
             android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/margen_mini"
             />
 
         <Spinner
+            android:paddingRight="@dimen/margen_mini"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/filtro_dia"
             android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/margen_mini"
             />
 
     </LinearLayout>
