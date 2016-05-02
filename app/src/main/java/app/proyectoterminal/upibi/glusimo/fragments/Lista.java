@@ -20,7 +20,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarStringEvent;
@@ -73,17 +75,33 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         sp_mes = (Spinner) getActivity().findViewById(R.id.filtro_mes);
         sp_dia = (Spinner) getActivity().findViewById(R.id.filtro_dia);
 
-        // adapters
-        adapteraño = ArrayAdapter.createFromResource(getContext(),R.array.años,
-                R.layout.custom_spinner_layout);
-        adaptermes = ArrayAdapter.createFromResource(getContext(),R.array.meses,
-                R.layout.custom_spinner_layout);
-        adapterdia = ArrayAdapter.createFromResource(getContext(),R.array.dias,
-                R.layout.custom_spinner_layout);
+        // Listas para el spinner
+        List<String> año = new ArrayList<>();
+        List<String> mes = new ArrayList<>();
+        List<String> dia = new ArrayList<>();
 
-        sp_año.setAdapter(adapteraño);
-        sp_mes.setAdapter(adaptermes);
-        sp_dia.setAdapter(adapterdia);
+        // agregar los filtros
+        año.add("Año: ");
+        mes.add("Mes: ");
+        dia.add("Día: ");
+
+        // Crear los adapatadores
+        ArrayAdapter<String> adapterAño = new ArrayAdapter<String>
+                (getContext(), R.layout.custom_spinner_layout,año);
+        ArrayAdapter<String> adapterMes = new ArrayAdapter<String>
+                (getContext(), R.layout.custom_spinner_layout,mes);
+        ArrayAdapter<String> adapterDia = new ArrayAdapter<String>
+                (getContext(), R.layout.custom_spinner_layout,dia);
+
+        // crear los layout de despliegue
+        adapterAño.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterMes.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapterDia.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // cargar el adapter al spinner
+        sp_año.setAdapter(adapterAño);
+        sp_mes.setAdapter(adapterMes);
+        sp_dia.setAdapter(adapterDia);
 
         // FUNCIONES PARA EL CLICK
         sp_año.setOnItemSelectedListener(this);
