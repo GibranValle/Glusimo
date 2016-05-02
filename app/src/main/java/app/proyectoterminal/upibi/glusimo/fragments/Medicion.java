@@ -36,7 +36,6 @@ public class Medicion extends Fragment implements View.OnClickListener
     SoundPool soundPool; // VARIABLE PARA SONIDO
 
     int alert, normal, warning;
-    int conteo = 0;
     int glucosa = 0;
     int max = 0;
 
@@ -208,28 +207,22 @@ public class Medicion extends Fragment implements View.OnClickListener
     @Subscribe
     public void onEvent(EnviarIntEvent event)
     {
-        conteo = conteo + 1;
-        if (conteo == 2)
+        Log.i(TAG,"numero recibido en bus medición: "+event.numero);
+        if(event.numero <= 1000)
         {
-            Log.i(TAG,"numero recibido en bus medición: "+event.numero);
-            conteo = 0;
-            if(event.numero <= 1000)
+            diagnostico.setText(R.string.midiendo);
+            diagnostico.setBackgroundResource(R.color.colorOff);
+            if (event.numero > max)
             {
-                diagnostico.setText(R.string.midiendo);
-                diagnostico.setBackgroundResource(R.color.colorOff);
-                if (event.numero > max)
+                max = event.numero;
+                editor = respaldo.edit();
+                editor.putInt("max", max);
+                if(editor.commit())
                 {
-                    max = event.numero;
-                    editor = respaldo.edit();
-                    editor.putInt("max", max);
-                    if(editor.commit())
-                    {
-                        Log.i(TAG,"maximo encontrado y guardado: " + max);
-                    }
+                    Log.i(TAG,"maximo encontrado y guardado: " + max);
                 }
-                animar(event.numero);
             }
+            animar(event.numero);
         }
-
     }
 }

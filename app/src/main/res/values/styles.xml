@@ -42,14 +42,14 @@
 
     <style name="titulo_lista">
         <item name="android:textColor">@color/colorLetraClara</item>
-        <item name="android:textSize">9pt</item>
+        <item name="android:textSize">8pt</item>
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">start|center</item>
     </style>
 
     <style name="elemento_lista">
         <item name="android:textColor">@color/colorLetraClara</item>
-        <item name="android:textSize">9pt</item>
+        <item name="android:textSize">8pt</item>
         <item name="android:gravity">start|center</item>
     </style>
 

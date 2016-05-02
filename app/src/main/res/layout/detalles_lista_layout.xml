@@ -20,7 +20,7 @@
             android:layout_height="0dp"
             android:text="texto 1"
             android:layout_weight="18"
-            android:id="@+id/detalles_usuario"
+            android:id="@+id/titulo_detalles_lista"
             style="@style/tituloFragment"
             android:layout_marginBottom="@dimen/margen_chiquis"
             />

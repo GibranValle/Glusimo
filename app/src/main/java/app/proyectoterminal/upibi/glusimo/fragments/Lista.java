@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
+import app.proyectoterminal.upibi.glusimo.Bus.EnviarStringEvent;
 import app.proyectoterminal.upibi.glusimo.R;
 import app.proyectoterminal.upibi.glusimo.classes.DataBaseManager;
 
@@ -116,6 +117,15 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         // MOVER EL CURSOR A CERO
         cursor = manager.posicionCero();
         // CREAR EL ARREGLO DE INICIO
+        String [] from = {DataBaseManager.C_FECHA_CORTA, DataBaseManager.C_TIEMPO,
+                DataBaseManager.C_CONCENTRACIÓN};
+        // CREAR EL ARREGLO DE ID
+        int [] to = {R.id.out_fecha, R.id.out_tiempo, R.id.out_concentracion};
+        adaptador = new SimpleCursorAdapter(getContext(),
+                R.layout.activity_lista_layout, cursor, from, to);
+        lista.setAdapter(adaptador);
+        /*
+        // CREAR EL ARREGLO DE INICIO
         String [] from = {DataBaseManager.C_AÑO, DataBaseManager.C_MES,
                 DataBaseManager.C_DIA,DataBaseManager.C_TIEMPO,
                 DataBaseManager.C_CONCENTRACIÓN};
@@ -124,41 +134,47 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         adaptador = new SimpleCursorAdapter(getContext(),
                 R.layout.activity_lista_layout, cursor, from, to);
         lista.setAdapter(adaptador);
+        */
     }
     void agregarMedicion(String fecha, int valor)
     {
         // comprobar que no exista la misma medición
         String fecha_original = fecha;
+        Log.i(TAG,"fecha original: "+fecha_original);
         String comprobando = manager.comprobar(fecha);
         // SI REGRESA VACIO, NO EXISTE EN LA BASE DE DATOS, ENTONCES, CONTINUAR AGREGANDOLO
         if (comprobando.equals(""))
         {
             Log.i(TAG,"separando datos");
-            // index de "/" para cortar los datos
-            int indexslash = fecha.indexOf("/");
-            // formar el string año
-            String año = fecha.substring(0,indexslash);
-            // recortar el año de la cadane original
-            fecha = fecha.replace(año+"/","");
-            Log.i(TAG,"año: "+año);
 
-            // encontrar el proximo "/"
-            indexslash = fecha.indexOf("/");
-            // formar el string de mes
-            String mes = fecha.substring(0,indexslash);
-            // recortar el mes de la cadena original
-            fecha = fecha.replace(mes+"/","");
-            Log.i(TAG,"mes: "+mes);
+            // index de " " para cortar los datos
+            int indexslash = fecha.indexOf(" ");
+            // formar el string año
+            String nombre_dia = fecha.substring(0,indexslash);
+            // recortar el año de la cadane original
+            fecha = fecha.replace(nombre_dia+" ","");
+            Log.i(TAG,"dia: "+nombre_dia);
 
             indexslash = fecha.indexOf("/");
             String dia = fecha.substring(0,indexslash);
             fecha = fecha.replace(dia+"/","");
             Log.i(TAG,"dia: "+dia);
 
+            // index de "/" para cortar los datos
+            indexslash = fecha.indexOf("/");
+            // formar el string año
+            String mes = fecha.substring(0,indexslash);
+            // recortar el año de la cadane original
+            fecha = fecha.replace(mes+"/","");
+            Log.i(TAG,"mes: "+mes);
+
+            // encontrar el proximo "-"
             indexslash = fecha.indexOf("-");
-            String nombre_dia = fecha.substring(0,indexslash);
-            fecha = fecha.replace(nombre_dia+"-","");
-            Log.i(TAG,"nombre_dia: "+nombre_dia +" cadena original: "+fecha);
+            // formar el string de mes
+            String año = fecha.substring(0,indexslash);
+            // recortar el mes de la cadena original
+            fecha = fecha.replace(año+"-","");
+            Log.i(TAG,"año: "+año);
 
             String tiempo = fecha;
             Log.i(TAG,"tiempo: "+tiempo);
@@ -166,7 +182,8 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             String concentración = String.valueOf(valor);
             Log.i(TAG,"concentración: "+concentración);
             // INSERTAR DATOS EN TABLA, RECUPERANDO EL ID SE CONOCE EL ESTADO DE LA EDICION
-            long id = manager.insertarDatos(fecha_original , año, mes, dia, tiempo, concentración);
+            long id = manager.insertarDatos(fecha_original , año, mes, dia, nombre_dia,
+                    tiempo, concentración);
             // SI EL VALOR REGRESADO ES -1 EL METODO NO SE LLEVO A CABO CORRECTAMENTE
             if (id < 0)
             {
@@ -203,13 +220,22 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     @Subscribe
     public void onEvent(EnviarIntEvent event)
     {
-        DateFormat df = new SimpleDateFormat("yyyy/MMMM/dd/EEEE-HH:mm:ss");
+        DateFormat df = new SimpleDateFormat("EEEE dd/MMMM/yyyy-HH:mm:ss");
         String date = df.format(Calendar.getInstance().getTime());
         Log.i(TAG,"numero recibido en bus Lista: "+event.numero);
         Log.i(TAG,"hora de evento: "+date);
         // agregar elemento
         agregarMedicion(date,event.numero);
         actualizarListView();
+    }
+    @Subscribe
+    public void onEvent(EnviarStringEvent event)
+    {
+        String dato = event.mensaje;
+        if(dato.equals("DL1"))
+        {
+            actualizarListView();
+        }
     }
     /** //////////////////////// METODOS DE BUS EVENT  /////////////////////////////**/
 
@@ -219,22 +245,22 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-
         Log.d(TAG," "+id);
         i = new Intent(getContext(),DetallesLista.class);
         //recupera el ID del item seleccionado
         i.putExtra("id",id);
         startActivity(i);
+        i.putExtra("fragment",1);
         return true;
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Log.d(TAG," "+id);
-
         i = new Intent(getContext(),DetallesLista.class);
-        //recupera el ID del item seleccionado
+        //recupera el ID del item seleccionado y lo pasa a detalleslista
         i.putExtra("id",id);
+        i.putExtra("fragment",1);
         startActivity(i);
     }
     /** //////////////////////// METODOS DE LISTVIEW  /////////////////////////////**/

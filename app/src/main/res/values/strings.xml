@@ -72,8 +72,9 @@
     <string name="Año">Año: </string>
     <string name="Mes">Mes: </string>
     <string name="Dia">Día: </string>
+    <string name="fecha">Fecha: </string>
     <string name="tiempo">Hora: </string>
-    <string name="concentración">Concentración: </string>
+    <string name="concentración">Medición [mg/dL]: </string>
     <string name="boton_eliminar">Eliminar</string>
     <string name="boton_actualizar">Actualizar</string>
     <string name="boton_cancelar">Cancelar</string>

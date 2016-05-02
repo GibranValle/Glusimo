@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="130dp"
+    android:layout_height="90dp"
     android:background="@color/fondo_listview"
     >
 
@@ -16,11 +16,12 @@
         <LinearLayout
             android:layout_gravity="start|center"
             android:gravity="start|center"
-            android:layout_weight="1.3"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <!--
             <TextView
                 style="@style/titulo_lista"
                 android:layout_width="match_parent"
@@ -44,6 +45,14 @@
                 android:layout_weight="1"
                 android:text="@string/Dia"
                 />
+            -->
+            <TextView
+                style="@style/titulo_lista"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/fecha"
+            />
 
             <TextView
                 style="@style/titulo_lista"
@@ -51,7 +60,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="@string/tiempo"
-                />
+            />
 
             <TextView
                 style="@style/titulo_lista"
@@ -65,12 +74,13 @@
         <LinearLayout
             android:layout_gravity="start|center"
             android:gravity="start|center"
-            android:layout_weight="1"
+            android:layout_weight="1.2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
 
+            <!--
             <TextView
                 style="@style/elemento_lista"
                 android:layout_width="match_parent"
@@ -97,6 +107,15 @@
                 android:text="@string/Dia"
                 android:id="@+id/out_dia"
                 />
+            -->
+            <TextView
+                style="@style/elemento_lista"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/fecha"
+                android:id="@+id/out_fecha"
+            />
 
             <TextView
                 style="@style/elemento_lista"
@@ -105,7 +124,7 @@
                 android:layout_weight="1"
                 android:text="@string/tiempo"
                 android:id="@+id/out_tiempo"
-                />
+            />
 
             <TextView
                 style="@style/elemento_lista"
@@ -114,7 +133,7 @@
                 android:layout_weight="1"
                 android:text="@string/concentración"
                 android:id="@+id/out_concentracion"
-                />
+            />
 
         </LinearLayout>
     </LinearLayout>

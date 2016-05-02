@@ -1,6 +1,5 @@
 package app.proyectoterminal.upibi.glusimo;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -46,14 +45,12 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
     ViewPager viewPager;
     SharedPreferences respaldo;
-    SharedPreferences.Editor editor;
     TextView estado_conexion, estado_paciente;
     Button boton_conexion;
     EventBus bus = EventBus.getDefault();
     BluetoothSPP bt;
     String address, name;
     boolean conectado = false;
-    ObjectAnimator animador;
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
 
 
@@ -179,9 +176,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         });
         //  ----------------- BLUETOOTH -----------------------------------------//
 
-
         // medidor
-        // AL INICIAR OCULTA LA CONSOLA DE PACIENTE NO EXISTE, OCULTARLA Y MOSTRAR BOTON
         estado_conexion.setVisibility(View.VISIBLE);
         estado_paciente.setVisibility(View.GONE);
         boton_conexion.setVisibility(View.VISIBLE);
@@ -236,7 +231,8 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
         /* NAVIGATION DRAWER */
     }
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
         Log.v(TAG, "On Resume");
 
@@ -459,6 +455,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 if(conectado)
                 {
                     bt.send("M",true);
+                    Log.d(TAG,"SE HA ENVIADO UN MENSAJE DESDE INTERFAZ");
                 }
                 else
                 {
@@ -469,6 +466,17 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
             }
 
             // realizar tarea segun el mensaje desde medicion
+        }
+
+        else if(id.equals("D"))
+        {
+            String mensaje = datos.substring(1,datos.length());
+            if(mensaje.startsWith("L"))
+            {
+                Log.d(TAG,"Mensaje desde Detalles Lista "+mensaje);
+                // LANZAR EL FRAGMENT DONDE SE QUEDÓ
+                viewPager.setCurrentItem(1);
+            }
         }
 
         /*

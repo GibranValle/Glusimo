@@ -289,7 +289,7 @@ public class BluetoothSPP {
         if(mChatService.getState() == BluetoothState.STATE_CONNECTED) {
             if(CRLF) 
                 data += "\r\n";
-            Log.d("Interfaz","Bluetooth send: "+data);
+            Log.i("Interfaz","Bluetooth send: "+data);
             mChatService.write(data.getBytes());
         }
     }

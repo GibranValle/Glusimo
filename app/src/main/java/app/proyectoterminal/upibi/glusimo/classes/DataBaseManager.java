@@ -11,13 +11,15 @@ import android.util.Log;
 public class DataBaseManager extends SQLiteOpenHelper {
 
     private static final String NOMBRE_BD = "registroGlucemia.db";
-    private static final int VERSION_BD = 1;
+    private static final int VERSION_BD = 2;
     public static final String NOMBRE_TABLA = "registroPorFecha";
     public static final String ID = "_id";
     public static final String C_FECHA = "FECHA";
     public static final String C_AÑO = "AÑO";
     public static final String C_MES = "MES";
     public static final String C_DIA = "DÍA";
+    public static final String C_NDIA = "NOMBRE_DÍA";
+    public static final String C_FECHA_CORTA = "FECHA_CORTA";
     public static final String C_TIEMPO = "TIEMPO";
     public static final String C_CONCENTRACIÓN = "CONCENTRACIÓN";
 
@@ -37,6 +39,8 @@ public class DataBaseManager extends SQLiteOpenHelper {
                     C_AÑO + " TEXT,"+
                     C_MES + " TEXT,"+
                     C_DIA +" TEXT,"+
+                    C_NDIA +" TEXT,"+
+                    C_FECHA_CORTA + " TEXT,"+
                     C_TIEMPO + " TEXT,"+
                     C_CONCENTRACIÓN + " INTEGER)" ;
 
@@ -73,9 +77,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,"DESACTUALIZAR TABLA");
     }
 
-    public long insertarDatos(String fecha ,String año, String mes, String dia, String tiempo, String concentración)
+    public long insertarDatos(String fecha ,String año, String mes, String dia, String nombre_dia,
+                              String tiempo, String concentración)
     {
         Log.d(TAG,"INSERTANDO DATOS...");
+        String fecha_corta = nombre_dia+" "+dia+" "+mes+" "+año;
+        Log.d(TAG,"fecha_corta"+fecha_corta);
         //cargar la base de datos;
         SQLiteDatabase db = getWritableDatabase();
         //crear el objeto contenido, para escribir los datos
@@ -85,6 +92,8 @@ public class DataBaseManager extends SQLiteOpenHelper {
         contenido.put(C_AÑO,año);
         contenido.put(C_MES,mes);
         contenido.put(C_DIA,dia);
+        contenido.put(C_NDIA,nombre_dia);
+        contenido.put(C_FECHA_CORTA,fecha_corta);
         contenido.put(C_TIEMPO,tiempo);
         contenido.put(C_CONCENTRACIÓN,concentración);
 
@@ -107,11 +116,14 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return c;
     }
 
-    public int actualizarDatos(String fechaAnterior, String fecha,
-                               String año, String mes, String día, String tiempo,
-                               String concentración) //ACTUALIZAR A PARTIR DEL NOMBRE
+    public int actualizarDatos(String fechaAnterior, String fecha ,String año, String mes,
+                               String dia, String nombre_dia, String tiempo, String concentración)
+    //ACTUALIZAR A PARTIR DEL NOMBRE
     {
         Log.d(TAG,"ACTUALIZANDO DATOS");
+        String fecha_corta = nombre_dia+" "+dia+" "+mes+" "+año;
+        Log.d(TAG,"fecha_corta: "+fecha_corta);
+
         // CARGAR BASE DE DATOS PARA INICIAR LA EDICION
         SQLiteDatabase db = getWritableDatabase();
 
@@ -120,7 +132,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
         contenido.put(C_FECHA,fecha);
         contenido.put(C_AÑO,año);
         contenido.put(C_MES,mes);
-        contenido.put(C_DIA,día);
+        contenido.put(C_DIA,dia);
+        contenido.put(C_NDIA,nombre_dia);
+        contenido.put(C_FECHA_CORTA,fecha_corta);
         contenido.put(C_TIEMPO,tiempo);
         contenido.put(C_CONCENTRACIÓN,concentración);
 
@@ -186,6 +200,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
         {
             Log.d(TAG,"no existe en la base de datos");
         }
+        else
+        {
+            Log.d(TAG,"existe en la base de datos, reintentar");
+        }
         return buffer.toString();
     }
 
@@ -201,9 +219,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
         String año = C_AÑO;
         String mes = C_MES;
         String dia = C_DIA;
+        String fecha_corta = C_FECHA_CORTA;
+        String nombre_dia =C_NDIA;
         String tiempo = C_TIEMPO;
         String concentración = C_CONCENTRACIÓN;
-        String [] columnas = {fecha, año, mes, dia, tiempo, concentración}; //datos a recuperar
+        //datos a recuperar
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, concentración};
 
         // selection
         String seleccion = null; //a apartir del
@@ -217,6 +238,8 @@ public class DataBaseManager extends SQLiteOpenHelper {
         int indexAño = cursor.getColumnIndex(año);
         int indexMes = cursor.getColumnIndex(mes);
         int indexDía = cursor.getColumnIndex(dia);
+        int indexNombreDia = cursor.getColumnIndex(nombre_dia);
+        int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
         int indexTiempo = cursor.getColumnIndex(tiempo);
         int IndexConcentración = cursor.getColumnIndex(concentración);
 
@@ -227,9 +250,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
             String cAño = cursor.getString(indexAño);
             String cMes = cursor.getString(indexMes);
             String cDía = cursor.getString(indexDía);
+            String cNombreDia = cursor.getString(indexNombreDia);
+            String cFechaCorta = cursor.getString(indexFechaCorta);
             String cTiempo = cursor.getString(indexTiempo);
             String cConcentración = cursor.getString(IndexConcentración);
-            buffer.append(cFecha+"|"+cAño + "||" +cMes + "|||" +cDía + "||||" +cTiempo + "|||||" + cConcentración + "\n");
+            buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "!" + cConcentración + "\n");
         }
         Log.d(TAG,buffer.toString());
         return buffer.toString();
@@ -247,10 +273,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
         String año = C_AÑO;
         String mes = C_MES;
         String dia = C_DIA;
+        String nombre_dia =C_NDIA;
+        String fecha_corta = C_FECHA_CORTA;
         String tiempo = C_TIEMPO;
         String concentración = C_CONCENTRACIÓN;
-
-        String [] columnas = {fecha, año, mes, dia, tiempo, concentración}; //datos a recuperar
+        //datos a recuperar
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, concentración};
         String seleccion = id + "=?"; //a apartir del
         String[] args_selec ={String.valueOf(_id)}; //id entrante
         //filtros
@@ -264,6 +292,8 @@ public class DataBaseManager extends SQLiteOpenHelper {
         int indexAño = cursor.getColumnIndex(año);
         int indexMes = cursor.getColumnIndex(mes);
         int indexDía = cursor.getColumnIndex(dia);
+        int indexNombreDia = cursor.getColumnIndex(nombre_dia);
+        int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
         int indexTiempo = cursor.getColumnIndex(tiempo);
         int IndexConcentración = cursor.getColumnIndex(concentración);
 
@@ -274,12 +304,14 @@ public class DataBaseManager extends SQLiteOpenHelper {
             String cAño = cursor.getString(indexAño);
             String cMes = cursor.getString(indexMes);
             String cDía = cursor.getString(indexDía);
+            String cNombreDia = cursor.getString(indexNombreDia);
+            String cFechaCorta = cursor.getString(indexFechaCorta);
             String cTiempo = cursor.getString(indexTiempo);
             String cConcentración = cursor.getString(IndexConcentración);
-            buffer.append(cFecha+"|"+cAño + "||" +cMes + "|||" +cDía + "||||" +cTiempo + "|||||" + cConcentración + "\n");
+            buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "!" + cConcentración + "\n");
         }
         Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
-
 }
