@@ -45,7 +45,7 @@ public class Medicion extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        Log.v(TAG,"Creando vista de medición");
+        Log.v(TAG,"Creando vista de Medición");
         // REGISTRAR SI NO SE HA REGISTRADO
         if (!bus.isRegistered(this))
         {
@@ -211,8 +211,7 @@ public class Medicion extends Fragment implements View.OnClickListener
         conteo = conteo + 1;
         if (conteo == 2)
         {
-            Log.i(TAG,"numero recibido en bus: "+event.numero);
-            Log.i(TAG,"VAS BIEN GIBRI :D");
+            Log.i(TAG,"numero recibido en bus medición: "+event.numero);
             conteo = 0;
             if(event.numero <= 1000)
             {

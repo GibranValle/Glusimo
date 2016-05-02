@@ -14,7 +14,8 @@
         android:id="@+id/titulo_lista" />
 
     <LinearLayout
-        android:layout_margin="@dimen/margen_mini"
+        android:layout_marginRight="@dimen/margen_chiquis"
+        android:layout_marginLeft="@dimen/margen_chiquis"
         android:layout_weight="6"
         android:layout_width="match_parent"
         android:layout_height="0dp"

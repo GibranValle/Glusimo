@@ -32,6 +32,9 @@ import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarStringEvent;
 import app.proyectoterminal.upibi.glusimo.classes.SampleFragmentPagerAdapter;
 import app.proyectoterminal.upibi.glusimo.fragments.AcercaDe;
+import app.proyectoterminal.upibi.glusimo.fragments.Lista;
+import app.proyectoterminal.upibi.glusimo.fragments.Medicion;
+import app.proyectoterminal.upibi.glusimo.fragments.Tendencias;
 
 public class Interfaz extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     /** /////////////////////////// CONSTANTES  ///////////////////////////////////*/
@@ -63,6 +66,21 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         setContentView(R.layout.activity_interfaz);
 
         bus.register(this);
+
+        Medicion medicion = new Medicion();
+        Tendencias tendencias = new Tendencias();
+        Lista lista = new Lista();
+
+        // REGISTRAR TODOS LOS BUSES A VER SI FUNCA XD
+        /*
+        Medicion medicion = new Medicion();
+        bus.register(medicion.getContext());
+        Tendencias tendencias = new Tendencias();
+        bus.register(tendencias.getContext());
+        Lista lista = new Lista();
+        bus.register(lista.getContext());
+        */
+
 
         estado_conexion = (TextView) findViewById(R.id.consola);
         estado_paciente = (TextView) findViewById(R.id.consola_paciente);
@@ -232,6 +250,10 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         /* NAVIGATION DRAWER */
+        // INICIAR OTRAS VIEWS PARA REGISTRARLAS EN EL VIEW
+        viewPager.setCurrentItem(2);
+        viewPager.setCurrentItem(3);
+        viewPager.setCurrentItem(0);
     }
     protected void onResume() {
         super.onResume();

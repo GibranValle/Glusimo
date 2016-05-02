@@ -3,16 +3,16 @@ package app.proyectoterminal.upibi.glusimo.classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DataBaseManager extends SQLiteOpenHelper {
 
-    private static final String NOMBRE_BD = "LISTADEUSUARIOS.db";
+    private static final String NOMBRE_BD = "registroGlucemia.db";
     private static final int VERSION_BD = 1;
-
-    public static final String NOMBRE_TABLA = "ITEMYPRECIO";
+    public static final String NOMBRE_TABLA = "registroPorFecha";
     public static final String ID = "_id";
     public static final String C_FECHA = "FECHA";
     public static final String C_AÑO = "AÑO";
@@ -25,13 +25,14 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
     public DataBaseManager(Context context)
     {
+
         super(context, NOMBRE_BD, null, VERSION_BD);
     }
 
     /* CREA LA TABLA 1, ARGUMENTOS:(_id INTEGER PRIMAREY KEY, age INTEGER, name TEXT) */
     private static final String CREAR_TABLA =
             "CREATE TABLE "+ NOMBRE_TABLA + " ("+
-                    ID + " INTEGER PRIMARY KEY,"+
+                    ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
                     C_FECHA + " TEXT,"+
                     C_AÑO + " INTEGER,"+
                     C_MES + " INTEGER,"+
@@ -39,15 +40,32 @@ public class DataBaseManager extends SQLiteOpenHelper {
                     C_TIEMPO + " INTEGER,"+
                     C_CONCENTRACIÓN + " INTEGER)" ;
 
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREAR_TABLA);
+    public void onCreate(SQLiteDatabase db)
+    {
+        try
+        {
+            db.execSQL(CREAR_TABLA);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
         Log.d(TAG,"CREANDO TABLA");
     }
 
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+ NOMBRE_TABLA);
-        onCreate(db);
-        Log.d(TAG,"ACTUALIZANDO TABLA");
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+    {
+
+        try
+        {
+            db.execSQL("DROP TABLE IF EXISTS "+ NOMBRE_TABLA);
+            Log.d(TAG,"DROPING TABLA");
+            onCreate(db);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }        Log.d(TAG,"ACTUALIZANDO TABLA");
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -164,6 +182,52 @@ public class DataBaseManager extends SQLiteOpenHelper {
             int cid = cursor.getInt(indexid);
             buffer.append(cid+"\n");
         }
+        return buffer.toString();
+    }
+
+    public String recuperarTodos()
+    {
+        Log.d(TAG, "RECUPERANDO TODOS LOS DATOS");
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String id = ID;
+        String fecha = C_FECHA;
+        String año = C_AÑO;
+        String mes = C_MES;
+        String dia = C_DIA;
+        String tiempo = C_TIEMPO;
+        String concentración = C_CONCENTRACIÓN;
+        String [] columnas = {fecha, año, mes, dia, tiempo, concentración}; //datos a recuperar
+
+        // selection
+        String seleccion = null; //a apartir del
+        String[] args_selec = null; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexFecha = cursor.getColumnIndex(fecha);
+        int indexAño = cursor.getColumnIndex(año);
+        int indexMes = cursor.getColumnIndex(mes);
+        int indexDía = cursor.getColumnIndex(dia);
+        int indexTiempo = cursor.getColumnIndex(tiempo);
+        int IndexConcentración = cursor.getColumnIndex(concentración);
+
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext())
+        {
+            String cFecha = cursor.getString(indexFecha);
+            String cAño = cursor.getString(indexAño);
+            String cMes = cursor.getString(indexMes);
+            String cDía = cursor.getString(indexDía);
+            String cTiempo = cursor.getString(indexTiempo);
+            String cConcentración = cursor.getString(IndexConcentración);
+            buffer.append(cFecha+"|"+cAño + "||" +cMes + "|||" +cDía + "||||" +cTiempo + "|||||" + cConcentración + "\n");
+        }
+        Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
 

@@ -32,6 +32,14 @@
         <item name="android:background">@color/colorLightDark</item>
     </style>
 
+    <!-- ESTILO DE LISTVIEW -->
+    <style name="listview">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">12pt</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">start|center</item>
+    </style>
+
 
     <!--Tipos de letras -->
     <style name="textoPequeño">

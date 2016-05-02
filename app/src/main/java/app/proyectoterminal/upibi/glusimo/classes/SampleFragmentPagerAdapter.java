@@ -52,7 +52,8 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment getItem(int position)
+    {
         switch (position) {
             case 0:
                 Medicion medicion = new Medicion();

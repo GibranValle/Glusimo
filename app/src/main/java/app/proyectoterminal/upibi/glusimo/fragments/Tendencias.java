@@ -56,7 +56,6 @@ public class Tendencias extends Fragment implements View.OnClickListener {
 
 
     String TAG = "Interfaz";
-    int conteo;
     final Handler handler = new Handler();  // VARIABLE PARA TIMER
 
     float xo,xf, yo, yf, pss;
@@ -70,11 +69,12 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(TAG,"Creando vista de Tendencias");
         poly = new InterpolacionLagrange();
         // REGISTRAR SI NO SE HA REGISTRADO
         if (!bus.isRegistered(this))
         {
-            Log.v(TAG,"Registrando en bus  el fragment medicion");
+            Log.v(TAG,"Registrando en bus  el fragment Tendencias");
             bus.register(this);
         }
 
@@ -85,6 +85,9 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        Log.v(TAG,"OnActivityCreated Tendencias");
+
         consola_tendencias = (TextView) getActivity().findViewById(R.id.consola_tendencias);
         info_tendencias = (TextView) getActivity().findViewById(R.id.tendencias_info);
         ejeY = (ImageView) getActivity().findViewById(R.id.eje_concentracion);
@@ -311,16 +314,6 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     @Subscribe
     public void onEvent(EnviarIntEvent event)
     {
-        conteo = conteo + 1;
-        if (conteo == 2)
-        {
-            Log.i(TAG,"numero recibido en bus tendencias: "+event.numero);
-            conteo = 0;
-            if(event.numero <= 1000)
-            {
-
-            }
-        }
-
+        Log.i(TAG,"numero recibido en bus tendencias: "+event.numero);
     }
 }

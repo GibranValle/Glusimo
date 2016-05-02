@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.R;
 import app.proyectoterminal.upibi.glusimo.classes.DataBaseManager;
 
@@ -23,21 +28,36 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     Spinner año, mes, dia;
     ArrayAdapter adapteraño, adaptermes, adapterdia;
 
+    // COMUNICACION ENTRE FRAGMENTS
+    EventBus bus = EventBus.getDefault();
+
     // BASE DE DATOS
     private SimpleCursorAdapter adaptador;
     private Cursor cursor;
+    private DataBaseManager manager;
     String TAG ="Interfaz";
 
+    int conteo = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
+        Log.v(TAG,"Creando vista de Lista");
+        // REGISTRAR SI NO SE HA REGISTRADO
+        if (!bus.isRegistered(this))
+        {
+            Log.v(TAG,"Registrando en bus el fragment Lista");
+            bus.register(this);
+        }
         return inflater.inflate(R.layout.fragment_lista, container, false);
     }
 
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
+
+        Log.v(TAG,"OnActivityCreated Lista");
 
         // recuperar recurso xml
         lista = (ListView) getActivity().findViewById(R.id.list_registro);
@@ -62,19 +82,19 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         mes.setOnItemSelectedListener(this);
         dia.setOnItemSelectedListener(this);
 
-        // METODOS PARA DATABASE
-        cursor = new DataBaseManager(getContext()).posicionCero();
-        // CREAR EL ARREGLO DE INICIO
-        String [] from = {DataBaseManager.C_FECHA, DataBaseManager.C_AÑO, DataBaseManager.C_MES,
-                DataBaseManager.C_DIA, DataBaseManager.C_TIEMPO, DataBaseManager.C_CONCENTRACIÓN};
-
-        // CREAR EL ARREGLO DE ID
-        int [] to = {R.id.out_elemento, R.id.out_precio, R.id.out_extra, R.id.out_precio_extra, R.id.out_inventario};
-        adaptador = new SimpleCursorAdapter(this, R.layout.detalles_lista, cursor, from, to);
-        lista.setAdapter(adaptador);
-
-
-
+        //METODOS PARA DATABASE
+        manager = new DataBaseManager(getContext());
+        manager.posicionCero();
+        /* PRUEBA DE LISTVIEW
+        String[] meses = {"Enero","Feberero","Marzo","Abril","Mayo"};
+        String data = manager.recuperarTodos();
+        Log.i(TAG,"recuperados: "+data);
+        // adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
+                R.layout.custom_listview_layout,meses);
+        // asignar el adapter a la lista para cargar datos
+        lista.setAdapter(adapter);
+        */
     }
 
     /**  ///////////////////////   METODOS DE SPINNER    /////////////////////////**/
@@ -83,7 +103,6 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     {
 
     }
-
     @Override
     public void onNothingSelected(AdapterView<?> parent)
     {
@@ -91,4 +110,13 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     }
     /**  ///////////////////////   METODOS DE SPINNER    /////////////////////////**/
 
+
+
+    /** //////////////////////// METODOS DE BUS EVENT  /////////////////////////////**/
+    @Subscribe
+    public void onEvent(EnviarIntEvent event)
+    {
+        Log.i(TAG,"numero recibido en bus Lista: "+event.numero);
+    }
+    /** //////////////////////// METODOS DE BUS EVENT  /////////////////////////////**/
 }
