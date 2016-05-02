@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="250dp"
+    android:layout_height="350dp"
+    android:orientation="vertical"
+    tools:context=".fragments.DetallesLista">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/margen_chiquis"
+        android:layout_marginLeft="@dimen/margen_chiquis"
+        android:layout_marginTop="@dimen/margen_chiquis"
+        android:layout_weight="5">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="texto 1"
+            android:layout_weight="18"
+            android:id="@+id/detalles_usuario"
+            style="@style/tituloFragment"
+            android:layout_marginBottom="@dimen/margen_chiquis"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/colorBottomDark"
+        />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/margen_chiquis"
+        android:layout_marginLeft="@dimen/margen_chiquis"
+        android:layout_weight="6"
+        android:layout_marginBottom="@dimen/margen_chiquis"
+        >
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            style="@style/textoBoton"
+            android:text="@string/boton_eliminar"
+            android:layout_marginTop="@dimen/margen_mini"
+            android:layout_marginBottom="@dimen/margen_mini"
+            android:id="@+id/boton_eliminar"
+            android:layout_gravity="center" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/margen_mini"
+            style="@style/textoBoton"
+            android:text="@string/boton_actualizar"
+            android:layout_gravity="center"
+            android:id="@+id/boton_actualizar"            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/margen_mini"
+            style="@style/textoBoton"
+            android:text="@string/boton_cancelar"
+            android:layout_gravity="center"
+            android:id="@+id/boton_cancelar"            />
+    </LinearLayout>
+</LinearLayout>

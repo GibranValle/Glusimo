@@ -7,13 +7,13 @@
             android:icon="@drawable/ic_menu_view"
             android:title="@string/nav_check" />
         <item
-            android:id="@+id/nav_reg"
-            android:icon="@drawable/ic_menu_today"
-            android:title="@string/nav_registro" />
-        <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_menu_search"
             android:title="@string/nav_search" />
+        <item
+            android:id="@+id/nav_reg"
+            android:icon="@drawable/ic_menu_today"
+            android:title="@string/nav_registro" />
         <item
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_menu_manage"

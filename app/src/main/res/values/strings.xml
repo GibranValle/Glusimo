@@ -65,35 +65,29 @@
 
     <!-- textos Lista -->
     <string name="titulo_lista">Registro de eventos</string>
+    <string name="error_db">Error al guardar en la base de datos</string>
+    <string name="exito_db">Medición agregada correctamente</string>
+
+    <!-- DetallesLista -->
+    <string name="Año">Año: </string>
+    <string name="Mes">Mes: </string>
+    <string name="Dia">Día: </string>
+    <string name="tiempo">Hora: </string>
+    <string name="concentración">Concentración: </string>
+    <string name="boton_eliminar">Eliminar</string>
+    <string name="boton_actualizar">Actualizar</string>
+    <string name="boton_cancelar">Cancelar</string>
 
     <string-array name="meses">
-        <item>Enero</item>
-        <item>Febrero</item>
-        <item>Marzo</item>
-        <item>Abril</item>
-        <item>Mayo</item>
-        <item>Junio</item>
-        <item>Agosto</item>
-        <item>Septiembre</item>
-        <item>Octubre</item>
-        <item>Noviembre</item>
-        <item>Diciembre</item>
+        <item>"Mes: "</item>
     </string-array>
 
-    <string-array name="dia">
-        <item>Lunes</item>
-        <item>Martes</item>
-        <item>Miércoles</item>
-        <item>Jueves</item>
-        <item>Viernes</item>
-        <item>Sábado</item>
-        <item>Domingo</item>
+    <string-array name="dias">
+        <item>"Día: "</item>
     </string-array>
 
     <string-array name="años">
-        <item>2014</item>
-        <item>2015</item>
-        <item>2016</item>
+        <item>"Año: "</item>
     </string-array>
 
 

@@ -23,7 +23,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     final int PAGE_COUNT = 4;
     // METODO IMPLEMENTADO PARA RECUPERAR TITULOS
-    String[] titulos = {"Medición", "Tendencias", "Lista", "Configuración"};
+    String[] titulos = {"Medición", "Registro", "Curva", "Configuración"};
 
     int[] icons = {R.drawable.ic_menu_view,
             R.drawable.ic_menu_today, R.drawable.ic_menu_search,
@@ -59,11 +59,11 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
                 Medicion medicion = new Medicion();
                 return medicion;
             case 1:
-                Tendencias tendencias = new Tendencias();
-                return tendencias;
-            case 2:
                 Lista lista = new Lista();
                 return lista;
+            case 2:
+                Tendencias tendencias = new Tendencias();
+                return tendencias;
             case 3:
                 Configuracion configuracion = new Configuracion();
                 return configuracion;

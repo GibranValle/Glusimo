@@ -34,10 +34,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
             "CREATE TABLE "+ NOMBRE_TABLA + " ("+
                     ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
                     C_FECHA + " TEXT,"+
-                    C_AÑO + " INTEGER,"+
-                    C_MES + " INTEGER,"+
-                    C_DIA +" INTEGER,"+
-                    C_TIEMPO + " INTEGER,"+
+                    C_AÑO + " TEXT,"+
+                    C_MES + " TEXT,"+
+                    C_DIA +" TEXT,"+
+                    C_TIEMPO + " TEXT,"+
                     C_CONCENTRACIÓN + " INTEGER)" ;
 
     public void onCreate(SQLiteDatabase db)
@@ -149,7 +149,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
         //editar contenido del querry aqui
         String nombre = NOMBRE_TABLA;
-        String seleccion = C_AÑO +" =?";
+        String seleccion = C_FECHA +" =?";
         String argselec[] = {fecha};
         //querry listo para no editar
         int borrado = db.delete(nombre, seleccion, argselec);
@@ -181,6 +181,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
         {
             int cid = cursor.getInt(indexid);
             buffer.append(cid+"\n");
+        }
+        if (buffer.toString().equals(""))
+        {
+            Log.d(TAG,"no existe en la base de datos");
         }
         return buffer.toString();
     }

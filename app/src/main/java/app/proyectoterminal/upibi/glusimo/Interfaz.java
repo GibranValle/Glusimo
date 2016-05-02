@@ -1,5 +1,6 @@
 package app.proyectoterminal.upibi.glusimo;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,9 +33,6 @@ import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarStringEvent;
 import app.proyectoterminal.upibi.glusimo.classes.SampleFragmentPagerAdapter;
 import app.proyectoterminal.upibi.glusimo.fragments.AcercaDe;
-import app.proyectoterminal.upibi.glusimo.fragments.Lista;
-import app.proyectoterminal.upibi.glusimo.fragments.Medicion;
-import app.proyectoterminal.upibi.glusimo.fragments.Tendencias;
 
 public class Interfaz extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     /** /////////////////////////// CONSTANTES  ///////////////////////////////////*/
@@ -55,6 +53,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     BluetoothSPP bt;
     String address, name;
     boolean conectado = false;
+    ObjectAnimator animador;
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
 
 
@@ -65,22 +64,9 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interfaz);
 
+        Log.v(TAG, "On Create");
+
         bus.register(this);
-
-        Medicion medicion = new Medicion();
-        Tendencias tendencias = new Tendencias();
-        Lista lista = new Lista();
-
-        // REGISTRAR TODOS LOS BUSES A VER SI FUNCA XD
-        /*
-        Medicion medicion = new Medicion();
-        bus.register(medicion.getContext());
-        Tendencias tendencias = new Tendencias();
-        bus.register(tendencias.getContext());
-        Lista lista = new Lista();
-        bus.register(lista.getContext());
-        */
-
 
         estado_conexion = (TextView) findViewById(R.id.consola);
         estado_paciente = (TextView) findViewById(R.id.consola_paciente);
@@ -240,7 +226,6 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
             }
         });
 
-
         /* NAVIGATION DRAWER */
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -250,14 +235,11 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         /* NAVIGATION DRAWER */
-        // INICIAR OTRAS VIEWS PARA REGISTRARLAS EN EL VIEW
-        viewPager.setCurrentItem(2);
-        viewPager.setCurrentItem(3);
-        viewPager.setCurrentItem(0);
     }
     protected void onResume() {
         super.onResume();
         Log.v(TAG, "On Resume");
+
         if (!bt.isBluetoothEnabled()) // no habilitado
         {
             // para arrancar el bluetooth sin pedir permiso:
@@ -278,7 +260,6 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
             }
         }
         cargarDatos();
-
     }
     protected void onDestroy() {
         super.onDestroy();
@@ -382,7 +363,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     {
         if (v.getId() == R.id.boton_conexion)
         {
-            vibrar(100);
+            vibrar(50);
             Intent intent = new Intent(getApplicationContext(), DeviceList.class);
             startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
         }

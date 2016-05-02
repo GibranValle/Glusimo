@@ -1,9 +1,9 @@
 package app.proyectoterminal.upibi.glusimo.fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,25 +11,32 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.R;
 import app.proyectoterminal.upibi.glusimo.classes.DataBaseManager;
 
-public class Lista extends Fragment implements AdapterView.OnItemSelectedListener {
+public class Lista extends Fragment implements AdapterView.OnItemSelectedListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
     // LIST VIEW
     private ListView lista;
 
     // SPINNER
-    Spinner año, mes, dia;
+    Spinner sp_año, sp_mes, sp_dia;
     ArrayAdapter adapteraño, adaptermes, adapterdia;
 
     // COMUNICACION ENTRE FRAGMENTS
     EventBus bus = EventBus.getDefault();
+    Intent i;
 
     // BASE DE DATOS
     private SimpleCursorAdapter adaptador;
@@ -61,30 +68,34 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
         // recuperar recurso xml
         lista = (ListView) getActivity().findViewById(R.id.list_registro);
-        año = (Spinner) getActivity().findViewById(R.id.filtro_año);
-        mes = (Spinner) getActivity().findViewById(R.id.filtro_mes);
-        dia = (Spinner) getActivity().findViewById(R.id.filtro_dia);
+        sp_año = (Spinner) getActivity().findViewById(R.id.filtro_año);
+        sp_mes = (Spinner) getActivity().findViewById(R.id.filtro_mes);
+        sp_dia = (Spinner) getActivity().findViewById(R.id.filtro_dia);
 
         // adapters
         adapteraño = ArrayAdapter.createFromResource(getContext(),R.array.años,
                 R.layout.custom_spinner_layout);
         adaptermes = ArrayAdapter.createFromResource(getContext(),R.array.meses,
                 R.layout.custom_spinner_layout);
-        adapterdia = ArrayAdapter.createFromResource(getContext(),R.array.dia,
+        adapterdia = ArrayAdapter.createFromResource(getContext(),R.array.dias,
                 R.layout.custom_spinner_layout);
 
-        año.setAdapter(adapteraño);
-        mes.setAdapter(adaptermes);
-        dia.setAdapter(adapterdia);
+        sp_año.setAdapter(adapteraño);
+        sp_mes.setAdapter(adaptermes);
+        sp_dia.setAdapter(adapterdia);
 
         // FUNCIONES PARA EL CLICK
-        año.setOnItemSelectedListener(this);
-        mes.setOnItemSelectedListener(this);
-        dia.setOnItemSelectedListener(this);
+        sp_año.setOnItemSelectedListener(this);
+        sp_mes.setOnItemSelectedListener(this);
+        sp_dia.setOnItemSelectedListener(this);
 
-        //METODOS PARA DATABASE
         manager = new DataBaseManager(getContext());
-        manager.posicionCero();
+        actualizarListView();
+
+        // AGREGAR LISTENERS
+        lista.setOnItemClickListener(this);
+        lista.setOnItemLongClickListener(this);
+
         /* PRUEBA DE LISTVIEW
         String[] meses = {"Enero","Feberero","Marzo","Abril","Mayo"};
         String data = manager.recuperarTodos();
@@ -96,6 +107,81 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         lista.setAdapter(adapter);
         */
     }
+
+
+    /** //////////////////////// METODOS DE PERSONALIZADOS  /////////////////////////////**/
+    void actualizarListView()
+    {
+        //METODOS PARA DATABASE
+        // MOVER EL CURSOR A CERO
+        cursor = manager.posicionCero();
+        // CREAR EL ARREGLO DE INICIO
+        String [] from = {DataBaseManager.C_AÑO, DataBaseManager.C_MES,
+                DataBaseManager.C_DIA,DataBaseManager.C_TIEMPO,
+                DataBaseManager.C_CONCENTRACIÓN};
+        // CREAR EL ARREGLO DE ID
+        int [] to = {R.id.out_año, R.id.out_mes, R.id.out_dia, R.id.out_tiempo, R.id.out_concentracion};
+        adaptador = new SimpleCursorAdapter(getContext(),
+                R.layout.activity_lista_layout, cursor, from, to);
+        lista.setAdapter(adaptador);
+    }
+    void agregarMedicion(String fecha, int valor)
+    {
+        // comprobar que no exista la misma medición
+        String fecha_original = fecha;
+        String comprobando = manager.comprobar(fecha);
+        // SI REGRESA VACIO, NO EXISTE EN LA BASE DE DATOS, ENTONCES, CONTINUAR AGREGANDOLO
+        if (comprobando.equals(""))
+        {
+            Log.i(TAG,"separando datos");
+            // index de "/" para cortar los datos
+            int indexslash = fecha.indexOf("/");
+            // formar el string año
+            String año = fecha.substring(0,indexslash);
+            // recortar el año de la cadane original
+            fecha = fecha.replace(año+"/","");
+            Log.i(TAG,"año: "+año);
+
+            // encontrar el proximo "/"
+            indexslash = fecha.indexOf("/");
+            // formar el string de mes
+            String mes = fecha.substring(0,indexslash);
+            // recortar el mes de la cadena original
+            fecha = fecha.replace(mes+"/","");
+            Log.i(TAG,"mes: "+mes);
+
+            indexslash = fecha.indexOf("/");
+            String dia = fecha.substring(0,indexslash);
+            fecha = fecha.replace(dia+"/","");
+            Log.i(TAG,"dia: "+dia);
+
+            indexslash = fecha.indexOf("-");
+            String nombre_dia = fecha.substring(0,indexslash);
+            fecha = fecha.replace(nombre_dia+"-","");
+            Log.i(TAG,"nombre_dia: "+nombre_dia +" cadena original: "+fecha);
+
+            String tiempo = fecha;
+            Log.i(TAG,"tiempo: "+tiempo);
+
+            String concentración = String.valueOf(valor);
+            Log.i(TAG,"concentración: "+concentración);
+            // INSERTAR DATOS EN TABLA, RECUPERANDO EL ID SE CONOCE EL ESTADO DE LA EDICION
+            long id = manager.insertarDatos(fecha_original , año, mes, dia, tiempo, concentración);
+            // SI EL VALOR REGRESADO ES -1 EL METODO NO SE LLEVO A CABO CORRECTAMENTE
+            if (id < 0)
+            {
+                Toast.makeText(getContext(), R.string.error_db, Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(getContext(), R.string.exito_db, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    /** //////////////////////// METODOS DE PERSONALIZADOS  /////////////////////////////**/
+
+
+
 
     /**  ///////////////////////   METODOS DE SPINNER    /////////////////////////**/
     @Override
@@ -112,11 +198,44 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
 
 
+
     /** //////////////////////// METODOS DE BUS EVENT  /////////////////////////////**/
     @Subscribe
     public void onEvent(EnviarIntEvent event)
     {
+        DateFormat df = new SimpleDateFormat("yyyy/MMMM/dd/EEEE-HH:mm:ss");
+        String date = df.format(Calendar.getInstance().getTime());
         Log.i(TAG,"numero recibido en bus Lista: "+event.numero);
+        Log.i(TAG,"hora de evento: "+date);
+        // agregar elemento
+        agregarMedicion(date,event.numero);
+        actualizarListView();
     }
     /** //////////////////////// METODOS DE BUS EVENT  /////////////////////////////**/
+
+
+
+    /** //////////////////////// METODOS DE LISTVIEW  /////////////////////////////**/
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+    {
+
+        Log.d(TAG," "+id);
+        i = new Intent(getContext(),DetallesLista.class);
+        //recupera el ID del item seleccionado
+        i.putExtra("id",id);
+        startActivity(i);
+        return true;
+    }
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Log.d(TAG," "+id);
+
+        i = new Intent(getContext(),DetallesLista.class);
+        //recupera el ID del item seleccionado
+        i.putExtra("id",id);
+        startActivity(i);
+    }
+    /** //////////////////////// METODOS DE LISTVIEW  /////////////////////////////**/
 }

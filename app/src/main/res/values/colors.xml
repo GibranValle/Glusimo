@@ -14,7 +14,10 @@
     <color name="colorOn">#007d00</color>
     <color name="colorConecting">#00007d</color>
     <color name="colorOff">#323232</color>
+    <color name="colorOffLight">#5a5a5a</color>
     <color name="colorWarning">#c86400</color>
     <color name="colorEmergency">#960000</color>
-    <color name="oolorFine">#007d00</color>
+    <color name="colorFine">#007d00</color>
+    <color name="fondo_listview">#32323232</color>
+
 </resources>
