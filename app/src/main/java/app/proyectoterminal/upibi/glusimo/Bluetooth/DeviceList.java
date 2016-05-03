@@ -45,7 +45,7 @@ import app.proyectoterminal.upibi.glusimo.R;
 @SuppressLint("NewApi")
 public class DeviceList extends Activity {
     // Debugging
-    private static final String TAG = "Interfaz";
+    private static final String TAG = "DeviceList";
     private static final boolean D = true;
 
     // Member fields

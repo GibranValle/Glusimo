@@ -39,7 +39,7 @@ public class Medicion extends Fragment implements View.OnClickListener
     int glucosa = 0;
     int max = 0;
 
-    public static final String TAG = "Interfaz";
+    public static final String TAG = "Medicion";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)

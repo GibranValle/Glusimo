@@ -55,7 +55,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     int alto2, ancho2;
 
 
-    String TAG = "Interfaz";
+    String TAG = "Tendencias";
     final Handler handler = new Handler();  // VARIABLE PARA TIMER
 
     float xo,xf, yo, yf, pss;

@@ -31,6 +31,8 @@ import java.util.Set;
 
 @SuppressLint("NewApi")
 public class BluetoothSPP {
+
+    private static final String TAG = "BluetoothSPP";
     // Listener for Bluetooth Status & Connection
     private BluetoothStateListener mBluetoothStateListener = null;
     private OnDataReceivedListener mDataReceivedListener = null;
@@ -289,7 +291,7 @@ public class BluetoothSPP {
         if(mChatService.getState() == BluetoothState.STATE_CONNECTED) {
             if(CRLF) 
                 data += "\r\n";
-            Log.i("Interfaz","Bluetooth send: "+data);
+            Log.i(TAG,"Bluetooth send: "+data);
             mChatService.write(data.getBytes());
         }
     }

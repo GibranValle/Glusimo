@@ -30,7 +30,7 @@ public class DetallesLista extends Activity implements View.OnClickListener{
     private Intent i;
     private ObjectAnimator animador;
     Bundle bundle;
-    private String TAG = "Interfaz";
+    private String TAG = "DetallesLista";
     private Boolean conectado = false;
     private DataBaseManager manager;
     private int fragment = 0;

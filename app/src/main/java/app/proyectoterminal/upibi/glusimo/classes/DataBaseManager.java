@@ -23,7 +23,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public static final String C_TIEMPO = "TIEMPO";
     public static final String C_CONCENTRACIÓN = "CONCENTRACIÓN";
 
-    static final String TAG = "Interfaz";
+    static final String TAG = "DataBaseManager";
 
     public DataBaseManager(Context context)
     {
@@ -59,7 +59,6 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-
         try
         {
             db.execSQL("DROP TABLE IF EXISTS "+ NOMBRE_TABLA);
@@ -204,6 +203,99 @@ public class DataBaseManager extends SQLiteOpenHelper {
         {
             Log.d(TAG,"existe en la base de datos, reintentar");
         }
+        return buffer.toString();
+    }
+
+    public String recuperarTodosAños()
+    {
+        Log.d(TAG, "RECUPERANDO TODOS LOS AÑOS");
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String año = C_AÑO;
+        //datos a recuperar: año namas
+        String [] columnas = {año};
+        // selection
+        String seleccion = null; //a apartir del
+        String[] args_selec = null; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+        // cursor para hacer el querry
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexAño = cursor.getColumnIndex(año);
+        StringBuffer buffer = new StringBuffer();
+        // armar el string para regresar los datos
+        while (cursor.moveToNext())
+        {
+            String cAño = cursor.getString(indexAño);
+            buffer.append(cAño + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
+    public String recuperarTodosMeses()
+    {
+        Log.d(TAG, "RECUPERANDO TODOS LOS MESES");
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String mes = C_MES;
+        //datos a recuperar: año namas
+        String [] columnas = {mes};
+        // selection
+        String seleccion = null; //a apartir del
+        String[] args_selec = null; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+        // cursor para hacer el querry
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexAño = cursor.getColumnIndex(mes);
+        StringBuffer buffer = new StringBuffer();
+        // armar el string para regresar los datos
+        while (cursor.moveToNext())
+        {
+            String cAño = cursor.getString(indexAño);
+            buffer.append(cAño + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
+    public String recuperarTodosDias()
+    {
+        Log.d(TAG, "RECUPERANDO TODOS LOS DIAS");
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String dia = C_DIA;
+        //datos a recuperar: año namas
+        String [] columnas = {dia};
+        // selection
+        String seleccion = null; //a apartir del
+        String[] args_selec = null; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+        // cursor para hacer el querry
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexAño = cursor.getColumnIndex(dia);
+        StringBuffer buffer = new StringBuffer();
+        // armar el string para regresar los datos
+        while (cursor.moveToNext())
+        {
+            String cAño = cursor.getString(indexAño);
+            buffer.append(cAño + "\n");
+        }
+        Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
 

@@ -26,10 +26,19 @@
     <!-- ESTILO DE SPINNER -->
     <style name="spinner">
         <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">10pt</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- ESTILO DE ELEMENTO DE SPINNER -->
+    <style name="spinner_element">
+        <item name="android:textColor">@color/colorLetraClara</item>
         <item name="android:textSize">8pt</item>
         <item name="android:textStyle">normal</item>
         <item name="android:gravity">start|center</item>
-        <item name="android:background">@color/colorLightDark</item>
+        <item name="android:background">@color/colorLightDarkAlpha</item>
     </style>
 
     <!-- ESTILO DE LISTVIEW -->
