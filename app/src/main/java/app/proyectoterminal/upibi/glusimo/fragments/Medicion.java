@@ -38,6 +38,9 @@ public class Medicion extends Fragment implements View.OnClickListener
     int alert, normal, warning;
     int glucosa = 0;
     int max = 0;
+    int hipoglucemia = 70;
+    int hiperglucemia = 120;
+    int hiperglucemia_severa = 120;
 
     public static final String TAG = "Medicion";
 
@@ -154,33 +157,63 @@ public class Medicion extends Fragment implements View.OnClickListener
 
     private void diagnosticar(int valor)
     {
-        if(valor <= 70)
+        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
+        hipoglucemia = respaldo.getInt("hipo",70);
+        hiperglucemia = respaldo.getInt("hiper",120);
+        hiperglucemia_severa = respaldo.getInt("hiper_severa",200);
+
+        String estado;
+        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
+        hipoglucemia = respaldo.getInt("hipo",70);
+        hiperglucemia = respaldo.getInt("hiper",120);
+        if( valor <= hiperglucemia)
         {
-            // HIPOGLUCEMIA LANZAR ALARMA
+            // SOSPECHA DE HIPOGLUCEMIA LANZAR ALARMA
+            estado = "hipoglucemia";
             diagnostico.setText(R.string.paciente_emergency_hipo);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
             playSound(alert,1);
         }
-        else if(valor >= 71 && valor <= 110)
+        else if( valor > hipoglucemia && valor <= hiperglucemia)
         {
-            // NIVELES NORMALES
+            // SOSPECHA DE SALUDABLE
+            estado = "saludable";
             diagnostico.setText(R.string.paciente_saludable);
             diagnostico.setBackgroundResource(R.color.colorOn);
             playSound(normal,0.5f);
         }
-        else if(valor >= 111 && valor <= 220)
+        else if( valor > hiperglucemia && valor <= hiperglucemia_severa)
         {
-            // HIPERGLUCEMIA LANZAR WARNING
+            // SOSPECHA DE HIPERGLUCEMIA LANZAR WARNING
+            estado = "hiperglucemia";
             diagnostico.setText(R.string.paciente_warning);
             diagnostico.setBackgroundResource(R.color.colorWarning);
             playSound(warning,0.5f);
         }
-        else if(valor>= 221)
+        else if( valor > hiperglucemia_severa)
         {
-            // LANZAR ALARMA HIPERGLUCEMIA SEVERA
+            // SOSPECHA DE HIPERGLUCEMIA SEVERA LANZAR ALARMA
+            estado = "hiperglucemia severa";
             diagnostico.setText(R.string.paciente_emergency);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
             playSound(alert,1);
+        }
+        else
+        {
+            estado = "Error de medición";
+        }
+
+        // guardar los strings
+        editor = respaldo.edit();
+        editor.putString("estado", estado);
+
+        if (editor.commit())
+        {
+            Log.i(TAG,"estado guardado correctamente");
+        }
+        else
+        {
+            Log.e(TAG,"Error al guardar estado");
         }
     }
 

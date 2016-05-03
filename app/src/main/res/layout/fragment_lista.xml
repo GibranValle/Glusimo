@@ -14,6 +14,7 @@
         android:id="@+id/titulo_lista" />
 
     <LinearLayout
+        android:id="@id/layout_listview"
         android:layout_marginRight="@dimen/margen_chiquis"
         android:layout_marginLeft="@dimen/margen_chiquis"
         android:layout_weight="6"
@@ -32,6 +33,7 @@
 
 
     <LinearLayout
+        android:id="@id/layout_spinners"
         android:layout_margin="@dimen/margen_mini"
         android:layout_weight="1"
         android:layout_width="match_parent"
@@ -68,5 +70,16 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/margen_mini"
         />
+
+        <Spinner
+            android:paddingRight="@dimen/margen_mini"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/filtro_estado"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="@dimen/margen_mini"
+            />
+
     </LinearLayout>
 </LinearLayout>

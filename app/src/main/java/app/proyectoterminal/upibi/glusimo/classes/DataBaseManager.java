@@ -11,7 +11,7 @@ import android.util.Log;
 public class DataBaseManager extends SQLiteOpenHelper {
 
     private static final String NOMBRE_BD = "registroGlucemia.db";
-    private static final int VERSION_BD = 2;
+    private static final int VERSION_BD = 1;
     public static final String NOMBRE_TABLA = "registroPorFecha";
     public static final String ID = "_id";
     public static final String C_FECHA = "FECHA";
@@ -22,6 +22,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public static final String C_FECHA_CORTA = "FECHA_CORTA";
     public static final String C_TIEMPO = "TIEMPO";
     public static final String C_CONCENTRACIÓN = "CONCENTRACIÓN";
+    public static final String C_SALUD = "SALUD";
 
     static final String TAG = "DataBaseManager";
 
@@ -42,6 +43,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
                     C_NDIA +" TEXT,"+
                     C_FECHA_CORTA + " TEXT,"+
                     C_TIEMPO + " TEXT,"+
+                    C_SALUD + " TEXT,"+
                     C_CONCENTRACIÓN + " INTEGER)" ;
 
     public void onCreate(SQLiteDatabase db)
@@ -77,7 +79,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     }
 
     public long insertarDatos(String fecha ,String año, String mes, String dia, String nombre_dia,
-                              String tiempo, String concentración)
+                              String tiempo, String estado, String concentración)
     {
         Log.d(TAG,"INSERTANDO DATOS...");
         String fecha_corta = nombre_dia+" "+dia+" "+mes+" "+año;
@@ -94,6 +96,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         contenido.put(C_NDIA,nombre_dia);
         contenido.put(C_FECHA_CORTA,fecha_corta);
         contenido.put(C_TIEMPO,tiempo);
+        contenido.put(C_SALUD,estado);
         contenido.put(C_CONCENTRACIÓN,concentración);
 
         long id = db.insert(NOMBRE_TABLA,null,contenido); //insertar el contenido, regresando el id.
@@ -116,9 +119,11 @@ public class DataBaseManager extends SQLiteOpenHelper {
     }
 
     public int actualizarDatos(String fechaAnterior, String fecha ,String año, String mes,
-                               String dia, String nombre_dia, String tiempo, String concentración)
-    //ACTUALIZAR A PARTIR DEL NOMBRE
+                               String dia, String nombre_dia,
+                               String tiempo, String estado, String concentración)
     {
+        //ACTUALIZAR A PARTIR DE LA FECHA
+
         Log.d(TAG,"ACTUALIZANDO DATOS");
         String fecha_corta = nombre_dia+" "+dia+" "+mes+" "+año;
         Log.d(TAG,"fecha_corta: "+fecha_corta);
@@ -135,6 +140,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         contenido.put(C_NDIA,nombre_dia);
         contenido.put(C_FECHA_CORTA,fecha_corta);
         contenido.put(C_TIEMPO,tiempo);
+        contenido.put(C_SALUD,estado);
         contenido.put(C_CONCENTRACIÓN,concentración);
 
         // EDITAR CONTENIDO DEL QUERRY AQUI
@@ -149,7 +155,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return actualizado;
     }
 
-    public int eliminarDatos(String fecha) // ELIMINAR A PARTIR DEL NOMBRE
+    public int eliminarDatos(String fecha) // ELIMINAR A PARTIR DE LA FECHA
     {
         Log.d(TAG,"ELIMINANDO DATO...");
         // CARGAR BASE DE DATOS PARA INICIAR LA EDIC
@@ -299,6 +305,37 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return buffer.toString();
     }
 
+    public String recuperarTodosEstados()
+    {
+        Log.d(TAG, "RECUPERANDO TODOS LOS ESTADOS");
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String salud = C_SALUD;
+        //datos a recuperar: año namas
+        String [] columnas = {salud};
+        // selection
+        String seleccion = null; //a apartir del
+        String[] args_selec = null; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+        // cursor para hacer el querry
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexSalud = cursor.getColumnIndex(salud);
+        StringBuffer buffer = new StringBuffer();
+        // armar el string para regresar los datos
+        while (cursor.moveToNext())
+        {
+            String cSalud = cursor.getString(indexSalud);
+            buffer.append(cSalud + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
     public String recuperarTodos()
     {
         Log.d(TAG, "RECUPERANDO TODOS LOS DATOS");
@@ -368,9 +405,11 @@ public class DataBaseManager extends SQLiteOpenHelper {
         String nombre_dia =C_NDIA;
         String fecha_corta = C_FECHA_CORTA;
         String tiempo = C_TIEMPO;
+        String salud = C_SALUD;
         String concentración = C_CONCENTRACIÓN;
         //datos a recuperar
-        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, concentración};
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, salud,
+                concentración};
         String seleccion = id + "=?"; //a apartir del
         String[] args_selec ={String.valueOf(_id)}; //id entrante
         //filtros
@@ -387,6 +426,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         int indexNombreDia = cursor.getColumnIndex(nombre_dia);
         int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
         int indexTiempo = cursor.getColumnIndex(tiempo);
+        int indexSalud = cursor.getColumnIndex(salud);
         int IndexConcentración = cursor.getColumnIndex(concentración);
 
         StringBuffer buffer = new StringBuffer();
@@ -399,9 +439,11 @@ public class DataBaseManager extends SQLiteOpenHelper {
             String cNombreDia = cursor.getString(indexNombreDia);
             String cFechaCorta = cursor.getString(indexFechaCorta);
             String cTiempo = cursor.getString(indexTiempo);
+            String cSalud = cursor.getString(indexSalud);
             String cConcentración = cursor.getString(IndexConcentración);
             buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
-                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "!" + cConcentración + "\n");
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "<" + cSalud + ">" +
+                    "!" + cConcentración + "\n");
         }
         Log.d(TAG,buffer.toString());
         return buffer.toString();

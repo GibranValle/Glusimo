@@ -26,10 +26,9 @@
     <!-- ESTILO DE SPINNER -->
     <style name="spinner">
         <item name="android:textColor">@color/colorLetraClara</item>
-        <item name="android:textSize">10pt</item>
+        <item name="android:textSize">7pt</item>
         <item name="android:textStyle">normal</item>
         <item name="android:gravity">center</item>
-        <item name="android:background">@color/colorPrimaryDark</item>
     </style>
 
     <!-- ESTILO DE ELEMENTO DE SPINNER -->
