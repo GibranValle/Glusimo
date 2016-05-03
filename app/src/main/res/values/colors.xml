@@ -5,7 +5,6 @@
     <color name="colorSecundaryDark">#250000</color>
     <color name="colorBottomDark">#400000</color>
     <color name="colorLightDark">#640011</color>
-    <color name="colorLightDarkAlpha">#640011</color>
     <color name="colorAccent">#ff0000</color>
     <color name="colorLight">#af0000</color>
     <color name="colorFondo">#c8c8c8</color>

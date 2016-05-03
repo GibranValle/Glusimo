@@ -7,4 +7,5 @@
     android:layout_height="@dimen/alto_spinner"
     android:ellipsize="marquee"
     android:paddingLeft="@dimen/margen_chiquis"
+    android:background="@color/colorLightDark"
 />

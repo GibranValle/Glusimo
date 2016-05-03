@@ -44,10 +44,6 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     EventBus bus = EventBus.getDefault();
     Intent i;
 
-    int hipoglucemia = 70;
-    int hiperglucemia = 120;
-    int hiperglucemia_severa = 120;
-
     // BASE DE DATOS
     private SimpleCursorAdapter adaptador;
     private Cursor cursor;
@@ -59,12 +55,6 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     List<String> año = new ArrayList<>();
     List<String> mes = new ArrayList<>();
     List<String> salud = new ArrayList<>();
-
-    // crear los string para comprobar
-    String stringAños;
-    String stringMeses;
-    String stringDias;
-    String stringSalud;
 
     ArrayAdapter<String> adapterAño;
     ArrayAdapter<String> adapterMes;
@@ -200,24 +190,45 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         diasRecuperados = manager.recuperarTodosDias();
         estadosRecuperados = manager.recuperarTodosEstados();
 
-        /*Log.i(TAG,"datos recuperados: años: "+añosRecuperados+" meses: "+mesesRecuperados+" dias: "
-                +diasRecuperados);*/
+        Log.i(TAG,"datos recuperados: años: "+añosRecuperados+" meses: "+mesesRecuperados+" dias: "
+                +diasRecuperados+" estados recuperados: \n"+estadosRecuperados);
 
-        // cargar los valores de string
-        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
-        stringAños = respaldo.getString("años","");
-        stringMeses = respaldo.getString("meses","");
-        stringDias = respaldo.getString("dias","");
-        stringSalud = respaldo.getString("estado","");
+        Log.i(TAG,"largo de años recuperados: "+añosRecuperados.length());
+        Log.i(TAG,"largo de meses recuperados: "+mesesRecuperados.length());
+        Log.i(TAG,"largo de dias recuperados: "+diasRecuperados.length());
+        Log.i(TAG,"largo de estados recuperados: "+estadosRecuperados.length());
+
+        if(añosRecuperados.length()==0)
+        {
+            // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
+            año.clear();
+            año.add("Año: ");
+        }
+        if(mesesRecuperados.length()==0)
+        {
+            // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
+            mes.clear();
+            mes.add("Mes: ");
+        }
+        if(diasRecuperados.length()==0)
+        {
+            // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
+            dia.clear();
+            dia.add("Dia: ");
+        }
+        if(estadosRecuperados.length()==0)
+        {
+            // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
+            salud.clear();
+            salud.add("Estado: ");
+        }
 
         // crear variables para llenar
         String temporal;
         int indexslash;
         int comprobar = comprobarFinLinea(añosRecuperados);
 
-
-
-        Log.i(TAG,"entrando al while años");
+        Log.i(TAG,"ENTRANDO AL WHILE AÑOS");
         // COMPROBAR QUE AÑOS RECUPERADOS TENGA TEXTO AUN
         while (comprobar>0)
         {
@@ -227,14 +238,13 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             //Log.i(TAG,"temporal: "+temporal);
             añosRecuperados = añosRecuperados.replaceFirst(temporal,"");
             //Log.i(TAG,"cadena residual:\n"+añosRecuperados);
-            if(stringAños.contains(temporal))
+            if(año.contains(temporal))
             {
                 Log.e(TAG,"Ya contiene este valor");
             }
             else
             {
-                stringAños = stringAños.concat(temporal);
-                Log.i(TAG," año agregado: "+stringAños);
+                Log.i(TAG," año agregado: "+temporal);
                 año.add(temporal);
             }
             comprobar = comprobarFinLinea(añosRecuperados);
@@ -245,7 +255,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
 
         comprobar = comprobarFinLinea(mesesRecuperados);
-        Log.i(TAG,"entrando al while, meses");
+        Log.i(TAG,"ENTRANDO AL WHILE MESES");
         // COMPROBAR QUE AÑOS RECUPERADOS TENGA TEXTO AUN
         while (comprobar>0)
         {
@@ -255,14 +265,13 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             //Log.i(TAG,"temporal: "+temporal);
             mesesRecuperados = mesesRecuperados.replaceFirst(temporal,"");
             //Log.i(TAG,"cadena residual:\n"+añosRecuperados);
-            if(stringMeses.contains(temporal))
+            if(mes.contains(temporal))
             {
                 Log.e(TAG,"Ya contiene este valor");
             }
             else
             {
-                stringMeses = stringMeses.concat(temporal);
-                Log.i(TAG," mes agregado: "+stringMeses);
+                Log.i(TAG," mes agregado: "+temporal);
                 mes.add(temporal);
             }
 
@@ -274,7 +283,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
 
         comprobar = comprobarFinLinea(diasRecuperados);
-        Log.i(TAG,"entrando al while, dias");
+        Log.i(TAG,"ENTRANDO AL WHILE DIAS");
         // COMPROBAR QUE AÑOS RECUPERADOS TENGA TEXTO AUN
         while (comprobar>0)
         {
@@ -285,14 +294,13 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             diasRecuperados = diasRecuperados.replaceFirst(temporal,"");
             //Log.i(TAG,"cadena residual:\n"+añosRecuperados);
 
-            if(stringDias.contains(temporal))
+            if(dia.contains(temporal))
             {
                 Log.e(TAG,"Ya contiene este valor");
             }
             else
             {
-                stringDias = stringDias.concat(temporal);
-                Log.i(TAG," dia agregado: "+stringDias);
+                Log.i(TAG," dia agregado: "+temporal);
                 dia.add(temporal);
             }
             // recomprobar
@@ -302,7 +310,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
 
         comprobar = comprobarFinLinea(estadosRecuperados);
-        Log.i(TAG,"entrando al while, estados");
+        Log.i(TAG,"ENTRANDO AL WHILE ESTADOS");
         // COMPROBAR QUE AÑOS RECUPERADOS TENGA TEXTO AUN
         while (comprobar>0)
         {
@@ -313,14 +321,13 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             estadosRecuperados = estadosRecuperados.replaceFirst(temporal,"");
             //Log.i(TAG,"cadena residual:\n"+añosRecuperados);
 
-            if(stringSalud.contains(temporal))
+            if(salud.contains(temporal))
             {
                 Log.e(TAG,"Ya contiene este valor");
             }
             else
             {
-                stringSalud = stringSalud.concat(temporal);
-                Log.i(TAG," estado agregado: "+stringSalud);
+                Log.i(TAG," estado agregado: "+temporal);
                 salud.add(temporal);
             }
             // recomprobar
@@ -328,37 +335,6 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         }
         Log.i(TAG,"SALIENDO WHILE, estados");
 
-
-        Log.i(TAG,"tamaño de size: "+año.size());
-        Log.i(TAG,"contiene elemento?"+año.contains("Año:"));
-
-        /*
-        String[] array_año = new String[ año.size() ];
-        año.toArray( array_año );
-        */
-
-        /*
-        Log.i(TAG,"ver un list: "+ Arrays.toString(año));
-        Log.i(TAG,"ver un list: "+mes);
-        Log.i(TAG,"ver un list: "+dia);
-        Log.i(TAG,"ver un list: "+salud);
-        */
-
-        // guardar los strings
-        editor = respaldo.edit();
-        editor.putString("años", stringAños);
-        editor.putString("meses", stringMeses);
-        editor.putString("dias", stringDias);
-        editor.putString("estado", stringSalud);
-
-        if (editor.commit())
-        {
-            Log.i(TAG,"Datos guardados correctamente");
-        }
-        else
-        {
-            Log.e(TAG,"Error al guardar datos");
-        }
 
         // RECREAR LOS ADAPTER
         adapterAño = new ArrayAdapter<>
@@ -393,10 +369,10 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         {
             id=-1;
         }
-        Log.i(TAG," comprobando fin de linea: "+id);
+        //Log.i(TAG," comprobando fin de linea: "+id);
         return id;
     }
-    void agregarMedicion(String fecha, int valor)
+    void agregarMedicion(String fecha, int valor, String estado)
     {
         Log.i(TAG,"Agragando medicion en Lista");
         // comprobar que no exista la misma medición
@@ -443,9 +419,11 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             String concentración = String.valueOf(valor);
             Log.i(TAG,"concentración: "+concentración);
 
+            /*
             // RECUPERAR ESTADO
             String estado= respaldo.getString("estado","Error Medición");
             Log.i(TAG,"estado: "+estado);
+            */
 
             // INSERTAR DATOS EN TABLA, RECUPERANDO EL ID SE CONOCE EL ESTADO DE LA EDICION
             long id = manager.insertarDatos(fecha_original , año, mes, dia, nombre_dia,
@@ -459,19 +437,35 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
             {
                 Toast.makeText(getContext(), R.string.exito_db, Toast.LENGTH_SHORT).show();
             }
+            Log.i(TAG,"id del insercion a la base de datos: "+id);
         }
     }
     /** //////////////////////// METODOS DE PERSONALIZADOS  /////////////////////////////**/
-
-
-
 
     /**  ///////////////////////   METODOS DE SPINNER    /////////////////////////**/
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
-
+        String selected = parent.getItemAtPosition(position).toString();
+        Log.i(TAG," algo: "+selected);
+        if(selected.equals("Día:"))
+        {
+            // ELIMINAR FILTRO DE DÍA
+        }
+        else if(selected.equals("Mes:"))
+        {
+            // ELIMINAR FILTRO DE MES
+        }
+        else if(selected.equals("Año:"))
+        {
+            // ELIMINAR FILTRO DE MES
+        }
+        else if(selected.equals("Estado:"))
+        {
+            // ELIMINAR FILTRO DE ESTADO
+        }
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent)
     {
@@ -493,7 +487,11 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         Log.i(TAG,"numero recibido en bus Lista: "+event.numero);
         Log.i(TAG,"hora de evento: "+date);
         // agregar elemento
-        agregarMedicion(date,event.numero);
+        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
+        String estado= respaldo.getString("estado","Error Medición");
+        Log.i(TAG,"estado: "+estado);
+
+        agregarMedicion(date,event.numero,estado);
         actualizarListView();
         actualizarSpinner();
     }
