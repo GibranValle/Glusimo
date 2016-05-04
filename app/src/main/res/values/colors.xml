@@ -10,6 +10,7 @@
     <color name="colorFondo">#c8c8c8</color>
     <color name="fondoGrafica">#250000</color>
     <color name="colorLetraClara">#c8c8c8</color>
+    <color name="colorLetraHint">#96c8c8c8</color>
     <color name="colorLetra">#646464</color>
     <color name="colorOn">#007d00</color>
     <color name="colorConecting">#00007d</color>

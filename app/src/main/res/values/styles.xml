@@ -49,7 +49,7 @@
 
     <style name="lista_config">
         <item name="android:textColor">@color/colorLetraClara</item>
-        <item name="android:textSize">12pt</item>
+        <item name="android:textSize">11pt</item>
         <item name="android:textStyle">bold</item>
         <item name="android:gravity">start|center</item>
     </style>

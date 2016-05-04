@@ -1,13 +1,178 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@drawable/fondoapp">
 
     <ListView
         android:layout_margin="@dimen/margen_chiquis"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/lista_config"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_marginRight="@dimen/margen_chiquis"
+        android:layout_marginLeft="@dimen/margen_chiquis"
+        android:layout_marginBottom="@dimen/margen_chiquis"
+        android:layout_weight="1.6"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        >
+        <FrameLayout
+            android:id="@+id/frame_medicion"
+            android:layout_weight="6"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/elemento_lista"
+                    android:text="@string/demo"
+                    android:id="@+id/checkbox" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_weight="2.5"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/max"
+                        style="@style/elemento_lista"
+                        android:id="@+id/textView2"
+                    />
+
+                    <EditText
+                        android:hint="@string/max_hint"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColorHint="@color/colorLetraHint"
+                        android:inputType="number"
+                        android:ems="20"
+                        android:id="@+id/edit_max"
+                    />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_weight="2.5"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        style="@style/elemento_lista"
+                        android:text="@string/hipo"
+                        android:id="@+id/textView3" />
+
+                    <EditText
+                        android:hint="@string/hipo_hint"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColorHint="@color/colorLetraHint"
+                        android:inputType="number"
+                        android:ems="20"
+                        android:id="@+id/edit_hipo" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        style="@style/elemento_lista"
+                        android:layout_weight="2.5"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hiper"
+                        android:id="@+id/textView4" />
+
+                    <EditText
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColorHint="@color/colorLetraHint"
+                        android:hint="@string/hiper_hint"
+                        android:inputType="number"
+                        android:ems="20"
+                        android:id="@+id/edit_hiper" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        style="@style/elemento_lista"
+                        android:layout_weight="2.5"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hiper"
+                        android:id="@+id/textView5" />
+
+                    <EditText
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColorHint="@color/colorLetraHint"
+                        android:hint="@string/hiper_max_hint"
+                        android:inputType="number"
+                        android:ems="20"
+                        android:id="@+id/edit_hiper_max" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frame_registro"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            >
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:visibility="gone"
+            android:id="@+id/frame_curva"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            >
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+
 </LinearLayout>
 
