@@ -34,7 +34,14 @@
 
         <activity
             android:name=".fragments.DetallesLista"
-            android:theme="@android:style/Theme.Holo.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog"
+        />
+
+        <activity
+            android:name=".fragments.Fragment_Configuraciones"
+            android:theme="@android:style/Theme.Holo.Dialog"
+            />
+
     </application>
 
 </manifest>

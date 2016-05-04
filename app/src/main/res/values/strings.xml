@@ -110,13 +110,17 @@
 
     <!-- Configuracion -->
     <string name="titulo_config">Opcion Seleccionada</string>
-    <string name="demo">Habilitar el modo demo para medición</string>
-    <string name="max">"Valor de glucemia máximo: "</string>
+    <string name="demo">Habilitar el modo demo</string>
+    <string name="max">"Medición máxima:"</string>
     <string name="max_hint"> 250 mg/dL</string>
-    <string name="hipo">"Limite para hipoglucemia: "</string>
+    <string name="hipo">"Hipoglucemia: "</string>
     <string name="hipo_hint"> 70 mg/dL</string>
-    <string name="hiper">"Valor limite de hiperglucemia: "</string>
+    <string name="hiper">"Hiperglucemia: "</string>
     <string name="hiper_hint"> 120 mg/dL</string>
-    <string name="hiper_max">"Hiperglucemia severa a: "</string>
+    <string name="hiper_max">"Hiperglucemia severa: "</string>
     <string name="hiper_max_hint"> 250 mg/dL</string>
+    <string name="titulo_medicion">Configuración de medición</string>
+    <string name="titulo_registro">Configuración de registro</string>
+    <string name="titulo_curva">Configuración de curva</string>
+
 </resources>

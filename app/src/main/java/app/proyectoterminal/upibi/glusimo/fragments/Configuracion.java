@@ -1,7 +1,9 @@
 package app.proyectoterminal.upibi.glusimo.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
     private final static String TAG = "Configuracion";
     int[] icons = {R.drawable.ic_menu_view,
             R.drawable.ic_menu_today, R.drawable.ic_menu_search};
+    Intent i;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +64,29 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-
+        vibrar(100);
+        Log.i(TAG,"");
+        switch (position)
+        {
+            case 0:
+                Log.i(TAG,"configuracion de medicion");
+                i = new Intent(getContext(),Fragment_Configuraciones.class);
+                i.putExtra("linea",position);
+                startActivity(i);
+                break;
+            case 1:
+                Log.i(TAG,"configuracion de registro");
+                i = new Intent(getContext(),Fragment_Configuraciones.class);
+                i.putExtra("linea",position);
+                startActivity(i);
+                break;
+            case 2:
+                Log.i(TAG,"configuracion de curva");
+                i = new Intent(getContext(),Fragment_Configuraciones.class);
+                i.putExtra("linea",position);
+                startActivity(i);
+                break;
+        }
     }
 
     @Override
@@ -98,5 +123,11 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
 
             return row;
         }
+    }
+
+    private void vibrar(int ms)
+    {
+        Vibrator vibrador = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        vibrador.vibrate(ms);
     }
 }
