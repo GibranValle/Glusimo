@@ -112,15 +112,17 @@
     <string name="titulo_config">Opcion Seleccionada</string>
     <string name="demo">Habilitar el modo demo</string>
     <string name="max">"Medición máxima:"</string>
-    <string name="max_hint"> 250 mg/dL</string>
+    <string name="max_hint"> 250</string>
     <string name="hipo">"Hipoglucemia: "</string>
-    <string name="hipo_hint"> 70 mg/dL</string>
+    <string name="hipo_hint"> 70</string>
     <string name="hiper">"Hiperglucemia: "</string>
-    <string name="hiper_hint"> 120 mg/dL</string>
+    <string name="hiper_hint"> 120</string>
     <string name="hiper_max">"Hiperglucemia severa: "</string>
-    <string name="hiper_max_hint"> 250 mg/dL</string>
+    <string name="hiper_max_hint"> 250</string>
+    <string name="unidades">Nota: Unidades de medición [mg/dL]</string>
     <string name="titulo_medicion">Configuración de medición</string>
     <string name="titulo_registro">Configuración de registro</string>
     <string name="titulo_curva">Configuración de curva</string>
+    <string name="exito">Configuración guardada con éxito</string>
 
 </resources>
