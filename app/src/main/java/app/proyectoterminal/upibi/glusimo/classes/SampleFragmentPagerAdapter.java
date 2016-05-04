@@ -19,12 +19,11 @@ import app.proyectoterminal.upibi.glusimo.fragments.Lista;
 import app.proyectoterminal.upibi.glusimo.fragments.Medicion;
 import app.proyectoterminal.upibi.glusimo.fragments.Tendencias;
 
-public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
 
     final int PAGE_COUNT = 4;
     // METODO IMPLEMENTADO PARA RECUPERAR TITULOS
-    String[] titulos = {"Medición", "Registro", "Curva", "Configuración"};
-
+    String[] titulos = {"Medición","Registro","Curva Diagnóstica","Configuración"};
     int[] icons = {R.drawable.ic_menu_view,
             R.drawable.ic_menu_today, R.drawable.ic_menu_search,
             R.drawable.ic_menu_manage};
@@ -37,8 +36,8 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     }
 
     public View getTabView(int position) {
-        // Given you have a custom layout in `res/layout/custom_tab.xml` with a TextView and ImageView
-        View v = LayoutInflater.from(context).inflate(R.layout.custom_tab, null);
+        // Given you have a custom layout in `res/layout/custom_navigation_tabsigation_tabs.xml` with a TextView and ImageView
+        View v = LayoutInflater.from(context).inflate(R.layout.custom_navigation_tabs, null);
         TextView tv = (TextView) v.findViewById(R.id.tab_text);
         tv.setText(titulos[position]);
         ImageView img = (ImageView) v.findViewById(R.id.tab_image);

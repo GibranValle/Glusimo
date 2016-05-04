@@ -175,6 +175,20 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return borrado;
     }
 
+    public int eliminarTodo() // ELIMINAR A PARTIR DE LA FECHA
+    {
+        Log.d(TAG,"ELIMINANDO DATO...");
+        // CARGAR BASE DE DATOS PARA INICIAR LA EDIC
+        SQLiteDatabase db = getWritableDatabase();
+        //editar contenido del querry aqui
+        String nombre = NOMBRE_TABLA;
+        String seleccion =null;
+        String argselec[] = null;
+        //querry listo para no editar
+        int borrado = db.delete(nombre, seleccion, argselec);
+        return borrado;
+    }
+
     public String comprobar(String fecha) //Comprobar que no exista otro elemento con el mismo nombre
     {
         Log.d(TAG, "COMPROBANDO...");
@@ -448,4 +462,245 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
+
+    public String recuperarPorAño(String Año) //Comprobar que no exista otro usuario con el mismo nombre
+    {
+        Log.d(TAG, "RECUPERANDO NOMBRE POR AÑO... "+Año);
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String id = ID;
+        String fecha = C_FECHA;
+        String año = C_AÑO;
+        String mes = C_MES;
+        String dia = C_DIA;
+        String nombre_dia =C_NDIA;
+        String fecha_corta = C_FECHA_CORTA;
+        String tiempo = C_TIEMPO;
+        String salud = C_SALUD;
+        String concentración = C_CONCENTRACIÓN;
+        // COLUMNAS A RECUPERAR
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, salud,
+                concentración};
+        // FILAS A RECUPERAR
+        String seleccion = año + "=?";
+        // ANEXOS A SELECCION
+        String[] args_selec ={Año}; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+
+        //crear un cursor
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexFecha = cursor.getColumnIndex(fecha);
+        int indexAño = cursor.getColumnIndex(año);
+        int indexMes = cursor.getColumnIndex(mes);
+        int indexDía = cursor.getColumnIndex(dia);
+        int indexNombreDia = cursor.getColumnIndex(nombre_dia);
+        int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
+        int indexTiempo = cursor.getColumnIndex(tiempo);
+        int indexSalud = cursor.getColumnIndex(salud);
+        int IndexConcentración = cursor.getColumnIndex(concentración);
+
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext())
+        {
+            String cFecha = cursor.getString(indexFecha);
+            String cAño = cursor.getString(indexAño);
+            String cMes = cursor.getString(indexMes);
+            String cDía = cursor.getString(indexDía);
+            String cNombreDia = cursor.getString(indexNombreDia);
+            String cFechaCorta = cursor.getString(indexFechaCorta);
+            String cTiempo = cursor.getString(indexTiempo);
+            String cSalud = cursor.getString(indexSalud);
+            String cConcentración = cursor.getString(IndexConcentración);
+            buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "<" + cSalud + ">" +
+                    "!" + cConcentración + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
+    public String recuperarPorMes(String Mes) //Comprobar que no exista otro usuario con el mismo nombre
+    {
+        Log.d(TAG, "RECUPERANDO NOMBRE POR Mes... "+Mes);
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String id = ID;
+        String fecha = C_FECHA;
+        String año = C_AÑO;
+        String mes = C_MES;
+        String dia = C_DIA;
+        String nombre_dia =C_NDIA;
+        String fecha_corta = C_FECHA_CORTA;
+        String tiempo = C_TIEMPO;
+        String salud = C_SALUD;
+        String concentración = C_CONCENTRACIÓN;
+        //datos a recuperar
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, salud,
+                concentración};
+        String seleccion = mes + "=?"; //a apartir del
+        String[] args_selec ={Mes}; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+
+        //crear un cursor
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexFecha = cursor.getColumnIndex(fecha);
+        int indexAño = cursor.getColumnIndex(año);
+        int indexMes = cursor.getColumnIndex(mes);
+        int indexDía = cursor.getColumnIndex(dia);
+        int indexNombreDia = cursor.getColumnIndex(nombre_dia);
+        int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
+        int indexTiempo = cursor.getColumnIndex(tiempo);
+        int indexSalud = cursor.getColumnIndex(salud);
+        int IndexConcentración = cursor.getColumnIndex(concentración);
+
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext())
+        {
+            String cFecha = cursor.getString(indexFecha);
+            String cAño = cursor.getString(indexAño);
+            String cMes = cursor.getString(indexMes);
+            String cDía = cursor.getString(indexDía);
+            String cNombreDia = cursor.getString(indexNombreDia);
+            String cFechaCorta = cursor.getString(indexFechaCorta);
+            String cTiempo = cursor.getString(indexTiempo);
+            String cSalud = cursor.getString(indexSalud);
+            String cConcentración = cursor.getString(IndexConcentración);
+            buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "<" + cSalud + ">" +
+                    "!" + cConcentración + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
+    public String recuperarPorDia(String día) //Comprobar que no exista otro usuario con el mismo nombre
+    {
+        Log.d(TAG, "RECUPERANDO NOMBRE POR dia... "+día);
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String id = ID;
+        String fecha = C_FECHA;
+        String año = C_AÑO;
+        String mes = C_MES;
+        String dia = C_DIA;
+        String nombre_dia =C_NDIA;
+        String fecha_corta = C_FECHA_CORTA;
+        String tiempo = C_TIEMPO;
+        String salud = C_SALUD;
+        String concentración = C_CONCENTRACIÓN;
+        //datos a recuperar
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, salud,
+                concentración};
+        String seleccion = dia + "=?"; //a apartir del
+        String[] args_selec ={día}; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+
+        //crear un cursor
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexFecha = cursor.getColumnIndex(fecha);
+        int indexAño = cursor.getColumnIndex(año);
+        int indexMes = cursor.getColumnIndex(mes);
+        int indexDía = cursor.getColumnIndex(dia);
+        int indexNombreDia = cursor.getColumnIndex(nombre_dia);
+        int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
+        int indexTiempo = cursor.getColumnIndex(tiempo);
+        int indexSalud = cursor.getColumnIndex(salud);
+        int IndexConcentración = cursor.getColumnIndex(concentración);
+
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext())
+        {
+            String cFecha = cursor.getString(indexFecha);
+            String cAño = cursor.getString(indexAño);
+            String cMes = cursor.getString(indexMes);
+            String cDía = cursor.getString(indexDía);
+            String cNombreDia = cursor.getString(indexNombreDia);
+            String cFechaCorta = cursor.getString(indexFechaCorta);
+            String cTiempo = cursor.getString(indexTiempo);
+            String cSalud = cursor.getString(indexSalud);
+            String cConcentración = cursor.getString(IndexConcentración);
+            buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "<" + cSalud + ">" +
+                    "!" + cConcentración + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
+    public String recuperarPorEstado(String estado) //Comprobar que no exista otro usuario con el mismo nombre
+    {
+        Log.d(TAG, "RECUPERANDO NOMBRE POR estado... "+estado);
+        //cargar la base de datos
+        SQLiteDatabase db = getWritableDatabase();
+        //crear strings para el metodo
+        String NombreTabla = NOMBRE_TABLA;
+        String id = ID;
+        String fecha = C_FECHA;
+        String año = C_AÑO;
+        String mes = C_MES;
+        String dia = C_DIA;
+        String nombre_dia =C_NDIA;
+        String fecha_corta = C_FECHA_CORTA;
+        String tiempo = C_TIEMPO;
+        String salud = C_SALUD;
+        String concentración = C_CONCENTRACIÓN;
+        //datos a recuperar
+        String [] columnas = {fecha, año, mes, dia, nombre_dia,fecha_corta, tiempo, salud,
+                concentración};
+        String seleccion = salud + "=?"; //a apartir del
+        String[] args_selec ={estado}; //id entrante
+        //filtros
+        String agrupar = null;
+        String tener = null;
+        String ordenar = null;
+
+        //crear un cursor
+        Cursor cursor = db.query(NombreTabla,columnas,seleccion,args_selec,agrupar,tener,ordenar);
+        int indexFecha = cursor.getColumnIndex(fecha);
+        int indexAño = cursor.getColumnIndex(año);
+        int indexMes = cursor.getColumnIndex(mes);
+        int indexDía = cursor.getColumnIndex(dia);
+        int indexNombreDia = cursor.getColumnIndex(nombre_dia);
+        int indexFechaCorta = cursor.getColumnIndex(fecha_corta);
+        int indexTiempo = cursor.getColumnIndex(tiempo);
+        int indexSalud = cursor.getColumnIndex(salud);
+        int IndexConcentración = cursor.getColumnIndex(concentración);
+
+        StringBuffer buffer = new StringBuffer();
+        while (cursor.moveToNext())
+        {
+            String cFecha = cursor.getString(indexFecha);
+            String cAño = cursor.getString(indexAño);
+            String cMes = cursor.getString(indexMes);
+            String cDía = cursor.getString(indexDía);
+            String cNombreDia = cursor.getString(indexNombreDia);
+            String cFechaCorta = cursor.getString(indexFechaCorta);
+            String cTiempo = cursor.getString(indexTiempo);
+            String cSalud = cursor.getString(indexSalud);
+            String cConcentración = cursor.getString(IndexConcentración);
+            buffer.append(cFecha+"|"+cAño + "*" +cMes + "+" +cDía + "="
+                    +cNombreDia+"¿"+cFechaCorta+"&"+cTiempo + "<" + cSalud + ">" +
+                    "!" + cConcentración + "\n");
+        }
+        Log.d(TAG,buffer.toString());
+        return buffer.toString();
+    }
+
+
+
 }

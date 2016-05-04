@@ -36,7 +36,6 @@ public class Medicion extends Fragment implements View.OnClickListener
     SoundPool soundPool; // VARIABLE PARA SONIDO
 
     int alert, normal, warning;
-    int glucosa = 0;
     int max = 0;
     int hipoglucemia = 70;
     int hiperglucemia = 120;
@@ -161,59 +160,33 @@ public class Medicion extends Fragment implements View.OnClickListener
         hipoglucemia = respaldo.getInt("hipo",70);
         hiperglucemia = respaldo.getInt("hiper",120);
         hiperglucemia_severa = respaldo.getInt("hiper_severa",200);
-
-        String estado;
-        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
-        hipoglucemia = respaldo.getInt("hipo",70);
-        hiperglucemia = respaldo.getInt("hiper",120);
         if( valor <= hiperglucemia)
         {
             // SOSPECHA DE HIPOGLUCEMIA LANZAR ALARMA
-            estado = "hipoglucemia";
             diagnostico.setText(R.string.paciente_emergency_hipo);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
             playSound(alert,1);
         }
-        else if( valor > hipoglucemia && valor <= hiperglucemia)
+        if( valor > hipoglucemia && valor <= hiperglucemia)
         {
             // SOSPECHA DE SALUDABLE
-            estado = "saludable";
             diagnostico.setText(R.string.paciente_saludable);
             diagnostico.setBackgroundResource(R.color.colorOn);
             playSound(normal,0.5f);
         }
-        else if( valor > hiperglucemia && valor <= hiperglucemia_severa)
+        if( valor > hiperglucemia && valor <= hiperglucemia_severa)
         {
             // SOSPECHA DE HIPERGLUCEMIA LANZAR WARNING
-            estado = "hiperglucemia";
             diagnostico.setText(R.string.paciente_warning);
             diagnostico.setBackgroundResource(R.color.colorWarning);
             playSound(warning,0.5f);
         }
-        else if( valor > hiperglucemia_severa)
+        if( valor > hiperglucemia_severa)
         {
             // SOSPECHA DE HIPERGLUCEMIA SEVERA LANZAR ALARMA
-            estado = "hiperglucemia severa";
             diagnostico.setText(R.string.paciente_emergency);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
             playSound(alert,1);
-        }
-        else
-        {
-            estado = "Error de medición";
-        }
-
-        // guardar los strings
-        editor = respaldo.edit();
-        editor.putString("estado", estado);
-
-        if (editor.commit())
-        {
-            Log.i(TAG,"estado guardado correctamente");
-        }
-        else
-        {
-            Log.e(TAG,"Error al guardar estado");
         }
     }
 

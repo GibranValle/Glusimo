@@ -7,25 +7,25 @@
             android:icon="@drawable/ic_menu_view"
             android:title="@string/nav_check" />
         <item
-            android:id="@+id/nav_search"
-            android:icon="@drawable/ic_menu_search"
-            android:title="@string/nav_search" />
-        <item
             android:id="@+id/nav_reg"
             android:icon="@drawable/ic_menu_today"
             android:title="@string/nav_registro" />
         <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_menu_search"
+            android:title="@string/nav_search" />
+        <item
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/nav_config" />
-        <item
-            android:id="@+id/nav_conect"
-            android:icon="@drawable/bluetooth"
-            android:title="@string/nav_conectar" />
     </group>
 
     <item android:title="@string/nav_comu">
         <menu>
+            <item
+                android:id="@+id/nav_conect"
+                android:icon="@drawable/bluetooth"
+                android:title="@string/nav_conectar" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"

@@ -50,7 +50,7 @@ public class DetallesLista extends Activity implements View.OnClickListener{
 
         // cargar la ventana
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.detalles_lista_layout);
+        setContentView(R.layout.fragment_detalles_lista);
 
         eliminar =(Button)findViewById(R.id.boton_eliminar);
         actualizar = (Button)findViewById(R.id.boton_actualizar);

@@ -252,6 +252,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
         //parar el timer, si no esta vacio
         if (timer != null) {
             timer.cancel();
+            timer.purge();
             timer = null;
         }
     }

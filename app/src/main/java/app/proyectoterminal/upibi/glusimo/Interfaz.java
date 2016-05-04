@@ -59,7 +59,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     /** -------------------- METODOS DE ETAPAS --------------------------------*/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interfaz);
+        setContentView(R.layout.interfaz_layout_uno);
 
         Log.v(TAG, "On Create");
 

@@ -64,7 +64,7 @@ public class DeviceList extends Activity {
         
         // Setup the window
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.lista_devices);
+        setContentView(R.layout.bluetooth_lista_devices);
 
         // Set result CANCELED in case the user backs out
         setResult(Activity.RESULT_CANCELED);
