@@ -36,10 +36,10 @@ import app.proyectoterminal.upibi.glusimo.fragments.AcercaDe;
 public class Interfaz extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     /** /////////////////////////// CONSTANTES  ///////////////////////////////////*/
     public static final String TAG = "Interfaz";
-    private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 80};
-    private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 99};
-    private static final int curvaGlucosaDiabetes[] = {84, 160, 220, 200, 186, 150};
-    private static final int tiempo[] = {0, 30, 60, 90, 120, 150};
+    public static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 80};
+    public static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 99};
+    public static final int curvaGlucosaDiabetes[] = {84, 160, 220, 200, 186, 150};
+    public static final int tiempo[] = {0, 30, 60, 90, 120, 150};
     /** /////////////////////////// CONSTANTES  ///////////////////////////////////*/
 
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/

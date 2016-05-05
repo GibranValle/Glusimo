@@ -87,7 +87,6 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
 
         Log.v(TAG,"OnActivityCreated Lista");
 
-
         String[] arrayMeses = getResources().getStringArray(R.array.lista_meses);
         lista_meses = Arrays.asList(arrayMeses);
         String[] arrayEstados = getResources().getStringArray(R.array.lista_estados);

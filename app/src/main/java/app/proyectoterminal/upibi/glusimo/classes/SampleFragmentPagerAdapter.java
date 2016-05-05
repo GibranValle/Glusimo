@@ -15,9 +15,9 @@ import android.widget.TextView;
 
 import app.proyectoterminal.upibi.glusimo.R;
 import app.proyectoterminal.upibi.glusimo.fragments.Configuracion;
+import app.proyectoterminal.upibi.glusimo.fragments.Curva;
 import app.proyectoterminal.upibi.glusimo.fragments.Lista;
 import app.proyectoterminal.upibi.glusimo.fragments.Medicion;
-import app.proyectoterminal.upibi.glusimo.fragments.Tendencias;
 
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
 
@@ -61,8 +61,8 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
                 Lista lista = new Lista();
                 return lista;
             case 2:
-                Tendencias tendencias = new Tendencias();
-                return tendencias;
+                Curva curva = new Curva();
+                return curva;
             case 3:
                 Configuracion configuracion = new Configuracion();
                 return configuracion;

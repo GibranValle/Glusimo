@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="320dp"
+    android:layout_width="320dp"
+    android:layout_height="fill_parent"
     android:layout_gravity="center|top"
     android:layout_margin="10dp"
     android:orientation="vertical">
@@ -13,6 +13,7 @@
         android:text="@string/titulo_config"
         style="@style/tituloFragment"
         android:id="@+id/titulo_fragment_config"
+        android:layout_marginBottom="@dimen/margen_mini"
         />
 
     <TextView
@@ -21,12 +22,20 @@
         android:background="@color/colorLetra"
         />
 
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/spinner_curvas"
+        android:visibility="visible"
+        />
+
     <FrameLayout
-        android:layout_weight="5"
+        android:layout_weight="6"
         android:id="@+id/frame_medicion"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         >
 
         <LinearLayout
@@ -155,55 +164,258 @@
                     android:id="@+id/edit_hiper_max" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_weight="0.2"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                >
+        </LinearLayout>
+    </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/frame_curva"
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lecturaA"
+                    style="@style/label_fragment"
+                    android:id="@+id/label1"
+                    />
+
+                <EditText
+                    android:hint="@string/max_hint"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaA"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/label_fragment"
+                    android:text="@string/lecturaB"
+                    android:id="@+id/label2" />
+
+                <EditText
+                    android:hint="@string/hipo_hint"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaB" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/label_fragment"
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lecturaC"
+                    android:id="@+id/label3" />
+
+                <EditText
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:hint="@string/hiper_hint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaC" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/label_fragment"
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lecturaD"
+                    android:id="@+id/label4" />
+
+                <EditText
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:hint="@string/hiper_max_hint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaD" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/label_fragment"
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lecturaE"
+                    android:id="@+id/label5" />
+
+                <EditText
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:hint="@string/hiper_max_hint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaE" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/label_fragment"
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lecturaF"
+                    android:id="@+id/label6" />
+
+                <EditText
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:hint="@string/hiper_max_hint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaF" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/label_fragment"
+                    android:layout_weight="2.5"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lecturaG"
+                    android:id="@+id/label7" />
+
+                <EditText
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:hint="@string/hiper_max_hint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_lecturaG" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/frame_registro"
+        android:layout_weight="6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/margen_chiquis"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <Button
                     android:layout_marginRight="@dimen/margen_mini"
                     style="@style/textoBoton"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="@string/pop_boton_aceptar"
-                    android:id="@+id/button_aceptar"
-                    android:layout_gravity="center_vertical" />
-
-                <Button
-                    style="@style/textoBoton"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:text="@string/boton_cancelar"
-                    android:id="@+id/button_cancelar"
+                    android:text="@string/boton_db"
+                    android:id="@+id/boton_eliminar_db"
                     android:layout_gravity="center_vertical" />
             </LinearLayout>
-
         </LinearLayout>
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/frame_registro"
-        android:layout_weight="5"
+    <LinearLayout
+        android:layout_marginTop="@dimen/margen_mini"
+        android:visibility="visible"
+        android:id="@+id/botones_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
         >
 
-    </FrameLayout>
+        <Button
+            android:layout_marginRight="@dimen/margen_mini"
+            style="@style/textoBoton"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/pop_boton_aceptar"
+            android:id="@+id/button_aceptar"
+            android:layout_gravity="center_vertical" />
 
-    <FrameLayout
-        android:visibility="gone"
-        android:id="@+id/frame_curva"
-        android:layout_weight="5"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        >
-
-    </FrameLayout>
+        <Button
+            style="@style/textoBoton"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/boton_cancelar"
+            android:id="@+id/button_cancelar"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -5,16 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import app.proyectoterminal.upibi.glusimo.R;
 
@@ -24,19 +31,27 @@ import app.proyectoterminal.upibi.glusimo.R;
  * SE ENLISTAN MAS DEVICES AL HACE UN DISCOVERY CUANDO SE ELIGE UN DEVICE
  * SE REGRESA LA DIRECCION MAC A LA PARENT ACTIVITY EN EL INTENT RESULT
  */
-public class Fragment_Configuraciones extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class Fragment_Configuraciones extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
-    Button aceptar, cancelar;
-    SharedPreferences respaldo;
-    SharedPreferences.Editor editor;
-    TextView titulo;
-    EditText editMax, editHipo, editHiper, editSuperHiper;
-    CheckBox demo_medicion;
-    Intent i;
+    private Button aceptar, cancelar, eliminar;
+    private SharedPreferences respaldo;
+    private SharedPreferences.Editor editor;
+    private TextView titulo;
+    private EditText editMax, editHipo, editHiper, editSuperHiper;
+    private EditText editLA, editLB, editLC, editLD, editLE, editLF, editLG;
+    private CheckBox demo_medicion;
+    private Intent i;
     int posicion, hipoglucemia, hiperglucemia, hiperglucemia_severa, max;
+    int LA, LB, LC, LD, LE, LF, LG;
     boolean dm;
-    String texto;
-    FrameLayout frame_medicion, frame_registro, frame_curva;
+    private String texto;
+    private FrameLayout frame_medicion, frame_registro, frame_curva;
+    private Spinner spinner;
+    int posicionSpinner;
+
+    private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 82, 80};
+    private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 121,99};
+    private static final int curvaGlucosaDiabetes[] = {84, 160, 220, 200, 186, 168, 150};
 
     final static String TAG = "Configuracion";
 
@@ -52,15 +67,29 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         // cargar los resources del XML
         aceptar = (Button) findViewById(R.id.button_aceptar);
         cancelar = (Button) findViewById(R.id.button_cancelar);
+        eliminar = (Button) findViewById(R.id.boton_eliminar_db);
+
         frame_medicion = (FrameLayout) findViewById(R.id.frame_medicion);
         frame_registro = (FrameLayout) findViewById(R.id.frame_registro);
         frame_curva = (FrameLayout) findViewById(R.id.frame_curva);
+
         titulo = (TextView) findViewById(R.id.titulo_fragment_config);
+
         demo_medicion = (CheckBox) findViewById(R.id.cb_medicion);
+
         editMax = (EditText) findViewById(R.id.edit_max);
         editHipo = (EditText) findViewById(R.id.edit_hipo);
         editHiper = (EditText) findViewById(R.id.edit_hiper);
         editSuperHiper = (EditText) findViewById(R.id.edit_hiper_max);
+        editLA = (EditText) findViewById(R.id.edit_lecturaA);
+        editLB = (EditText) findViewById(R.id.edit_lecturaB);
+        editLC = (EditText) findViewById(R.id.edit_lecturaC);
+        editLD = (EditText) findViewById(R.id.edit_lecturaD);
+        editLE = (EditText) findViewById(R.id.edit_lecturaE);
+        editLF = (EditText) findViewById(R.id.edit_lecturaF);
+        editLG = (EditText) findViewById(R.id.edit_lecturaG);
+
+        spinner = (Spinner) findViewById(R.id.spinner_curvas);
 
         // recuperar la configuracion previa
         respaldo = getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
@@ -69,12 +98,31 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         i = getIntent();
         posicion = i.getIntExtra("linea",-1);
 
+        // Creación del spinner
+        List<String> mediciones = new ArrayList<>();
+        ArrayAdapter<String> adapter;
+        // agregar elementos al spinner
+        mediciones.add("Seleccione una curva:");
+        mediciones.add(getResources().getString(R.string.curvadiabetes));
+        mediciones.add(getResources().getString(R.string.curvapre));
+        mediciones.add(getResources().getString(R.string.curvasano));
+        mediciones.add(getResources().getString(R.string.curvapersonalizada));
+        // agregar listas y layouts al adapter
+        adapter = new ArrayAdapter<>
+                (this, R.layout.custom_drop_spinner_layout,mediciones);
+        adapter.setDropDownViewResource(R.layout.custom_drop_spinner_layout);
+        // cargar el adapter al spinner
+        spinner.setAdapter(adapter);
+        // agregar listener al spinner
+        spinner.setOnItemSelectedListener(this);
+
         switch (posicion)
         {
             case 0:
                 frame_medicion.setVisibility(View.VISIBLE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.GONE);
+                spinner.setVisibility(View.GONE);
                 texto = getResources().getString(R.string.titulo_medicion);
                 titulo.setText(texto);
 
@@ -96,14 +144,18 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.VISIBLE);
                 frame_curva.setVisibility(View.GONE);
+                spinner.setVisibility(View.GONE);
                 texto = getResources().getString(R.string.titulo_registro);
                 titulo.setText(texto);
+
                 break;
             case 2:
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.VISIBLE);
-                texto = getResources().getString(R.string.titulo_medicion);
+                frame_curva.setVisibility(View.VISIBLE);
+
+                texto = getResources().getString(R.string.titulo_curva);
                 titulo.setText(texto);
                 break;
         }
@@ -121,12 +173,15 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     @Override
     public void onClick(View v)
     {
+        vibrar(100);
         int id = v.getId();
         if(id == R.id.button_aceptar)
         {
+            // switch para saber que panel de configuracion usar
             switch (posicion)
             {
                 case 0:
+                    Log.i(TAG,"configuracion de medicion");
                     // tomar los datos del edittext y guardarlos
                     dm = demo_medicion.isChecked();
                     hipoglucemia = Integer.parseInt(editHipo.getText().toString());
@@ -144,11 +199,133 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                         Log.d(TAG,"guardado");
                         Toast.makeText(this,R.string.exito, Toast.LENGTH_SHORT).show();
                     }
+                    finish();
                     break;
+
+
+
+                case 1:
+                    Log.i(TAG,"configuracion de registro");
+                    break;
+
+
+
+                case 2:
+                    Log.i(TAG,"configuracion de curva");
+                    editor = respaldo.edit();
+                    switch (posicionSpinner)
+                    {
+                        case 0:
+                            Toast.makeText(this, getResources().getString(R.string.error_spinner),
+                                    Toast.LENGTH_SHORT).show();
+                            break;
+                        case 1:
+                            Log.i(TAG,"guardando curva diabetico");
+                            // Copiar los valores del editText
+                            LA = Integer.parseInt(editLA.getText().toString());
+                            LB = Integer.parseInt(editLB.getText().toString());
+                            LC = Integer.parseInt(editLC.getText().toString());
+                            LD = Integer.parseInt(editLD.getText().toString());
+                            LE = Integer.parseInt(editLE.getText().toString());
+                            LF = Integer.parseInt(editLF.getText().toString());
+                            LG = Integer.parseInt(editLG.getText().toString());
+                            // guardar los datos en respaldo
+                            editor.putInt("posicionSpinner", posicionSpinner);
+                            editor.putInt("CDL0",LA);
+                            editor.putInt("CDL1",LB);
+                            editor.putInt("CDL2",LC);
+                            editor.putInt("CDL3",LD);
+                            editor.putInt("CDL4",LE);
+                            editor.putInt("CDL5",LF);
+                            editor.putInt("CDL6",LG);
+                            if(editor.commit())
+                            {
+                                Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+
+                            break;
+                        case 2:
+                            Log.i(TAG,"guardando curva prediabetico");
+                            // Copiar los valores del editText
+                            LA = Integer.parseInt(editLA.getText().toString());
+                            LB = Integer.parseInt(editLB.getText().toString());
+                            LC = Integer.parseInt(editLC.getText().toString());
+                            LD = Integer.parseInt(editLD.getText().toString());
+                            LE = Integer.parseInt(editLE.getText().toString());
+                            LF = Integer.parseInt(editLF.getText().toString());
+                            LG = Integer.parseInt(editLG.getText().toString());
+                            // guardar los datos en respaldo
+                            editor.putInt("posicionSpinner", posicionSpinner);
+                            editor.putInt("CPDL0",LA);
+                            editor.putInt("CPDL1",LB);
+                            editor.putInt("CPDL2",LC);
+                            editor.putInt("CPDL3",LD);
+                            editor.putInt("CPDL4",LE);
+                            editor.putInt("CPDL5",LF);
+                            editor.putInt("CPDL6",LG);
+                            if(editor.commit())
+                            {
+                                Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                            break;
+                        case 3:
+                            Log.i(TAG,"guardando curva sano");
+                            // Copiar los valores del editText
+                            LA = Integer.parseInt(editLA.getText().toString());
+                            LB = Integer.parseInt(editLB.getText().toString());
+                            LC = Integer.parseInt(editLC.getText().toString());
+                            LD = Integer.parseInt(editLD.getText().toString());
+                            LE = Integer.parseInt(editLE.getText().toString());
+                            LF = Integer.parseInt(editLF.getText().toString());
+                            LG = Integer.parseInt(editLG.getText().toString());
+                            // guardar los datos en respaldo
+                            editor.putInt("posicionSpinner", posicionSpinner);
+                            editor.putInt("CSL0",LA);
+                            editor.putInt("CSL1",LB);
+                            editor.putInt("CSL2",LC);
+                            editor.putInt("CSL3",LD);
+                            editor.putInt("CSL4",LE);
+                            editor.putInt("CSL5",LF);
+                            editor.putInt("CSL6",LG);
+                            if(editor.commit())
+                            {
+                                Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                            break;
+                        case 4:
+                            Log.i(TAG,"guardando curva personalizada");
+                            // Copiar los valores del editText
+                            LA = Integer.parseInt(editLA.getText().toString());
+                            LB = Integer.parseInt(editLB.getText().toString());
+                            LC = Integer.parseInt(editLC.getText().toString());
+                            LD = Integer.parseInt(editLD.getText().toString());
+                            LE = Integer.parseInt(editLE.getText().toString());
+                            LF = Integer.parseInt(editLF.getText().toString());
+                            LG = Integer.parseInt(editLG.getText().toString());
+                            // guardar los datos en respaldo
+                            editor.putInt("posicionSpinner", posicionSpinner);
+                            editor.putInt("CPL0",LA);
+                            editor.putInt("CPL1",LB);
+                            editor.putInt("CPL2",LC);
+                            editor.putInt("CPL3",LD);
+                            editor.putInt("CPL4",LE);
+                            editor.putInt("CPL5",LF);
+                            editor.putInt("CPL6",LG);
+                            if(editor.commit())
+                            {
+                                Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                            break;
+                    }
+                    break;
+
             }
-            finish();
         }
-        if(id == R.id.button_aceptar)
+        if(id == R.id.button_cancelar)
         {
             finish();
         }
@@ -157,6 +334,118 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
     {
+        dm = isChecked;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        posicionSpinner = position;
+        Log.i(TAG,"posicion: "+position);
+
+        switch (posicionSpinner)
+        {
+            case 0:
+                Log.i(TAG, "Seleccione algo, ocultando todo");
+                frame_curva.setVisibility(View.INVISIBLE);
+                break;
+            case 1:
+                Log.i(TAG, "Seleccionada una opcion valida monstando todo");
+                frame_curva.setVisibility(View.VISIBLE);
+                // cargar los datos la curva seleccionada
+                Log.i(TAG, "Cargando curva diabetico");
+                LA = respaldo.getInt("CDL0", curvaGlucosaDiabetes[0]);
+                LB = respaldo.getInt("CDL1", curvaGlucosaDiabetes[1]);
+                LC = respaldo.getInt("CDL2", curvaGlucosaDiabetes[2]);
+                LD = respaldo.getInt("CDL3", curvaGlucosaDiabetes[3]);
+                LE = respaldo.getInt("CDL4", curvaGlucosaDiabetes[4]);
+                LF = respaldo.getInt("CDL5", curvaGlucosaDiabetes[5]);
+                LG = respaldo.getInt("CDL6", curvaGlucosaDiabetes[6]);
+
+                editLA.setText("" + LA);
+                editLB.setText("" + LB);
+                editLC.setText("" + LC);
+                editLD.setText("" + LD);
+                editLE.setText("" + LE);
+                editLF.setText("" + LF);
+                editLG.setText("" + LG);
+                break;
+            case 2:
+                Log.i(TAG, "Seleccionada una opcion valida monstando todo");
+                frame_curva.setVisibility(View.VISIBLE);
+                Log.i(TAG, "Cargando curva pre diabetico");
+                // cargar los datos la curva seleccionada
+                LA = respaldo.getInt("CPDL0", curvaGlucosaPrediabetes[0]);
+                LB = respaldo.getInt("CPDL1", curvaGlucosaPrediabetes[1]);
+                LC = respaldo.getInt("CPDL2", curvaGlucosaPrediabetes[2]);
+                LD = respaldo.getInt("CPDL3", curvaGlucosaPrediabetes[3]);
+                LE = respaldo.getInt("CPDL4", curvaGlucosaPrediabetes[4]);
+                LF = respaldo.getInt("CPDL5", curvaGlucosaPrediabetes[5]);
+                LG = respaldo.getInt("CPDL6", curvaGlucosaPrediabetes[6]);
+
+                editLA.setText("" + LA);
+                editLB.setText("" + LB);
+                editLC.setText("" + LC);
+                editLD.setText("" + LD);
+                editLE.setText("" + LE);
+                editLF.setText("" + LF);
+                editLG.setText("" + LG);
+                break;
+            case 3:
+                Log.i(TAG, "Seleccionada una opcion valida monstando todo");
+                frame_curva.setVisibility(View.VISIBLE);
+                Log.i(TAG, "Cargando curva sano");
+                // cargar los datos la curva seleccionada
+                LA = respaldo.getInt("CSL0", curvaGlucosaNormal[0]);
+                LB = respaldo.getInt("CSL1", curvaGlucosaNormal[1]);
+                LC = respaldo.getInt("CSL2", curvaGlucosaNormal[2]);
+                LD = respaldo.getInt("CSL3", curvaGlucosaNormal[3]);
+                LE = respaldo.getInt("CSL4", curvaGlucosaNormal[4]);
+                LF = respaldo.getInt("CSL5", curvaGlucosaNormal[5]);
+                LG = respaldo.getInt("CSL6", curvaGlucosaNormal[6]);
+
+                editLA.setText("" + LA);
+                editLB.setText("" + LB);
+                editLC.setText("" + LC);
+                editLD.setText("" + LD);
+                editLE.setText("" + LE);
+                editLF.setText("" + LF);
+                editLG.setText("" + LG);
+                break;
+            case 4:
+                Log.i(TAG, "Seleccionada una opcion valida monstando todo");
+                frame_curva.setVisibility(View.VISIBLE);
+                Log.i(TAG, "Cargando curva personalizada");
+                // cargar los datos la curva seleccionada
+                LA = respaldo.getInt("CPL0", curvaGlucosaNormal[0]);
+                LB = respaldo.getInt("CPL1", curvaGlucosaNormal[0]);
+                LC = respaldo.getInt("CPL2", curvaGlucosaNormal[0]);
+                LD = respaldo.getInt("CPL3", curvaGlucosaNormal[0]);
+                LE = respaldo.getInt("CPL4", curvaGlucosaNormal[0]);
+                LF = respaldo.getInt("CPL5", curvaGlucosaNormal[0]);
+                LG = respaldo.getInt("CPL6", curvaGlucosaNormal[0]);
+
+                editLA.setText("" + LA);
+                editLB.setText("" + LB);
+                editLC.setText("" + LC);
+                editLD.setText("" + LD);
+                editLE.setText("" + LE);
+                editLF.setText("" + LF);
+                editLG.setText("" + LG);
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent)
+    {
 
     }
+
+    private void vibrar(int ms)
+    {
+        Vibrator vibrador = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vibrador.vibrate(ms);
+    }
 }
+

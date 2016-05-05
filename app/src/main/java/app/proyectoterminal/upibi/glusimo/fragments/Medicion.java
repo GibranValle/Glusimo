@@ -2,13 +2,18 @@ package app.proyectoterminal.upibi.glusimo.fragments;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +34,7 @@ public class Medicion extends Fragment implements View.OnClickListener
 {
 
     ArcProgress medidor;
-    TextView diagnostico;
+    TextView diagnostico, titulo;
     EventBus bus = EventBus.getDefault();
     SharedPreferences respaldo;
     SharedPreferences.Editor editor;
@@ -40,6 +45,11 @@ public class Medicion extends Fragment implements View.OnClickListener
     int hipoglucemia = 70;
     int hiperglucemia = 120;
     int hiperglucemia_severa = 120;
+
+    // variables para lanzar demo
+    boolean dm = false;
+    int conteoClicks = 0;
+    private static final int glucemias[] = {70, 100, 150, 250};
 
     public static final String TAG = "Medicion";
 
@@ -64,6 +74,7 @@ public class Medicion extends Fragment implements View.OnClickListener
 
         Log.v(TAG,"OnActivityCreated Medición");
 
+        titulo = (TextView) getActivity().findViewById(R.id.texto_arco);
         diagnostico = (TextView) getActivity().findViewById(R.id.diagnostico);
         medidor = (ArcProgress) getActivity().findViewById(R.id.medidor);
         medidor.setOnClickListener(this);
@@ -71,6 +82,15 @@ public class Medicion extends Fragment implements View.OnClickListener
         respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
         max = respaldo.getInt("max",500);
         medidor.setMax(max);
+
+        if(!dm)
+        {
+            titulo.setText(R.string.texto_arco_demo);
+        }
+        else
+        {
+            titulo.setText(R.string.texto_arco);
+        }
 
         ///////////// ASIGNACIONES PARA SONIDO /////////////////
         soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
@@ -98,7 +118,22 @@ public class Medicion extends Fragment implements View.OnClickListener
     {
         vibrar(100);
         Log.i(TAG,"petición para enviar mensaje por bluetooth");
-        bus.post(new EnviarStringEvent("MC"));
+        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
+        dm = respaldo.getBoolean("demo_medicion",false);
+        if(dm)
+        {
+            if(conteoClicks == 5)
+            {
+                conteoClicks = 0;
+            }
+            DatoRecibido(glucemias[conteoClicks]);
+            bus.post(new EnviarIntEvent(glucemias[conteoClicks]));
+            conteoClicks = conteoClicks + 1;
+        }
+        else
+        {
+            bus.post(new EnviarStringEvent("MC"));
+        }
 
         /*
         // SI EXISTE CONEXION PEDIR QUE ENVIE EL TEXTO ELEGIDO
@@ -166,6 +201,7 @@ public class Medicion extends Fragment implements View.OnClickListener
             diagnostico.setText(R.string.paciente_emergency_hipo);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
             playSound(alert,1);
+            showNotification();
         }
         if( valor > hipoglucemia && valor <= hiperglucemia)
         {
@@ -216,19 +252,42 @@ public class Medicion extends Fragment implements View.OnClickListener
         Log.i(TAG,"numero recibido en bus medición: "+event.numero);
         if(event.numero <= 1000)
         {
-            diagnostico.setText(R.string.midiendo);
-            diagnostico.setBackgroundResource(R.color.colorOff);
-            if (event.numero > max)
-            {
-                max = event.numero;
-                editor = respaldo.edit();
-                editor.putInt("max", max);
-                if(editor.commit())
-                {
-                    Log.i(TAG,"maximo encontrado y guardado: " + max);
-                }
-            }
-            animar(event.numero);
+            DatoRecibido(event.numero);
         }
+    }
+
+    void showNotification()
+    {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
+        builder.setSmallIcon(R.drawable.ic_stat_name);
+        builder.setContentTitle(getResources().getString(R.string.notificacion_titulo));
+        builder.setContentText(getResources().getString(R.string.notificacion_text));
+        builder.setTicker(getResources().getString(R.string.notificacion_ticker));
+
+        Intent intent = new Intent(getContext(),AcercaDe.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
+        stackBuilder.addParentStack(AcercaDe.class);
+        stackBuilder.addNextIntent(intent);
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+        NotificationManager NM = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        NM.notify(0,builder.build());
+    }
+
+    void DatoRecibido(int numero)
+    {
+        diagnostico.setText(R.string.midiendo);
+        diagnostico.setBackgroundResource(R.color.colorOff);
+        if (numero > max)
+        {
+            max = numero;
+            editor = respaldo.edit();
+            editor.putInt("max", max);
+            if(editor.commit())
+            {
+                Log.i(TAG,"maximo encontrado y guardado: " + max);
+            }
+        }
+        animar(numero);
     }
 }

@@ -30,9 +30,9 @@ import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
 import app.proyectoterminal.upibi.glusimo.R;
 import app.proyectoterminal.upibi.glusimo.classes.InterpolacionLagrange;
 
-public class Tendencias extends Fragment implements View.OnClickListener {
+public class Curva extends Fragment implements View.OnClickListener {
 
-    TextView consola_tendencias, info_tendencias;
+    TextView consola_tendencias, info_curva;
     ImageView espacio,ejeY;
     Timer timer;
     TimerTask timerTask;
@@ -43,6 +43,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
 
     int puntos = 0;
     float gain = 2.5f;
+    int max = 0;
 
     public Bitmap bitmap;
     public Canvas canvas;
@@ -53,32 +54,33 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     public Canvas canvas2;
     public Paint paint2;
     int alto2, ancho2;
+    int posicionSpinner;
 
 
-    String TAG = "Tendencias";
+    String TAG = "Curva";
     final Handler handler = new Handler();  // VARIABLE PARA TIMER
 
     float xo,xf, yo, yf, pss;
     double[] coeficientes;
 
-    private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 80};
-    private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 99};
-    private static final int curvaGlucosaDiabetes[] = {84, 160, 220, 200, 186, 150};
-    private static final int tiempo[] = {0, 30, 60, 90, 120, 150};
-
+    private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 82, 80};
+    private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 121,99};
+    private static final int curvaGlucosaDiabetes[] = {84, 160, 220, 200, 186, 168, 150};
+    private static final int tiempo[] = {0, 30, 60, 90, 120, 150, 180};
+    int curva[] = new int[7];
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.v(TAG,"Creando vista de Tendencias");
+        Log.v(TAG,"Creando vista de Curva");
         poly = new InterpolacionLagrange();
         // REGISTRAR SI NO SE HA REGISTRADO
         if (!bus.isRegistered(this))
         {
-            Log.v(TAG,"Registrando en bus  el fragment Tendencias");
+            Log.v(TAG,"Registrando en bus  el fragment Curva");
             bus.register(this);
         }
 
-        return inflater.inflate(R.layout.fragment_tendencias, container, false);
+        return inflater.inflate(R.layout.fragment_curva, container, false);
     }
 
     @Override
@@ -86,15 +88,15 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     {
         super.onActivityCreated(savedInstanceState);
 
-        Log.v(TAG,"OnActivityCreated Tendencias");
+        Log.v(TAG,"OnActivityCreated Curva");
 
         consola_tendencias = (TextView) getActivity().findViewById(R.id.consola_tendencias);
-        info_tendencias = (TextView) getActivity().findViewById(R.id.tendencias_info);
+        info_curva = (TextView) getActivity().findViewById(R.id.curva_info);
         ejeY = (ImageView) getActivity().findViewById(R.id.eje_concentracion);
         espacio = (ImageView) getActivity().findViewById(R.id.canvas);
         espacio.setOnClickListener(this);
 
-        info_tendencias.setText(R.string.info_tendencias);
+        info_curva.setText(R.string.info_tendencias);
 
         respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
         gain = respaldo.getFloat("gain",2.5f);
@@ -109,7 +111,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
                 // CONSIGUE LOS DATOS DE ANCHO Y ALTO HASTA ESTE PUNTO
                 alto = espacio.getHeight();
                 ancho = espacio.getWidth();
-                pss = (float) ancho/tiempo.length;
+                pss = (float) ancho/(tiempo.length);
                 Log.i(TAG,"paso calculado: "+pss);
 
                 //
@@ -176,7 +178,7 @@ public class Tendencias extends Fragment implements View.OnClickListener {
             // aumentar paso
             xf = xo + pss;
             yf = (float) (alto-(gain*poly.calcularPunto(coeficientes,puntos)));
-            Log.i(TAG,"graficando punto xo: "+xo+" xf: "+xf +" yo: "+yo +" yf: "+yf);
+            Log.w(TAG,"graficando punto xo: "+xo+" xf: "+xf +" yo: "+yo +" yf: "+yf);
             canvas.drawLine(xo,yo,xf,yf,paint);
             // USAR ESTE METODO PARA ACTUALIZAR PANTALLA
             espacio.invalidate();
@@ -232,20 +234,32 @@ public class Tendencias extends Fragment implements View.OnClickListener {
         int largo = x.length;
         int tfinal = x[largo-1];
         Log.i(TAG,"valor final tiempo: "+tfinal);
-        pss = (float) ancho/tfinal;
+        pss = (float) (ancho+50)/tfinal;
         Log.i(TAG,"coeficientes encontrados: "+ Arrays.toString(coeficientes));
         Log.i(TAG,"largo: "+largo + " paso: "+pss);
+
+
 
         // reiniciar valores
         xo = 0;
         puntos = 0;
-
+        // calcular gain
+        calcularGain();
         //instanciar nuevo timer
         timer = new Timer();
         //inicializar el timer
         initializeTimerTask2();
         //esperar 0ms para empezar, repetir cada 100ms
         timer.schedule(timerTask, 0, periodo); //
+    }
+
+    void calcularGain()
+    {
+        Log.i(TAG,"max encontrado: "+max);
+        gain = (float) alto/(max+10);
+        // REESCRIBIR ESCALA
+        info_curva.setText("Escala:  "+  max/10+"mg/dL  |  15min");
+        Log.i(TAG,"ganancia calculada: "+gain);
     }
 
     public void terminarGrafica() {
@@ -275,8 +289,82 @@ public class Tendencias extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v)
     {
+        int a, valor;
         vibrar(100);
-        empezarGrafica(tiempo,curvaGlucosaDiabetes, 3);
+        String id;
+        // CALCULAR EL MAX
+        max = 0;
+        // construir curva
+        respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
+        posicionSpinner = respaldo.getInt("posicionSpinner",1);
+        Log.i(TAG,"posicion spinner: "+posicionSpinner);
+        switch (posicionSpinner)
+        {
+            case 0:
+                break;
+            case 1:
+                // recuperar datos de respaldo
+                for (a = 0; a<= 6; a++)
+                {
+                    id = "CDL"+a;
+                    // armar el array
+                    valor = respaldo.getInt(id,curvaGlucosaDiabetes[a]);
+                    curva[a] = valor;
+                    if(valor > max)
+                    {
+                        max = valor;
+                    }
+                }
+                Log.i(TAG,"curva: "+Arrays.toString(curva));
+                break;
+            case 2:
+                // recuperar datos de respaldo
+                for (a = 0; a<= 6; a++)
+                {
+                    id = "CPDL"+a;
+                    // armar el array
+                    valor = respaldo.getInt(id,curvaGlucosaPrediabetes[a]);
+                    curva[a] = valor;
+                    if(valor > max)
+                    {
+                        max = valor;
+                    }
+                }
+                Log.i(TAG,"curva: "+Arrays.toString(curva));
+                break;
+            case 3:
+                // recuperar datos de respaldo
+                for (a = 0; a<= 6; a++)
+                {
+                    id = "CSLL"+a;
+                    // armar el array
+                    valor = respaldo.getInt(id,curvaGlucosaNormal[a]);
+                    curva[a] = valor;
+                    if(valor > max)
+                    {
+                        max = valor;
+                    }
+                }
+                Log.i(TAG,"curva: "+Arrays.toString(curva));
+                break;
+            case 4:
+                // recuperar datos de respaldo
+                for (a = 0; a<= 6; a++)
+                {
+                    id = "CPL"+a;
+                    // armar el array
+                    valor = respaldo.getInt(id,curvaGlucosaNormal[a]);
+                    curva[a] = valor;
+                    if(valor > max)
+                    {
+                        max = valor;
+                    }
+                }
+                Log.i(TAG,"curva: "+Arrays.toString(curva));
+                break;
+        }
+        empezarGrafica(tiempo,curva, 3);
+        //empezarGrafica(tiempo,curvaGlucosaDiabetes, 3);
     }
 
     public void empezarCanvas()

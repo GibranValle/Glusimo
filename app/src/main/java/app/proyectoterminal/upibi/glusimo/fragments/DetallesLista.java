@@ -25,7 +25,7 @@ public class DetallesLista extends Activity implements View.OnClickListener{
 
     private Button actualizar, eliminar, cancelar;
     private TextView detalles;
-    private String datos, fecha, fecha_corta, hora, concentración;
+    private String datos, fecha, fecha_corta, hora, concentración, estado;
     private Long id_recuperado;
     private Intent i;
     private ObjectAnimator animador;
@@ -78,12 +78,15 @@ public class DetallesLista extends Activity implements View.OnClickListener{
         //extrae el nombre de fecha corta de la cadena original
         fecha_corta = datos.substring(datos.indexOf("¿")+1,datos.indexOf("&"));
         //extrae el nombre de fecha de la cadena original
-        hora = datos.substring(datos.indexOf("&")+1,datos.indexOf("!"));
+        hora = datos.substring(datos.indexOf("&")+1,datos.indexOf("<"));
         // extrae la concentración de la cadena original
+        estado = datos.substring(datos.indexOf("<")+1,datos.indexOf(">"));
+        // -1 para quitar el \n
         concentración = datos.substring(datos.indexOf("!")+1,datos.length()-1);
-        Log.d(TAG,"fecha: "+fecha_corta +" Hora: "+hora+" []: "+concentración);
+        Log.d(TAG,"fecha: "+fecha_corta +" Hora: "+hora+" []: "+concentración+" estado: "+estado);
 
-        detalles.setText("Fecha:\n"+fecha_corta+" Hora: "+hora+" Glucemia: "+concentración+" mg/dL");
+        detalles.setText("Fecha:\n"+fecha_corta+" Hora: "+hora+" Glucemia: "+concentración+" mg/dL"
+        +"\nEstado: "+estado);
 
     }
 

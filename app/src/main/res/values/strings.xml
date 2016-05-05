@@ -26,6 +26,12 @@
         <item>"Curva Diagnóstica"</item>
     </string-array>
 
+    <!-- Notificacion -->
+    <string name="notificacion_titulo">Glusimo</string>
+    <string name="notificacion_text">Info de la notificación</string>
+    <string name="notificacion_ticker">Alerta, nivel de glucemia peligroso</string>
+
+
 
     <!-- textos BT -->
     <string name="bt_dc">DESCONECTADO</string>
@@ -64,8 +70,9 @@
     <string name="midiendo">Realizando medición\nEspere por favor</string>
     <string name="sufijo">mg/dL</string>
     <string name="texto_arco">Glucómetro</string>
+    <string name="texto_arco_demo">Glucómetro modo demo</string>
 
-    <!-- textos Tedencias -->
+    <!-- textos Curva -->
     <string name="titulo_tendencias">Prueba de tolerancia a la glucosa</string>
     <string name="eje_tiempo">Tiempo [min]</string>
     <string name="eje_Y">Glucemia [mg/dL]</string>
@@ -124,5 +131,18 @@
     <string name="titulo_registro">Configuración de registro</string>
     <string name="titulo_curva">Configuración de curva</string>
     <string name="exito">Configuración guardada con éxito</string>
+    <string name="curvadiabetes">"Curva muestra: Diabético"</string>
+    <string name="curvapre">"Curva muestra: Pre diabético"</string>
+    <string name="curvasano">"Curva muestra: Saludable"</string>
+    <string name="curvapersonalizada">Curva Personalizada</string>
+    <string name="lecturaA">"Lectura inicial [mg/dL]"</string>
+    <string name="lecturaB">"30 minutos [mg/dL]"</string>
+    <string name="lecturaC">"1 hora [mg/dL]"</string>
+    <string name="lecturaD">"1 hora 30 minutos [mg/dL]"</string>
+    <string name="lecturaE">"2 horas [mg/dL]"</string>
+    <string name="lecturaF">"2 horas 30 minutos [mg/dL]"</string>
+    <string name="lecturaG">"3 horas [mg/dL]"</string>
+    <string name="boton_db">"Eliminar todas las entradas"</string>
+    <string name="error_spinner">"Seleccione una curva a graficar"</string>
 
 </resources>

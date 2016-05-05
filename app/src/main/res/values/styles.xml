@@ -67,6 +67,12 @@
         <item name="android:gravity">start|center</item>
     </style>
 
+    <style name="label_fragment">
+        <item name="android:textColor">@color/colorLetraClara</item>
+        <item name="android:textSize">8pt</item>
+        <item name="android:gravity">start</item>
+    </style>
+
     <!--Tipos de letras -->
 
     <style name="tituloFragment">
