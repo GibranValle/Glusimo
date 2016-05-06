@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.proyectoterminal.upibi.glusimo.R;
+import app.proyectoterminal.upibi.glusimo.classes.DataBaseManager;
 
 /**
  * ESTA ACTIVITY TIENE APARIENCIA DE DIALOGO (CONFIGURADA EN EL MANIFEST)
@@ -48,6 +49,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     private FrameLayout frame_medicion, frame_registro, frame_curva;
     private Spinner spinner;
     int posicionSpinner;
+    private DataBaseManager manager;
 
     private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 82, 80};
     private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 121,99};
@@ -63,6 +65,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         // cargar la ventana
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_configuracion_detalles);
+        manager = new DataBaseManager(this);
 
         // cargar los resources del XML
         aceptar = (Button) findViewById(R.id.button_aceptar);
@@ -328,6 +331,20 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         if(id == R.id.button_cancelar)
         {
             finish();
+        }
+        if(id == R.id.boton_eliminar_db)
+        {
+            Log.i(TAG,"Eliminando todos los registros");
+            int b = manager.eliminarTodo();
+            if (b < 0)
+            {
+                Toast.makeText(this, R.string.exito_eliminar_db, Toast.LENGTH_SHORT).show();
+                finish();
+            }
+            else
+            {
+                Toast.makeText(this, R.string.error_eliminar_db, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

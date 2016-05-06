@@ -7,8 +7,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -200,29 +203,32 @@ public class Medicion extends Fragment implements View.OnClickListener
             // SOSPECHA DE HIPOGLUCEMIA LANZAR ALARMA
             diagnostico.setText(R.string.paciente_emergency_hipo);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
-            playSound(alert,1);
-            showNotification();
+            //playSound(alert,1);
+            showNotification(3,valor);
         }
         if( valor > hipoglucemia && valor <= hiperglucemia)
         {
             // SOSPECHA DE SALUDABLE
             diagnostico.setText(R.string.paciente_saludable);
             diagnostico.setBackgroundResource(R.color.colorOn);
-            playSound(normal,0.5f);
+            //playSound(normal,0.5f);
+            showNotification(0,valor);
         }
         if( valor > hiperglucemia && valor <= hiperglucemia_severa)
         {
             // SOSPECHA DE HIPERGLUCEMIA LANZAR WARNING
             diagnostico.setText(R.string.paciente_warning);
             diagnostico.setBackgroundResource(R.color.colorWarning);
-            playSound(warning,0.5f);
+            //playSound(warning,0.5f);
+            showNotification(1,valor);
         }
         if( valor > hiperglucemia_severa)
         {
             // SOSPECHA DE HIPERGLUCEMIA SEVERA LANZAR ALARMA
             diagnostico.setText(R.string.paciente_emergency);
             diagnostico.setBackgroundResource(R.color.colorEmergency);
-            playSound(alert,1);
+            //playSound(alert,1);
+            showNotification(2,valor);
         }
     }
 
@@ -256,21 +262,71 @@ public class Medicion extends Fragment implements View.OnClickListener
         }
     }
 
-    void showNotification()
+    void showNotification(int cualAlerta, int glucemia)
     {
+        /* lista de eventos
+        0 = notificacion
+        1 = warning hiperglucemia
+        2 = alarma hiperglucemia
+        3 = alarma hipoglucemia
+        */
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
         builder.setSmallIcon(R.drawable.ic_stat_name);
         builder.setContentTitle(getResources().getString(R.string.notificacion_titulo));
-        builder.setContentText(getResources().getString(R.string.notificacion_text));
-        builder.setTicker(getResources().getString(R.string.notificacion_ticker));
+        builder.setAutoCancel(true);
+        Uri alarmSound;
+        String info;
+        info = getResources().getString(R.string.notificacion_info);
+        info = info.concat(""+glucemia);
+        builder.setContentInfo(info);
+        long[] pattern = new long[0];
+        MediaPlayer mp;
+        switch (cualAlerta)
+        {
+            case 0: // notificacion
+                builder.setContentText(getResources().getString(R.string.notificacion_text));
+                builder.setTicker(getResources().getString(R.string.notificacion_ticker));
+                //alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                mp= MediaPlayer.create(getContext(),R.raw.normal);
+                builder.setLights(Color.RED, 250, 250);
+                pattern = new long[]{125, 125, 125};
+                break;
+            case 1: // warning
+                builder.setContentText(getResources().getString(R.string.warning_text));
+                builder.setTicker(getResources().getString(R.string.warning_ticker));
+                mp= MediaPlayer.create(getContext(), R.raw.warning);
+                builder.setLights(Color.RED, 250, 250);
+                pattern = new long[]{150, 150, 150,150};
+                break;
+            case 2: // alarma hiper
+                builder.setContentText(getResources().getString(R.string.alarm_hiper_text));
+                builder.setTicker(getResources().getString(R.string.alarm_hiper_ticker));
+                mp= MediaPlayer.create(getContext(), R.raw.alert);
+                builder.setLights(Color.RED, 250, 250);
+                pattern = new long[]{200, 200, 200,200,200};
+                break;
+            case 3:  // alarma hipo
+                builder.setContentText(getResources().getString(R.string.alarm_hipo_text));
+                builder.setTicker(getResources().getString(R.string.alarm_hipo_ticker));
+                mp= MediaPlayer.create(getContext(), R.raw.alert);
+                builder.setLights(Color.RED, 250, 250);
+                pattern = new long[]{250, 250, 250,250,250,250};
+                break;
+            default:
+                mp = MediaPlayer.create(getContext(), R.raw.normal);
+        }
 
-        Intent intent = new Intent(getContext(),AcercaDe.class);
+
+        builder.setVibrate(pattern);
+        builder.setStyle(new NotificationCompat.InboxStyle());
+        Intent intent = new Intent(getContext(),Medicion.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addParentStack(AcercaDe.class);
         stackBuilder.addNextIntent(intent);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
         NotificationManager NM = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mp.start();
         NM.notify(0,builder.build());
     }
 
