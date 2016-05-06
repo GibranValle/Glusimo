@@ -31,18 +31,21 @@
 
     <string name="notificacion_text">Medición recibida: correcta</string>
     <string name="notificacion_ticker">Glucemia controlada</string>
-    <string name="notificacion_info">"Concentración: "</string>
+    <string name="notificacion_info">"Valor de glucemia recibido: "</string>
 
     <string name="warning_text">"Medición recibida: precaución"</string>
-    <string name="warning_ticker">Precaución: nivel de glucemia elevado</string>
+    <string name="warning_ticker">Precaución: glucemia en aumento</string>
 
-    <string name="alarm_hiper_text">Medición recibida: alerta</string>
-    <string name="alarm_hiper_ticker">Alerta, nivel de glucemia muy elevado</string>
+    <string name="alarm_hiper_text">Medición recibida: alerta de hiperglucemia</string>
+    <string name="alarm_hiper_ticker">Alerta, glucemia elevada</string>
 
-    <string name="alarm_hipo_text">Info de la notificación</string>
-    <string name="alarm_hipo_ticker">Alerta, nivel de glucemia muy bajo</string>
+    <string name="alarm_hipo_text">Medición recibida: alerta de hipoglucemia\nToque para terminar</string>
+    <string name="alarm_hipo_ticker">Alerta, sospecha de hipoglucemia</string>
 
+    <string name="boton_noti_aceptar">Aceptar</string>
+    <string name="boton_noti_pausar">Pausar</string>
 
+    <string name="titulo_notificacion">Panel de Notificación</string>
 
     <!-- textos BT -->
     <string name="bt_dc">DESCONECTADO</string>

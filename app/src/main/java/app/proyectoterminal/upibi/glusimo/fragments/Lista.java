@@ -556,6 +556,13 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         agregarMedicion(date,event.numero);
         actualizarListView();
         actualizarSpinner();
+        editor = respaldo.edit();
+        editor.putString("fecha",date);
+        if(editor.commit())
+        {
+            Log.i(TAG,"FECHA GUARDADA");
+        }
+
     }
     @Subscribe
     public void onEvent(EnviarStringEvent event)

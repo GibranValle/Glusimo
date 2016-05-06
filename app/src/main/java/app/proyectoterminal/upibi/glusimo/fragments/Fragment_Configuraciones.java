@@ -167,6 +167,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         // Asignar los listeners
         aceptar.setOnClickListener(this);
         cancelar.setOnClickListener(this);
+        eliminar.setOnClickListener(this);
         demo_medicion.setOnCheckedChangeListener(this);
 
         // carga los datos en el edit text
@@ -336,7 +337,8 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         {
             Log.i(TAG,"Eliminando todos los registros");
             int b = manager.eliminarTodo();
-            if (b < 0)
+            Log.i(TAG,"id: "+b);
+            if (b == 1)
             {
                 Toast.makeText(this, R.string.exito_eliminar_db, Toast.LENGTH_SHORT).show();
                 finish();
