@@ -159,6 +159,7 @@
     <string name="boton_db">"Eliminar todas las entradas"</string>
     <string name="exito_eliminar_db">"Se han eliminado todos los registros"</string>
     <string name="error_eliminar_db">"Error al intentar borrar los registros"</string>
+    <string name="error_eliminar_db2">"Error: No existen registros que borrar"</string>
     <string name="error_spinner">"Seleccione una curva a graficar"</string>
 
 </resources>

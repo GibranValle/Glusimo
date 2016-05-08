@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -65,6 +66,8 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     ArrayAdapter<String> adapterMes;
     ArrayAdapter<String> adapterSalud;
     ArrayAdapter<String> adapterDia;
+
+    int filtro = 0;
 
 
     @Override
@@ -142,7 +145,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         lista.setOnItemLongClickListener(this);
 
         // ACTUALIZAR LISTA Y SPINNER
-        actualizarListView();
+        actualizarListView("");
         actualizarSpinner();
 
         /* PRUEBA DE LISTVIEW
@@ -165,12 +168,26 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     }
 
     /** //////////////////////// METODOS DE PERSONALIZADOS  /////////////////////////////**/
-    void actualizarListView()
+    void actualizarListView(String filtros)
     {
         Log.i(TAG,"Actualizando list de Lista");
         //METODOS PARA DATABASE
         // MOVER EL CURSOR A CERO
-        cursor = manager.posicionCero();
+        if( filtro == 0)
+        {
+            cursor = manager.posicionCero();
+        }
+
+        else if(filtro == 1)
+        {
+            adaptador.setFilterQueryProvider(new FilterQueryProvider()
+            {
+                @Override
+                public Cursor runQuery(CharSequence constraint) {
+                    return manager.recuperarPorMes("mayo");
+                }
+            });
+        }
         // CREAR EL ARREGLO DE INICIO
         String [] from = {DataBaseManager.C_FECHA_CORTA, DataBaseManager.C_TIEMPO,
                 DataBaseManager.C_CONCENTRACIÓN, DataBaseManager.C_SALUD};
@@ -179,6 +196,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         adaptador = new SimpleCursorAdapter(getContext(),
                 R.layout.lista_parametros_layout, cursor, from, to);
         lista.setAdapter(adaptador);
+
 
         /*
         // CREAR EL ARREGLO DE INICIO
@@ -496,18 +514,22 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         if(selected.equals("Día:"))
         {
             // ELIMINAR FILTRO DE DÍA
+            actualizarListView("");
         }
         else if(selected.equals("Mes:"))
         {
             // ELIMINAR FILTRO DE MES
+            actualizarListView("");
         }
         else if(selected.equals("Año:"))
         {
             // ELIMINAR FILTRO DE MES
+            actualizarListView("");
         }
         else if(selected.equals("Estado:"))
         {
             // ELIMINAR FILTRO DE ESTADO
+            actualizarListView("");
         }
         else if (lista_meses.contains(selected))
         {
@@ -554,7 +576,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         Log.i(TAG,"hora de evento: "+date);
 
         agregarMedicion(date,event.numero);
-        actualizarListView();
+        actualizarListView("");
         actualizarSpinner();
         editor = respaldo.edit();
         editor.putString("fecha",date);
@@ -570,7 +592,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         String dato = event.mensaje;
         if(dato.equals("DL1"))
         {
-            actualizarListView();
+            actualizarListView("");
             actualizarSpinner();
         }
     }

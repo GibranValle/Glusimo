@@ -338,10 +338,14 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
             Log.i(TAG,"Eliminando todos los registros");
             int b = manager.eliminarTodo();
             Log.i(TAG,"id: "+b);
-            if (b == 1)
+            if (b > 0)
             {
                 Toast.makeText(this, R.string.exito_eliminar_db, Toast.LENGTH_SHORT).show();
                 finish();
+            }
+            else if(b == 0)
+            {
+                Toast.makeText(this, R.string.error_eliminar_db2, Toast.LENGTH_SHORT).show();
             }
             else
             {

@@ -290,7 +290,7 @@ public class Medicion extends Fragment implements View.OnClickListener
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
         builder.setSmallIcon(R.drawable.ic_stat_name);
         builder.setContentTitle(getResources().getString(R.string.notificacion_titulo));
-        builder.setAutoCancel(false );
+        builder.setAutoCancel(false);
         String info;
         info = getResources().getString(R.string.notificacion_info);
         info = info.concat(""+glucemia);
@@ -355,11 +355,11 @@ public class Medicion extends Fragment implements View.OnClickListener
         Intent intent = new Intent(getContext(),Cancelar.class);
         intent.putExtra("alerta",cualAlerta);
         intent.putExtra("glucemia",glucemia);
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-                getContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
+        PendingIntent contentIntent = PendingIntent.getActivity(getContext(),
+                0, intent,PendingIntent.FLAG_CANCEL_CURRENT);
+
+        builder.setContentIntent(contentIntent);
         NotificationManager NM = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        //mp.start();
         audio.play();
         NM.notify(0,builder.build());
     }

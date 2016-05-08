@@ -3,6 +3,7 @@ package app.proyectoterminal.upibi.glusimo.fragments;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -103,10 +104,11 @@ public class Cancelar extends Activity implements View.OnClickListener {
         if(v.getId()==R.id.boton_not_aceptar)
         {
             vibrar(100);
-            if(alarma==3)
+            if(alarma==3||alarma==2)
             {
                 audio.stop();
             }
+            cancelNotification(getBaseContext(),0);
             finish();
         }
     }
@@ -150,5 +152,12 @@ public class Cancelar extends Activity implements View.OnClickListener {
 
         set3.playTogether(set, set1, set2);
         set3.start();
+    }
+
+    public static void cancelNotification(Context context, int notifyId)
+    {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) context.getSystemService(ns);
+        nMgr.cancel(notifyId);
     }
 }

@@ -13,7 +13,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     private static final String NOMBRE_BD = "registroGlucemia.db";
     private static final int VERSION_BD = 1;
     public static final String NOMBRE_TABLA = "registroPorFecha";
-    public static final String ID = "_id";
+    public static final String C_ID = "_id";
     public static final String C_FECHA = "FECHA";
     public static final String C_AÑO = "AÑO";
     public static final String C_MES = "MES";
@@ -23,6 +23,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public static final String C_TIEMPO = "TIEMPO";
     public static final String C_CONCENTRACIÓN = "CONCENTRACIÓN";
     public static final String C_SALUD = "SALUD";
+    SQLiteDatabase db;
 
     static final String TAG = "DataBaseManager";
 
@@ -35,7 +36,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     /* CREA LA TABLA 1, ARGUMENTOS:(_id INTEGER PRIMAREY KEY, age INTEGER, name TEXT) */
     private static final String CREAR_TABLA =
             "CREATE TABLE "+ NOMBRE_TABLA + " ("+
-                    ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                    C_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
                     C_FECHA + " TEXT,"+
                     C_AÑO + " TEXT,"+
                     C_MES + " TEXT,"+
@@ -85,7 +86,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         String fecha_corta = nombre_dia+" "+dia+" "+mes+" "+año;
         Log.d(TAG,"fecha_corta"+fecha_corta);
         //cargar la base de datos;
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear el objeto contenido, para escribir los datos
         ContentValues contenido = new ContentValues();
         //ESCRIBIR EN LA COLUMNA, EL VALOR
@@ -106,7 +107,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
     public Cursor posicionCero() {
         // Obtenemos la base de datos
-        SQLiteDatabase db = getReadableDatabase();
+        db = getReadableDatabase();
         // Creamos un cursor para iterar al query
         Cursor c;
         // Realizamos el query
@@ -129,7 +130,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,"fecha_corta: "+fecha_corta);
 
         // CARGAR BASE DE DATOS PARA INICIAR LA EDICION
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
 
         // CREAR UN OBJETO DE CONTENIDO PARA GUARDAR LOS DATOS
         ContentValues contenido = new ContentValues();
@@ -159,7 +160,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG,"ELIMINANDO DATO...");
         // CARGAR BASE DE DATOS PARA INICIAR LA EDIC
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
 
        // CREAR UN OBJETO DE CONTENIDO PARA GUARDAR LOS DATOS
         ContentValues contenido = new ContentValues();
@@ -179,7 +180,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG,"ELIMINANDO DATO...");
         // CARGAR BASE DE DATOS PARA INICIAR LA EDIC
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //editar contenido del querry aqui
         String nombre = NOMBRE_TABLA;
         String seleccion =null;
@@ -189,14 +190,39 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return borrado;
     }
 
+    public Cursor recuperarPorMes(String Mes) throws SQLException
+    {
+        Log.w(TAG, Mes);
+        Cursor cursor = null;
+        db = getWritableDatabase();
+        if (Mes == null  ||  Mes.length () == 0)
+        {
+            cursor = db.query(NOMBRE_TABLA, new String[] {C_ID,
+                            C_MES,C_DIA,C_AÑO, C_TIEMPO, C_SALUD, C_CONCENTRACIÓN},
+                    null, null, null, null, null);
+
+        }
+        else {
+            cursor = db.query(true, NOMBRE_TABLA, new String[] {C_MES,C_DIA,C_AÑO,
+                            C_TIEMPO, C_SALUD, C_CONCENTRACIÓN},
+                    C_MES + " like '%" + Mes + "%'", null,
+                    null, null, null, null);
+        }
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+
+    }
+
     public String comprobar(String fecha) //Comprobar que no exista otro elemento con el mismo nombre
     {
         Log.d(TAG, "COMPROBANDO...");
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String FECHA = C_FECHA;
 
         String [] columnas = {id};
@@ -230,7 +256,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO TODOS LOS AÑOS");
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
         String año = C_AÑO;
@@ -261,7 +287,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO TODOS LOS MESES");
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
         String mes = C_MES;
@@ -292,7 +318,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO TODOS LOS DIAS");
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
         String dia = C_DIA;
@@ -323,7 +349,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO TODOS LOS ESTADOS");
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
         String salud = C_SALUD;
@@ -354,10 +380,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO TODOS LOS DATOS");
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String fecha = C_FECHA;
         String año = C_AÑO;
         String mes = C_MES;
@@ -408,10 +434,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR ID... "+_id);
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String fecha = C_FECHA;
         String año = C_AÑO;
         String mes = C_MES;
@@ -467,10 +493,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR AÑO... "+Año);
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String fecha = C_FECHA;
         String año = C_AÑO;
         String mes = C_MES;
@@ -524,14 +550,15 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return buffer.toString();
     }
 
+    /*
     public String recuperarPorMes(String Mes) //Comprobar que no exista otro usuario con el mismo nombre
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR Mes... "+Mes);
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String fecha = C_FECHA;
         String año = C_AÑO;
         String mes = C_MES;
@@ -582,15 +609,16 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
+    */
 
     public String recuperarPorDia(String día) //Comprobar que no exista otro usuario con el mismo nombre
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR dia... "+día);
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String fecha = C_FECHA;
         String año = C_AÑO;
         String mes = C_MES;
@@ -646,10 +674,10 @@ public class DataBaseManager extends SQLiteOpenHelper {
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR estado... "+estado);
         //cargar la base de datos
-        SQLiteDatabase db = getWritableDatabase();
+        db = getWritableDatabase();
         //crear strings para el metodo
         String NombreTabla = NOMBRE_TABLA;
-        String id = ID;
+        String id = C_ID;
         String fecha = C_FECHA;
         String año = C_AÑO;
         String mes = C_MES;
