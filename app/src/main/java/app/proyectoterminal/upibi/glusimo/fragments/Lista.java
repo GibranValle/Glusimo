@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -51,6 +50,11 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     private Cursor cursor;
     private DataBaseManager manager;
     String TAG ="Lista";
+
+    String filtroDia = "";
+    String filtroMes = "";
+    String filtroAño = "";
+    String filtroEstado = "";
 
     // Listas para el spinner
     List<String> dia = new ArrayList<>();
@@ -145,7 +149,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         lista.setOnItemLongClickListener(this);
 
         // ACTUALIZAR LISTA Y SPINNER
-        actualizarListView("");
+        actualizarListView(filtroDia,filtroMes,filtroAño,filtroEstado);
         actualizarSpinner();
 
         /* PRUEBA DE LISTVIEW
@@ -168,26 +172,36 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     }
 
     /** //////////////////////// METODOS DE PERSONALIZADOS  /////////////////////////////**/
-    void actualizarListView(String filtros)
+    void actualizarListView(String dia, String mes, String año, String estado)
     {
         Log.i(TAG,"Actualizando list de Lista");
+        cursor = manager.posicionCeroFiltro(dia,mes,año,estado);
         //METODOS PARA DATABASE
         // MOVER EL CURSOR A CERO
+        /*
         if( filtro == 0)
         {
-            cursor = manager.posicionCero();
+            cursor = manager.posicionCeroFiltro();
         }
 
         else if(filtro == 1)
         {
-            adaptador.setFilterQueryProvider(new FilterQueryProvider()
-            {
-                @Override
-                public Cursor runQuery(CharSequence constraint) {
-                    return manager.recuperarPorMes("mayo");
-                }
-            });
         }
+
+        else if(filtro == 2)
+        {
+        }
+
+        else if(filtro == 3)
+        {
+        }
+
+        else if(filtro == 4)
+        {
+            Log.i(TAG,"Intentando filtrar por estado");
+            cursor = manager.posicionCeroEstados(filtros);
+        }
+        */
         // CREAR EL ARREGLO DE INICIO
         String [] from = {DataBaseManager.C_FECHA_CORTA, DataBaseManager.C_TIEMPO,
                 DataBaseManager.C_CONCENTRACIÓN, DataBaseManager.C_SALUD};
@@ -218,7 +232,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         mesesRecuperados = manager.recuperarTodosMeses();
         diasRecuperados = manager.recuperarTodosDias();
         estadosRecuperados = manager.recuperarTodosEstados();
-
+        Log.i(TAG,"estados recuperados: \n"+estadosRecuperados);
         /*Log.i(TAG,"datos recuperados: años: "+añosRecuperados+" meses: "+mesesRecuperados+" dias: "
                 +diasRecuperados+" estados recuperados: \n"+estadosRecuperados);*/
 
@@ -503,55 +517,68 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         //Log.i(TAG,"tiene salto de linea?"+selected.contains("\n"));
         selected = selected.replace("\n","");
         //Log.i(TAG,"tiene salto de linea?"+selected.contains("\n"));
-        try {
+        try
+        {
             a = Integer.parseInt(selected);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             e.printStackTrace();
             //Log.e(TAG,"el string no es un numero");
         }
         //Log.i(TAG," algo: "+selected);
         //Log.i(TAG," "+selected.contains("\n"));
+        Log.w(TAG,"selected "+selected);
         if(selected.equals("Día:"))
         {
+            Log.w(TAG,"eliminar filtro dia");
             // ELIMINAR FILTRO DE DÍA
-            actualizarListView("");
+            filtroDia = "";
         }
         else if(selected.equals("Mes:"))
         {
             // ELIMINAR FILTRO DE MES
-            actualizarListView("");
+            Log.w(TAG,"eliminar filtro mes");
+            filtroMes = "";
         }
         else if(selected.equals("Año:"))
         {
             // ELIMINAR FILTRO DE MES
-            actualizarListView("");
+            Log.w(TAG,"eliminar filtro año");
+            filtroAño = "";
         }
         else if(selected.equals("Estado:"))
         {
             // ELIMINAR FILTRO DE ESTADO
-            actualizarListView("");
+            Log.w(TAG,"eliminar filtro estado");
+            filtroEstado ="";
         }
         else if (lista_meses.contains(selected))
         {
             // SE ELIGIÓ EL FILTRO DE MESES, HACER EL FILTRO CON ESE MES
-            Log.i(TAG,"se eligió un mes");
+            Log.w(TAG,"se eligió un mes: "+selected);
+            filtroMes = selected;
         }
         else if(lista_estados.contains(selected))
         {
             // SE ELIGIÓ EL FILTRO DE ESTADOS, HACER EL FILTRO CON ESE ESTADO
-            Log.i(TAG,"se eligió un estado");
+            Log.w(TAG,"se eligió un estado:" + selected);
+            filtroEstado =selected;
         }
         else if(a>0 && a <32)
         {
             // SE ELIGIÓ EL FILTRO DE DIAS, HACER EL FILTRO CON ESE DIA
-            Log.i(TAG,"se eligió un dia");
+            Log.w(TAG,"se eligió un dia: "+selected);
+            filtroDia = selected;
         }
-        else if(a>33)
+        else if(a>=32)
         {
             // SE ELIGIÓ EL FILTRO DE AÑOS, HACER EL FILTRO CON ESTE AÑO
-            Log.i(TAG,"se eligió un año");
+            Log.w(TAG,"se eligió un año: "+selected);
+            filtroAño = selected;
         }
-
+        Log.w(TAG,"filtros a enviar: dia: "+filtroDia+" mes: "+filtroMes+" año: "+filtroAño+" estado: "+filtroEstado);
+        actualizarListView(filtroDia,filtroMes,filtroAño,filtroEstado);
     }
 
     @Override
@@ -576,7 +603,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         Log.i(TAG,"hora de evento: "+date);
 
         agregarMedicion(date,event.numero);
-        actualizarListView("");
+        actualizarListView(filtroDia,filtroMes,filtroAño,filtroEstado);
         actualizarSpinner();
         editor = respaldo.edit();
         editor.putString("fecha",date);
@@ -592,7 +619,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         String dato = event.mensaje;
         if(dato.equals("DL1"))
         {
-            actualizarListView("");
+            actualizarListView(filtroDia,filtroMes,filtroAño,filtroEstado);
             actualizarSpinner();
         }
     }

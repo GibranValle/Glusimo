@@ -119,6 +119,144 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor posicionCeroFiltro(String dia, String mes, String año, String estado) {
+        // Obtenemos la base de datos
+        db = getReadableDatabase();
+        // Creamos un cursor para iterar al query
+        Cursor c;
+        int anterior = 0;
+        // Realizamos el query
+        String q="", q1="", q2="", q3="", q4="", query ="";
+        q = ("SELECT * FROM "+NOMBRE_TABLA);
+        // logica
+        if(!dia.equals(""))
+        {
+            Log.w(TAG,"existe filtro de dia: "+dia);
+            // si hay algo dentro de dia
+            q1 = (" where "+C_DIA+" like '%"+dia+"%'");
+            anterior = 1;
+        }
+
+        if(!mes.equals(""))
+        {
+            // si hay algo dentro de mes
+            if(anterior == 1)
+            {
+                Log.w(TAG,"tambn existe filtro de mes: "+mes);
+                q2 = (" AND "+C_MES+" like '%"+mes+"%'");
+            }
+            else
+            {
+                q2 = (" where "+C_MES+" like '%"+mes+"%'");
+                Log.w(TAG,"existe filtro de mes: "+mes);
+                anterior = 1;
+            }
+        }
+
+        if(!año.equals(""))
+        {
+            // si hay algo dentro de año
+            if(anterior == 1)
+            {
+                Log.w(TAG,"tambn existe filtro de año: "+año);
+                q3 = (" AND "+C_AÑO+" like '%"+año+"%'");
+            }
+            else
+            {
+                Log.w(TAG,"existe filtro de año: "+año);
+                q3 = (" where "+C_AÑO+" like '%"+año+"%'");
+                anterior = 1;
+            }
+        }
+
+        if(!estado.equals(""))
+        {
+            // si hay algo dentro de estado
+            if(anterior == 1)
+            {
+                Log.w(TAG,"tambn existe filtro de estado: "+estado);
+                q4 = (" AND "+C_SALUD+" like '%"+estado+"%'");
+            }
+            else
+            {
+                Log.w(TAG,"existe filtro de estado: "+estado);
+                q4 = (" where "+C_SALUD+" like '%"+estado+"%'");
+            }
+        }
+
+        //query = query.concat(q+q1+q2+q3+q4);
+        query = query.concat(q+q1+q2+q3+q4);
+        c = db.rawQuery(query,null);
+        // Regresamos el cursor en su primera posicion
+        if( c!= null)
+            c.moveToFirst();
+        return c;
+    }
+
+    public Cursor posicionCeroEstados(String filtro) {
+        // Obtenemos la base de datos
+        db = getReadableDatabase();
+        // Creamos un cursor para iterar al query
+        Cursor c;
+        // Realizamos el query
+        String query;
+        query = ("SELECT * FROM "+NOMBRE_TABLA+" where "+C_SALUD+" like '%"+filtro+"%'");
+        Log.w(TAG,query);
+        c = db.rawQuery(query,null);
+        // Regresamos el cursor en su primera posicion
+        if( c!= null)
+            c.moveToFirst();
+        return c;
+    }
+
+    public Cursor posicionCeroDias(String filtro) {
+        // Obtenemos la base de datos
+        db = getReadableDatabase();
+        // Creamos un cursor para iterar al query
+        Cursor c;
+        // Realizamos el query
+        String query;
+        query = ("SELECT * FROM "+NOMBRE_TABLA+" where "+C_SALUD+" like '%"+filtro+"%'");
+        Log.w(TAG,query);
+        c = db.rawQuery(query,null);
+        // Regresamos el cursor en su primera posicion
+        if( c!= null)
+            c.moveToFirst();
+        return c;
+    }
+
+    public Cursor posicionCeroMeses(String filtro) {
+        // Obtenemos la base de datos
+        db = getReadableDatabase();
+        // Creamos un cursor para iterar al query
+        Cursor c;
+        // Realizamos el query
+        String query;
+        query = ("SELECT * FROM "+NOMBRE_TABLA+" where "+C_SALUD+" like '%"+filtro+"%'");
+        Log.w(TAG,query);
+        c = db.rawQuery(query,null);
+        // Regresamos el cursor en su primera posicion
+        if( c!= null)
+            c.moveToFirst();
+        return c;
+    }
+
+    public Cursor posicionCeroAños(String filtro) {
+        // Obtenemos la base de datos
+        db = getReadableDatabase();
+        // Creamos un cursor para iterar al query
+        Cursor c;
+        // Realizamos el query
+        String query;
+        query = ("SELECT * FROM "+NOMBRE_TABLA+" where "+C_SALUD+" like '%"+filtro+"%'");
+        Log.w(TAG,query);
+        c = db.rawQuery(query,null);
+        // Regresamos el cursor en su primera posicion
+        if( c!= null)
+            c.moveToFirst();
+        return c;
+    }
+
     public int actualizarDatos(String fechaAnterior, String fecha ,String año, String mes,
                                String dia, String nombre_dia,
                                String tiempo, String estado, String concentración)
@@ -190,12 +328,12 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return borrado;
     }
 
-    public Cursor recuperarPorMes(String Mes) throws SQLException
+    public Cursor recuperarPorDia(String Dia) throws SQLException
     {
-        Log.w(TAG, Mes);
+        Log.w(TAG, Dia);
         Cursor cursor = null;
         db = getWritableDatabase();
-        if (Mes == null  ||  Mes.length () == 0)
+        if (Dia == null  ||  Dia.length () == 0)
         {
             cursor = db.query(NOMBRE_TABLA, new String[] {C_ID,
                             C_MES,C_DIA,C_AÑO, C_TIEMPO, C_SALUD, C_CONCENTRACIÓN},
@@ -205,14 +343,13 @@ public class DataBaseManager extends SQLiteOpenHelper {
         else {
             cursor = db.query(true, NOMBRE_TABLA, new String[] {C_MES,C_DIA,C_AÑO,
                             C_TIEMPO, C_SALUD, C_CONCENTRACIÓN},
-                    C_MES + " like '%" + Mes + "%'", null,
+                    C_DIA + " like '%" + Dia + "%'", null,
                     null, null, null, null);
         }
         if (cursor != null) {
             cursor.moveToFirst();
         }
         return cursor;
-
     }
 
     public String comprobar(String fecha) //Comprobar que no exista otro elemento con el mismo nombre
@@ -488,7 +625,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
-
+/*
     public String recuperarPorAño(String Año) //Comprobar que no exista otro usuario con el mismo nombre
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR AÑO... "+Año);
@@ -609,7 +746,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
-    */
+
 
     public String recuperarPorDia(String día) //Comprobar que no exista otro usuario con el mismo nombre
     {
@@ -728,7 +865,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,buffer.toString());
         return buffer.toString();
     }
-
+*/
 
 
 }

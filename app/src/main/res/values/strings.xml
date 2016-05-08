@@ -77,7 +77,7 @@
     <!-- textos Medicion Salud paciente paciente -->
     <string name="paciente_saludable">Saludable</string>
     <string name="paciente_warning">Principio de Hiperglucemia</string>
-    <string name="paciente_emergency">Hiperglucemia\nSevera</string>
+    <string name="paciente_emergency">Hiperglucemia Severa</string>
     <string name="paciente_emergency_hipo">Hipoglucemia</string>
     <string name="sin_medicion">De click en el arco para realizar una medición</string>
     <string name="sin_conexion">Conecte con el dosificador para empezar la medición</string>
@@ -110,11 +110,12 @@
         <item>"noviembre"</item>
         <item>"diciembre"</item>
     </string-array>
+
     <string-array name="lista_estados">
-        <item>"hipoglucemia"</item>
-        <item>"saludable"</item>
-        <item>"hiperglucemia"</item>
-        <item> "hiperglucemia severa"</item>
+        <item>"Hipoglucemia"</item>
+        <item>"Saludable"</item>
+        <item>"Principio de Hiperglucemia"</item>
+        <item> "Hiperglucemia Severa"</item>
     </string-array>
 
     <!-- DetallesLista -->
