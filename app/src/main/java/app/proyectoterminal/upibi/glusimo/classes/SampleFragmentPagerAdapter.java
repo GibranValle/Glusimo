@@ -26,8 +26,8 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
     // METODO IMPLEMENTADO PARA RECUPERAR TITULOS
     String[] titulos = {"Medición","Registro","Curva Diagnóstica","Monitor","Configuración"};
     int[] icons = {R.drawable.ic_menu_view,
-            R.drawable.ic_menu_view, R.drawable.ic_menu_view,  R.drawable.ic_menu_view,
-            R.drawable.ic_menu_view};
+            R.drawable.ic_menu_register, R.drawable.ic_curva,  R.drawable.ic_monitor,
+            R.drawable.ic_menu_manage};
 
     private Context context;
 

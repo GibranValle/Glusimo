@@ -21,7 +21,7 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
 
     private final static String TAG = "Configuracion";
     int[] icons = {R.drawable.ic_menu_view,
-            R.drawable.ic_menu_today, R.drawable.ic_menu_search};
+            R.drawable.ic_menu_register, R.drawable.ic_curva};
     Intent i;
 
     @Override

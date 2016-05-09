@@ -52,7 +52,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     private DataBaseManager manager;
 
     private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 82, 80};
-    private static final int curvaGlucosaPrediabetes[] = {80, 189, 127, 134, 143, 121,99};
+    private static final int curvaGlucosaPrediabetes[] = {90, 169, 160, 134, 143, 121,99};
     private static final int curvaGlucosaDiabetes[] = {84, 160, 220, 200, 186, 168, 150};
 
     final static String TAG = "Configuracion";

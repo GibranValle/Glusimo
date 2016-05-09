@@ -9,7 +9,8 @@
     <string name="navigation_drawer_close">Cerrando</string>
     <string name="nav_check">Hacer Medición</string>
     <string name="nav_registro">Ver Registro</string>
-    <string name="nav_search">Realizar diagnóstico</string>
+    <string name="nav_dx">Realizar diagnóstico</string>
+    <string name="nav_monitor">Graficar Registro</string>
     <string name="nav_acerca">Acerca de</string>
     <string name="nav_glusimo">Glusimo</string>
     <string name="nav_comu">Comunicación</string>
@@ -91,6 +92,11 @@
     <string name="eje_tiempo">Tiempo [min]</string>
     <string name="eje_Y">Glucemia [mg/dL]</string>
     <string name="info_tendencias">"Escala:  25mg/dL  |  15min"</string>
+    <string name="dx_intolerancia">"Intolerancia elevada"</string>
+    <string name="dx_sospecha_intolerancia">"Sospecha de intolerancia"</string>
+    <string name="dx_normal">"Tolerancia normal"</string>
+    <string name="dx_tolerancia">"Sospecha de tolerancia excesiva"</string>
+
 
     <!-- textos Lista -->
     <string name="titulo_lista">Registro de eventos</string>
