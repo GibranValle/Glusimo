@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import org.greenrobot.eventbus.Subscribe;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -54,9 +57,9 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
     Boolean monitorizar;
     List<Long> tiempos = new ArrayList<>();
     List<Integer> glucemias = new ArrayList<>();
-
-    Long tiempo, minutos;
-
+    String filterA="", filterB="";
+    long idA=0, idB=0;
+    long inicio=0, fin=0;
     // BASE DE DATOS
     private SimpleCursorAdapter adaptador;
     private Cursor cursor;
@@ -68,7 +71,6 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
     // array adapters para spinner
     ArrayAdapter<String> adapterInicio;
     ArrayAdapter<String> adapterFinal;
-    String inicio = "", fin = "";
 
     EventBus bus = EventBus.getDefault();
     String TAG = "Monitor";
@@ -105,10 +107,6 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
         monitorizar = respaldo.getBoolean("monitorizar",true);
         manager = new DataBaseManager(getContext());
 
-        // agregar los filtros
-        fecha_inicio.add("Fecha Inicio:");
-        fecha_final.add("Fecha Final:");
-
         // Crear los adapatadores para el spinner
         adapterInicio = new ArrayAdapter<>(getContext(), R.layout.custom_spinner_layout,fecha_inicio);
         adapterFinal = new ArrayAdapter<>(getContext(), R.layout.custom_spinner_layout,fecha_final);
@@ -131,7 +129,7 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
             espacio.setOnClickListener(this);
             actualizarSpinner();
             // contruir vectores para graficar
-            contruirVectores();
+            //contruirVectores();
         }
         else
         {
@@ -192,7 +190,6 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
         Log.i(TAG, "Actualizando spinner de Lista");
         String fechas_Recuperadas;
         fechas_Recuperadas = manager.recuperarTodasFechas();
-
         Log.i(TAG,"Datos recuperados:\n" + fechas_Recuperadas);
 
         // crear variables para llenar
@@ -200,6 +197,15 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
         int indexslash;
         int comprobar = comprobarFinLinea(fechas_Recuperadas);
         String id;
+
+        if(fecha_inicio.size()==0)
+        {
+            fecha_inicio.add("Fecha Inicio:");
+        }
+        if(fecha_final.size() == 0)
+        {
+            fecha_final.add("Fecha Final:");
+        }
 
         //Log.i(TAG,"ENTRANDO AL WHILE AÑOS");
         // COMPROBAR QUE AÑOS RECUPERADOS TENGA TEXTO AUN
@@ -263,35 +269,41 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
 
     void contruirVectores()
     {
+        tiempos.clear();
+        glucemias.clear();
         Log.i(TAG,"Creando vectores");
         String datos = manager.recuperarDesdeHasta(inicio,fin);
         int largo = datos.length();
-        Log.i(TAG,"DATOS RECUPERADOS CON FILTRO: "+datos + " largo: "+largo);
+        Log.i(TAG,"DATOS RECUPERADOS CON FILTRO: "+datos + " largo: "+largo+"\n");
         int comprobar = comprobarFinLinea(datos);
 
         while (comprobar>0)
         {
             String fecha = datos.substring(0, datos.indexOf("|"));
-            //Log.i(TAG, "fecha: " + fecha + " largo: " + fecha.length());
+            Log.i(TAG, "fecha: " + fecha + " largo: " + fecha.length());
             SimpleDateFormat df = new SimpleDateFormat("EEEE dd/MMMM/yyyy-HH:mm:ss");
+            long tiempo;
+            long minutos = 0;
             try
             {
                 Date d = df.parse(fecha);
                 tiempo = d.getTime();
                 minutos = tiempo/1000/60;
-                Log.i(TAG,"TIEMPO EN MILIS: "+tiempo+" tiempo en mins: "+minutos);
+                //Log.i(TAG,"TIEMPO EN MILIS: "+tiempo+" tiempo en mins: "+minutos);
             }
             catch (ParseException e)
             {
                 e.printStackTrace();
             }
-            datos = datos.replace(fecha + "|", "");
+            datos = datos.replaceFirst(fecha, "");
+            datos = datos.substring(1);
             //Log.i(TAG, "cadena restante: " + datos + " largo: " + datos.length());
 
             String glucemia = datos.substring(0, datos.indexOf("\n"));
             //Log.i(TAG, "glucemia: " + glucemia + " largo: " + glucemia.length());
 
-            datos = datos.replace(glucemia + "\n", "");
+            datos = datos.replaceFirst(glucemia, "");
+            datos = datos.substring(1);
             //Log.i(TAG, "cadena restante: " + datos + " largo: " + datos.length());
 
             comprobar = comprobarFinLinea(datos);
@@ -330,13 +342,126 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
     @Override
     public void onClick(View v)
     {
+        vibrar(100);
+        contruirVectores();
+        empezarCanvas();
+        long offset, size, max, dt=15;
+        float gain;
+        long xo, xf;
+        float yo, yf;
 
+        Log.i(TAG,"TAMAÑOS: "+tiempos.size()+" "+glucemias.size());
+        // encontrar el maximo de un list
+        try
+        {
+        max = Collections.max(glucemias);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            max = 250;
+        }
+        // convertir las listas a arrays
+        Long[] x = tiempos.toArray(new Long[tiempos.size()]);
+        Integer[] y = glucemias.toArray(new Integer[glucemias.size()]);
+        Log.i(TAG,"x: "+ Arrays.toString(x)+" y: "+Arrays.toString(y));
+        offset = x[0];
+        size = x.length;
+        gain = (float) alto/(max+10);
+        Log.i(TAG,"ganancia calculada: "+gain);
+        if(size==1)
+        {
+            Log.i(TAG,"Graficar 1 punto");
+            // GRAFIQUE UN PUNTO
+            paint.setColor(getResources().getColor(R.color.colorLetraClara));
+            paint.setStrokeWidth(5);
+            canvas.drawCircle(ancho/2,alto/2,20,paint);
+            espacio.invalidate();
+            // calcular escala
+            escala.setText("Escala:  "+  2*max/10+"mg/dL");
+        }
+        else if(size == 2)
+        {
+            Log.i(TAG,"Graficar 1 recta");
+            // GRAFIQUE UN PUNTO
+            paint.setColor(getResources().getColor(R.color.colorLetraClara));
+            paint.setStrokeWidth(5);
+            xo = 0;
+            yo = (alto - (gain*y[0]));
+            xf = ancho;
+            yf = (alto - (gain*y[1]));
+            canvas.drawLine(xo,yo,xf,yf,paint);
+            espacio.invalidate();
+            dt = x[1]-x[0];
+            // calcular escala
+            escala.setText("Escala:  "+  max/10+"mg/dL  |  "+dt+"min");
+        }
+        else if(size >=3)
+        {
+            Log.i(TAG,"Graficar lineas");
+            paint.setColor(getResources().getColor(R.color.colorLetraClara));
+            paint.setStrokeWidth(5);
+            // hacer un for
+            for(int c = 0; c<size-1;c++)
+            {
+                xo = c*ancho/(size-1);
+                yo = (alto - (gain*y[c]));
+                xf = (c+1)*ancho/(size-1);
+                yf = (alto - (gain*y[c+1]));
+                canvas.drawLine(xo,yo,xf,yf,paint);
+                Log.i(TAG,"puntos: "+xo+" "+yo+" "+xf+" "+yf);
+            }
+            espacio.invalidate();
+            // calcular escala
+            dt = x[(int) size-1]-x[0];
+            escala.setText("Escala:  "+  max/10+"mg/dL  |  "+dt+"min");
+        }
+    }
+
+    private void vibrar(int ms)
+    {
+        Vibrator vibrador = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+        vibrador.vibrate(ms);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
+        Spinner spinner = (Spinner) parent;
+        String selected = parent.getItemAtPosition(position).toString();
+        if(spinner.getId() == R.id.fecha_inicio)
+        {
+            Log.w(TAG,"Spinner Fecha inicio"+ " id: "+id);
+            idA = id;
+            if(idA > 0 )
+            {
+                filterA = selected;
+            }
+        }
+        else if(spinner.getId() == R.id.fecha_final)
+        {
+            Log.w(TAG,"Spinner Fecha final" +" id: "+id);
+            idB = id;
+            if(idB > 0 )
+            {
+                filterB = selected;
+            }
+        }
 
+        if(idB >= idA)
+        {
+            Log.i(TAG,"coso "+selected);
+
+            if(!filterA.equals(""))
+            {
+                inicio = manager.recuperarId(filterA);
+            }
+            if(!filterB.equals(""))
+            {
+                fin = manager.recuperarId(filterB);
+            }
+            Log.i(TAG,"ids recuperados: "+inicio +" :"+fin);
+        }
     }
 
     @Override

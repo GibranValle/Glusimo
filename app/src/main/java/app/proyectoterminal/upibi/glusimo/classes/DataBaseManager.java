@@ -8,10 +8,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+
 public class DataBaseManager extends SQLiteOpenHelper {
 
     private static final String NOMBRE_BD = "registroGlucemia.db";
-    private static final int VERSION_BD = 1;
+    private static final int VERSION_BD = 2;
     public static final String NOMBRE_TABLA = "registroPorFecha";
     public static final String C_ID = "_id";
     public static final String C_FECHA = "FECHA";
@@ -19,6 +24,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public static final String C_MES = "MES";
     public static final String C_DIA = "DÍA";
     public static final String C_NDIA = "NOMBRE_DÍA";
+    public static final String C_FECHA_SEGUNDOS = "FECHA_SEGUNDOS";
     public static final String C_FECHA_CORTA = "FECHA_CORTA";
     public static final String C_TIEMPO = "TIEMPO";
     public static final String C_CONCENTRACIÓN = "CONCENTRACIÓN";
@@ -36,12 +42,13 @@ public class DataBaseManager extends SQLiteOpenHelper {
     /* CREA LA TABLA 1, ARGUMENTOS:(_id INTEGER PRIMAREY KEY, age INTEGER, name TEXT) */
     private static final String CREAR_TABLA =
             "CREATE TABLE "+ NOMBRE_TABLA + " ("+
-                    C_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                    C_ID + " INTEGER PRIMARY KEY,"+
                     C_FECHA + " TEXT,"+
                     C_AÑO + " TEXT,"+
                     C_MES + " TEXT,"+
                     C_DIA +" TEXT,"+
                     C_NDIA +" TEXT,"+
+                    C_FECHA_SEGUNDOS + " INTEGER,"+
                     C_FECHA_CORTA + " TEXT,"+
                     C_TIEMPO + " TEXT,"+
                     C_SALUD + " TEXT,"+
@@ -85,6 +92,21 @@ public class DataBaseManager extends SQLiteOpenHelper {
         Log.d(TAG,"INSERTANDO DATOS...");
         String fecha_corta = nombre_dia+" "+dia+" "+mes+" "+año;
         Log.d(TAG,"fecha_corta"+fecha_corta);
+        Log.i(TAG, "fecha: " + fecha + " largo: " + fecha.length());
+        SimpleDateFormat df = new SimpleDateFormat("EEEE dd/MMMM/yyyy-HH:mm:ss");
+        long milis;
+        long seconds = 0;
+        try
+        {
+            Date d = df.parse(fecha);
+            milis = d.getTime();
+            seconds = milis/1000;
+            Log.i(TAG,"TIEMPO EN MILIS: "+milis+" tiempo en secs: "+seconds);
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
         //cargar la base de datos;
         db = getWritableDatabase();
         //crear el objeto contenido, para escribir los datos
@@ -95,6 +117,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         contenido.put(C_MES,mes);
         contenido.put(C_DIA,dia);
         contenido.put(C_NDIA,nombre_dia);
+        contenido.put(C_FECHA_SEGUNDOS,seconds);
         contenido.put(C_FECHA_CORTA,fecha_corta);
         contenido.put(C_TIEMPO,tiempo);
         contenido.put(C_SALUD,estado);
@@ -577,8 +600,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return buffer.toString();
     }
 
-    public String recuperarDesdeHasta(String inicio, String fin) //Comprobar que no exista otro usuario con el mismo nombre
+    public String recuperarDesdeHasta(long inicio, long fin) //Comprobar que no exista otro usuario con el mismo nombre
     {
+        // CON LOS ID PARA HACER OPERACION LOGICA
         Log.d(TAG, "RECUPERANDO DESDE: "+inicio + " HASTA: "+fin);
         //cargar la base de datos
         db = getWritableDatabase();
@@ -588,32 +612,40 @@ public class DataBaseManager extends SQLiteOpenHelper {
         String fecha = C_FECHA;
         String concentración = C_CONCENTRACIÓN;
         //datos a recuperar
-        String [] columnas = {fecha, concentración};
+        String [] columnas ={fecha,concentración};
 
-        Log.i(TAG,"REGRESA TODAS POR DEFAULT");
-        String seleccion = null; //regresa todas
-        String[] args_selec =null; //regresa todas
+        Log.i(TAG,"REGRESA TODAS POR DEFAULT SI NO SE PIDE LO CONTRARIO");
+        String seleccion; //regresa todas
+        String[] args_selec; //regresa todas
 
-        if(!inicio.equals("") && !fin.equals(""))
+        if(inicio > 0 && fin > 0)
         {
+            // viene con filtros
             seleccion = id+">=? AND "+id+"<=?"; //a apartir del
-            args_selec = new String[]{inicio, fin}; //id entrante
-            Log.i(TAG,"REGRESA DESDE HASTA");
+            args_selec = new String[]{String.valueOf(inicio), String.valueOf(fin)}; //id entrante
+            Log.i(TAG,"FILTROS DE INICIO Y FINAL");
         }
 
-        else if(!inicio.equals("") )
+        else if(inicio > 0)
         {
             seleccion = id+">=?"; //a apartir del
-            args_selec =new String[]{inicio}; //id entrante
-            Log.i(TAG,"REGRESA DESDE");
+            args_selec =new String[]{String.valueOf(inicio)}; //id entrante
+            Log.i(TAG,"FILTRO DE INICIO");
         }
 
-        else if(!fin.equals("") )
+        else if(fin>0)
         {
             seleccion = id+"<=?"; //a apartir del
-            args_selec =new String[]{fin}; //id entrante
-            Log.i(TAG,"REGRESA HASTA");
+            args_selec =new String[]{String.valueOf(fin)}; //id entrante
+            Log.i(TAG,"FILTRO DE FINAL");
         }
+        else
+        {
+            seleccion = null;
+            args_selec = null;
+        }
+
+        Log.d(TAG,"parametros "+seleccion+" "+ Arrays.toString(args_selec));
 
         //filtros
         String agrupar = null;
@@ -695,7 +727,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return buffer.toString();
     }
 
-    public String recuperarId(String Fecha) //Comprobar que no exista otro usuario con el mismo nombre
+    public long recuperarId(String Fecha) //Comprobar que no exista otro usuario con el mismo nombre
     {
         Log.d(TAG, "RECUPERANDO NOMBRE POR FECHA... "+Fecha);
         //cargar la base de datos
@@ -721,9 +753,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
         while (cursor.moveToNext())
         {
             String cId = cursor.getString(indesId);
-            buffer.append(cId + "\n");
+            buffer.append(cId);
         }
         Log.d(TAG,buffer.toString());
-        return buffer.toString();
+        return Long.parseLong(buffer.toString());
     }
 }

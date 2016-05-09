@@ -246,7 +246,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
 
 
 
-                case 2:
+                case 3:
                     Log.i(TAG,"configuracion de curva");
                     editor = respaldo.edit();
                     switch (posicionSpinner)
@@ -276,7 +276,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             editor.putInt("CDL6",LG);
                             if(editor.commit())
                             {
-                                bus.post(new EnviarStringEvent("F2"));
+                                bus.post(new EnviarStringEvent("F3"));
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -303,7 +303,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             editor.putInt("CPDL6",LG);
                             if(editor.commit())
                             {
-                                bus.post(new EnviarStringEvent("F2"));
+                                bus.post(new EnviarStringEvent("F3"));
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -329,7 +329,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             editor.putInt("CSL6",LG);
                             if(editor.commit())
                             {
-                                bus.post(new EnviarStringEvent("F2"));
+                                bus.post(new EnviarStringEvent("F3"));
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -356,14 +356,14 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             if(editor.commit())
                             {
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
-                                bus.post(new EnviarStringEvent("F2"));
+                                bus.post(new EnviarStringEvent("F3"));
                                 finish();
                             }
                             break;
                     }
                     break;
 
-                case 3:
+                case 2:
                     Log.i(TAG,"configuracion de monitor");
                     monitorizar = monitorizar_cb.isChecked();
                     frec = Integer.parseInt(editFrec.getText().toString());
@@ -374,7 +374,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                     {
                         Log.d(TAG,"guardado");
                         Toast.makeText(this,R.string.exito, Toast.LENGTH_SHORT).show();
-                        bus.post(new EnviarStringEvent("F3"));
+                        bus.post(new EnviarStringEvent("F2"));
                         finish();
                     }
                     break;

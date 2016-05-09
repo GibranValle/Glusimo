@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -24,6 +25,9 @@ import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import app.proyectoterminal.upibi.glusimo.Bluetooth.BluetoothSPP;
 import app.proyectoterminal.upibi.glusimo.Bluetooth.BluetoothState;
@@ -50,7 +54,16 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     EventBus bus = EventBus.getDefault();
     BluetoothSPP bt;
     String address, name;
+    // TIMER
+    Timer timer;
+    TimerTask timerTask;
+    final Handler handler = new Handler();  // VARIABLE PARA TIMER
+
     boolean conectado = false;
+    boolean monitorizar;
+    int frecuencia_monitoreo;
+    boolean monitoreando;
+
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
 
 
@@ -110,6 +123,8 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 boton_conexion.setVisibility(View.VISIBLE);
                 Log.e(TAG,"SE PERDIÓ LA CONEXION");
                 bus.post(new EnviarStringEvent("ID"));
+                monitoreando = false;
+                pararMonitoreo();
                 /*
                 textStatus.setText("Status : Not connect");
                 menu.clear();
@@ -127,6 +142,8 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG,"LISTENER FALLIDO");
                 conectado = false;
+                monitoreando = false;
+                pararMonitoreo();
             }
 
             public void onDeviceConnected(String name, String address)
@@ -151,7 +168,18 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                             getString(R.string.bt_exito)+" "+name,
                             Toast.LENGTH_SHORT).show();
                     conectado = true;
-                    bt.send("C",true);
+                    if(monitorizar)
+                    {
+                        // MONITOREO ONLINE
+                        bt.send("O",true);
+                        monitoreando = true;
+                        long periodo = frecuencia_monitoreo*60*1000;
+                        empezarMonitore(periodo);
+                    }
+                    else
+                    {
+                        bt.send("C",true);
+                    }
                     // CAMBIAR INSTRUCCIÓN DEL FRAGMENT
                     bus.post(new EnviarStringEvent("IC"));
                 }
@@ -313,19 +341,33 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 bt.send("M",true);
             }
             viewPager.setCurrentItem(0);
-        } else if (id == R.id.nav_reg) {
+        }
+        else if (id == R.id.nav_reg)
+        {
             // LA POSICION 0 ES tendencias
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
             viewPager.setCurrentItem(1);
-        } else if (id == R.id.nav_search) {
+        }
+        else if (id == R.id.nav_monitor)
+        {
             // LA POSICION 0 ES lista
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
             viewPager.setCurrentItem(2);
-        } else if (id == R.id.nav_config) {
+        }
+        else if (id == R.id.nav_curva)
+        {
             // LA POSICION 0 ES config
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
             viewPager.setCurrentItem(3);
-        } else if (id == R.id.nav_share) {
+        }
+        else if (id == R.id.nav_config)
+        {
+            // LA POSICION 0 ES config
+            // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
+            viewPager.setCurrentItem(4);
+        }
+        else if (id == R.id.nav_share)
+        {
             Toast.makeText(Interfaz.this, "ESPÉRALO EN FUTURAS VERSIONES", Toast.LENGTH_SHORT).show();
         }
         else if (id == R.id.nav_send)
@@ -372,12 +414,52 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     {
         // RECUPERAR LOS DATOS GUARDADOS POR EL USUARIO PREVIAMENTE
         respaldo = getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
-        //conectado = respaldo.getBoolean("conectado",false);
-        //paso = Integer.parseInt(respaldo.getString("paso", "2"));
+        monitorizar = respaldo.getBoolean("monitorizar",true);
+        frecuencia_monitoreo = respaldo.getInt("frec",12);
     }
-    void vibrar(int ms) {
+    void vibrar(int ms)
+    {
         Vibrator vibrador = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibrador.vibrate(ms);
+    }
+    public void empezarMonitore(long periodo)
+    {
+        //instanciar nuevo timer
+        timer = new Timer();
+        //inicializar el timer
+        MonitoreoTask();
+        //esperar 0ms para empezar, repetir cada 100ms
+        timer.schedule(timerTask, 0, periodo); //
+    }
+    public void pararMonitoreo() {
+        //parar el timer, si no esta vacio
+        if (timer != null)
+        {
+            timer.purge();
+            timer.cancel();
+            timer = null;
+            Log.w(TAG,"timer cancelado");
+        }
+    }
+
+    public void MonitoreoTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                //use a handler to run a toast that shows the current timestamp
+                handler.post(new Runnable() {
+                    public void run()
+                    {
+                        //graficarDemo(x,y);
+                        monitoreo();
+                    }
+                });
+            }
+        };
+    }
+
+    public void monitoreo()
+    {
+        bt.send("O",true);
     }
     /** ////////////////////////// METODOS PERSONALIZADOS ////////////////////////////// */
 

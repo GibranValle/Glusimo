@@ -13,9 +13,9 @@
         <item
             android:id="@+id/nav_monitor"
             android:icon="@drawable/ic_monitor"
-            android:title="@string/nav_dx" />
+            android:title="@string/nav_monitor" />
         <item
-            android:id="@+id/nav_search"
+            android:id="@+id/nav_curva"
             android:icon="@drawable/ic_curva"
             android:title="@string/nav_dx" />
         <item
