@@ -20,9 +20,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import app.proyectoterminal.upibi.glusimo.Bus.EnviarIntEvent;
+import app.proyectoterminal.upibi.glusimo.Bus.EnviarStringEvent;
 import app.proyectoterminal.upibi.glusimo.R;
 import app.proyectoterminal.upibi.glusimo.classes.DataBaseManager;
 
@@ -38,18 +43,19 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     private SharedPreferences respaldo;
     private SharedPreferences.Editor editor;
     private TextView titulo;
-    private EditText editMax, editHipo, editHiper, editSuperHiper;
+    private EditText editMax, editHipo, editHiper, editSuperHiper, editFrec;
     private EditText editLA, editLB, editLC, editLD, editLE, editLF, editLG;
-    private CheckBox demo_medicion;
+    private CheckBox demo_medicion, monitorizar_cb;
     private Intent i;
-    int posicion, hipoglucemia, hiperglucemia, hiperglucemia_severa, max;
+    int posicion, hipoglucemia, hiperglucemia, hiperglucemia_severa, max, frec;
     int LA, LB, LC, LD, LE, LF, LG;
-    boolean dm;
+    boolean dm, monitorizar;
     private String texto;
-    private FrameLayout frame_medicion, frame_registro, frame_curva;
+    private FrameLayout frame_medicion, frame_registro, frame_curva, frame_monitor;
     private Spinner spinner;
     int posicionSpinner;
     private DataBaseManager manager;
+    EventBus bus = EventBus.getDefault();
 
     private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 82, 80};
     private static final int curvaGlucosaPrediabetes[] = {90, 169, 160, 134, 143, 121,99};
@@ -61,6 +67,12 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        if (!bus.isRegistered(this))
+        {
+            Log.v(TAG,"Registrando en bus  el fragment medición");
+            bus.register(this);
+        }
 
         // cargar la ventana
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -75,10 +87,11 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         frame_medicion = (FrameLayout) findViewById(R.id.frame_medicion);
         frame_registro = (FrameLayout) findViewById(R.id.frame_registro);
         frame_curva = (FrameLayout) findViewById(R.id.frame_curva);
-
+        frame_monitor = (FrameLayout) findViewById(R.id.frame_monitor);
         titulo = (TextView) findViewById(R.id.titulo_fragment_config);
 
         demo_medicion = (CheckBox) findViewById(R.id.cb_medicion);
+        monitorizar_cb = (CheckBox) findViewById(R.id.cb_monitor);
 
         editMax = (EditText) findViewById(R.id.edit_max);
         editHipo = (EditText) findViewById(R.id.edit_hipo);
@@ -91,7 +104,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         editLE = (EditText) findViewById(R.id.edit_lecturaE);
         editLF = (EditText) findViewById(R.id.edit_lecturaF);
         editLG = (EditText) findViewById(R.id.edit_lecturaG);
-
+        editFrec = (EditText) findViewById(R.id.edit_frec);
         spinner = (Spinner) findViewById(R.id.spinner_curvas);
 
         // recuperar la configuracion previa
@@ -121,10 +134,11 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
 
         switch (posicion)
         {
-            case 0:
+            case 0: // MEDICION
                 frame_medicion.setVisibility(View.VISIBLE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.GONE);
+                frame_monitor.setVisibility(View.GONE);
                 spinner.setVisibility(View.GONE);
                 texto = getResources().getString(R.string.titulo_medicion);
                 titulo.setText(texto);
@@ -143,24 +157,39 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 editHiper.setText(""+hiperglucemia);
                 editSuperHiper.setText(""+hiperglucemia_severa);
                 break;
-            case 1:
+            case 1: // REGISTRO
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.VISIBLE);
                 frame_curva.setVisibility(View.GONE);
+                frame_monitor.setVisibility(View.GONE);
                 spinner.setVisibility(View.GONE);
                 texto = getResources().getString(R.string.titulo_registro);
                 titulo.setText(texto);
 
                 break;
-            case 2:
+            case 2: // CURVA
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.VISIBLE);
-                frame_curva.setVisibility(View.VISIBLE);
+                frame_monitor.setVisibility(View.GONE);
 
                 texto = getResources().getString(R.string.titulo_curva);
                 titulo.setText(texto);
                 break;
+            case 3: // MONITOR
+                frame_medicion.setVisibility(View.GONE);
+                frame_registro.setVisibility(View.GONE);
+                frame_curva.setVisibility(View.GONE);
+                frame_monitor.setVisibility(View.VISIBLE);
+                spinner.setVisibility(View.GONE);
+                texto = getResources().getString(R.string.titulo_monitor_config);
+                titulo.setText(texto);
+
+                // cada 5 minutos = 60/12 = 5 mins
+                frec = respaldo.getInt("frec", 12);
+                monitorizar = respaldo.getBoolean("monitorizar",true);
+                editFrec.setText(""+frec);
+                monitorizar_cb.setChecked(monitorizar);
         }
 
 
@@ -203,6 +232,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                         Log.d(TAG,"guardado");
                         Toast.makeText(this,R.string.exito, Toast.LENGTH_SHORT).show();
                     }
+                    bus.post(new EnviarStringEvent("F0"));
                     finish();
                     break;
 
@@ -210,6 +240,8 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
 
                 case 1:
                     Log.i(TAG,"configuracion de registro");
+                    bus.post(new EnviarStringEvent("F1"));
+                    finish();
                     break;
 
 
@@ -244,6 +276,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             editor.putInt("CDL6",LG);
                             if(editor.commit())
                             {
+                                bus.post(new EnviarStringEvent("F2"));
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -270,6 +303,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             editor.putInt("CPDL6",LG);
                             if(editor.commit())
                             {
+                                bus.post(new EnviarStringEvent("F2"));
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -295,6 +329,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             editor.putInt("CSL6",LG);
                             if(editor.commit())
                             {
+                                bus.post(new EnviarStringEvent("F2"));
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -321,9 +356,26 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                             if(editor.commit())
                             {
                                 Toast.makeText(this, R.string.exito, Toast.LENGTH_SHORT).show();
+                                bus.post(new EnviarStringEvent("F2"));
                                 finish();
                             }
                             break;
+                    }
+                    break;
+
+                case 3:
+                    Log.i(TAG,"configuracion de monitor");
+                    monitorizar = monitorizar_cb.isChecked();
+                    frec = Integer.parseInt(editFrec.getText().toString());
+                    editor = respaldo.edit();
+                    editor.putInt("frec", frec);
+                    editor.putBoolean("monitorizar", monitorizar);
+                    if(editor.commit())
+                    {
+                        Log.d(TAG,"guardado");
+                        Toast.makeText(this,R.string.exito, Toast.LENGTH_SHORT).show();
+                        bus.post(new EnviarStringEvent("F3"));
+                        finish();
                     }
                     break;
 
@@ -341,6 +393,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
             if (b > 0)
             {
                 Toast.makeText(this, R.string.exito_eliminar_db, Toast.LENGTH_SHORT).show();
+                bus.post(new EnviarStringEvent("F1"));
                 finish();
             }
             else if(b == 0)
@@ -470,5 +523,19 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         Vibrator vibrador = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         vibrador.vibrate(ms);
     }
+
+    @Subscribe
+    public void onEvent(EnviarStringEvent event)
+    {
+        Log.i(TAG, "mensaje recibido en bus fragmnet config: " + event.mensaje);
+    }
+
+    @Subscribe
+    public void onEvent(EnviarIntEvent event)
+    {
+        Log.i(TAG, "numero recibido en bus fragmnet config: " + event.numero);
+    }
+
+
 }
 

@@ -112,9 +112,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         dia.add("Día:");
         salud.add("Estado:");
 
-        // creando la lista de meses
-
-        // Crear los adapatadores
+        // Crear los adapatadores para el spinner
         adapterAño = new ArrayAdapter<>
                 (getContext(), R.layout.custom_spinner_layout,año);
         adapterMes = new ArrayAdapter<>
@@ -124,7 +122,7 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         adapterSalud = new ArrayAdapter<>
                 (getContext(), R.layout.custom_spinner_layout,salud);
 
-        // crear los layout de despliegue
+        // crear los layout de despliegue del spinner
         adapterAño.setDropDownViewResource(R.layout.custom_drop_spinner_layout);
         adapterMes.setDropDownViewResource(R.layout.custom_drop_spinner_layout);
         adapterDia.setDropDownViewResource(R.layout.custom_drop_spinner_layout);

@@ -167,11 +167,65 @@
         </LinearLayout>
     </FrameLayout>
 
+
+    <FrameLayout
+        android:layout_weight="6"
+        android:id="@+id/frame_monitor"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/elemento_lista"
+                android:text="@string/cb_monitor"
+                android:id="@+id/cb_monitor" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/frec_monitor"
+                    style="@style/elemento_lista"
+                    android:id="@+id/tvm2"
+                    />
+
+                <EditText
+                    android:hint="@string/hint_monitor"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_frec"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+
     <FrameLayout
         android:id="@+id/frame_curva"
         android:layout_weight="6"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         >
         <LinearLayout
             android:orientation="vertical"

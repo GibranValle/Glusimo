@@ -245,39 +245,6 @@ public class Medicion extends Fragment implements View.OnClickListener
         showNotification(notificacion,valor);
     }
 
-    @Subscribe
-    public void onEvent(EnviarStringEvent event)
-    {
-        String dato = event.mensaje;
-        if(dato.startsWith("I"))
-        {
-            Log.i(TAG,"dato recibido desde interfaz: "+dato);
-            if(dato.indexOf("C") == 1)
-            {
-                // LA SEGUNDA LETRA ES C, DISPOSITIVO CONECTADO
-                    diagnostico.setText(R.string.sin_medicion);
-            }
-            else if(dato.indexOf("D")== 1)
-            {
-                // LA SEGUNDA LETRA ES C, DISPOSITIVO CONECTADO
-                diagnostico.setText(R.string.sin_conexion);
-            }
-        }
-    }
-
-    @Subscribe
-    public void onEvent(EnviarIntEvent event)
-    {
-        if(!dm)
-        {
-            Log.i(TAG,"numero recibido en bus medición: "+event.numero);
-            if(event.numero <= 1000)
-            {
-                DatoRecibido(event.numero);
-            }
-        }
-    }
-
     void showNotification(int cualAlerta, int glucemia)
     {
         Log.i(TAG,"notificacion: "+cualAlerta +" glucemia: "+glucemia);
@@ -380,4 +347,38 @@ public class Medicion extends Fragment implements View.OnClickListener
         }
         animar(numero);
     }
+
+    @Subscribe
+    public void onEvent(EnviarStringEvent event)
+    {
+        String dato = event.mensaje;
+        if(dato.startsWith("I"))
+        {
+            Log.i(TAG,"dato recibido desde interfaz: "+dato);
+            if(dato.indexOf("C") == 1)
+            {
+                // LA SEGUNDA LETRA ES C, DISPOSITIVO CONECTADO
+                diagnostico.setText(R.string.sin_medicion);
+            }
+            else if(dato.indexOf("D")== 1)
+            {
+                // LA SEGUNDA LETRA ES C, DISPOSITIVO CONECTADO
+                diagnostico.setText(R.string.sin_conexion);
+            }
+        }
+    }
+
+    @Subscribe
+    public void onEvent(EnviarIntEvent event)
+    {
+        if(!dm)
+        {
+            Log.i(TAG,"numero recibido en bus medición: "+event.numero);
+            if(event.numero <= 1000)
+            {
+                DatoRecibido(event.numero);
+            }
+        }
+    }
+
 }

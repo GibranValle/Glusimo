@@ -288,7 +288,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
             vibrar(100);
             // LA POSICION 3 ES CONFIG
             // ESTE METODO SE DESPLAZA AL FRAGMENT ELEGIDO
-            viewPager.setCurrentItem(3);
+            viewPager.setCurrentItem(4);
             return true;
         }
 
@@ -476,6 +476,32 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 Log.d(TAG,"Mensaje desde Detalles Lista "+mensaje);
                 // LANZAR EL FRAGMENT DONDE SE QUEDÓ
                 viewPager.setCurrentItem(1);
+            }
+        }
+
+        else if(id.equals("F"))
+        {
+            Log.d(TAG,"Mensaje desde Config Fragment");
+            String mensaje = datos.substring(1,datos.length());
+            if(mensaje.startsWith("0"))
+            {
+                // LANZAR EL FRAGMENT DONDE SE QUEDÓ
+                viewPager.setCurrentItem(0);
+            }
+            else if(mensaje.startsWith("1"))
+            {
+                // LANZAR EL FRAGMENT DONDE SE QUEDÓ
+                viewPager.setCurrentItem(1);
+            }
+            else if(mensaje.startsWith("2"))
+            {
+                // LANZAR EL FRAGMENT DONDE SE QUEDÓ
+                viewPager.setCurrentItem(2);
+            }
+            else if(mensaje.startsWith("3"))
+            {
+                // LANZAR EL FRAGMENT DONDE SE QUEDÓ
+                viewPager.setCurrentItem(3);
             }
         }
 

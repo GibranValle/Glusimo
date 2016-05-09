@@ -21,7 +21,7 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
 
     private final static String TAG = "Configuracion";
     int[] icons = {R.drawable.ic_menu_view,
-            R.drawable.ic_menu_register, R.drawable.ic_curva};
+            R.drawable.ic_menu_register, R.drawable.ic_curva, R.drawable.ic_monitor};
     Intent i;
 
     @Override
@@ -82,6 +82,12 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
                 break;
             case 2:
                 Log.i(TAG,"configuracion de curva");
+                i = new Intent(getContext(),Fragment_Configuraciones.class);
+                i.putExtra("linea",position);
+                startActivity(i);
+                break;
+            case 3:
+                Log.i(TAG,"configuracion de monitor");
                 i = new Intent(getContext(),Fragment_Configuraciones.class);
                 i.putExtra("linea",position);
                 startActivity(i);

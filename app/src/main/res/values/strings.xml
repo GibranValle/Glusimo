@@ -25,6 +25,7 @@
         <item>"Medición"</item>
         <item>"Registro"</item>
         <item>"Curva Diagnóstica"</item>
+        <item>"Monitor"</item>
     </string-array>
 
     <!-- Notificacion -->
@@ -151,6 +152,7 @@
     <string name="titulo_medicion">Configuración de medición</string>
     <string name="titulo_registro">Configuración de registro</string>
     <string name="titulo_curva">Configuración de curva</string>
+    <string name="titulo_monitor_config">Configuración de monitor</string>
     <string name="exito">Configuración guardada con éxito</string>
     <string name="curvadiabetes">"Curva muestra: Diabético"</string>
     <string name="curvapre">"Curva muestra: Pre diabético"</string>
@@ -168,8 +170,12 @@
     <string name="error_eliminar_db">"Error al intentar borrar los registros"</string>
     <string name="error_eliminar_db2">"Error: No existen registros que borrar"</string>
     <string name="error_spinner">"Seleccione una curva a graficar"</string>
+    <string name="cb_monitor">Monitorizar glucemia</string>
+    <string name="frec_monitor">Frecuencia [muestras/hora]: </string>
+    <string name="hint_monitor">2</string>
 
     <!-- Monitor -->
     <string name="titulo_monitor">"Monitor de glucemia"</string>
+    <string name="titulo_monitor_off">"Monitor de glucemia"</string>
 
 </resources>
