@@ -24,9 +24,9 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
 
     final int PAGE_COUNT = 5;
     // METODO IMPLEMENTADO PARA RECUPERAR TITULOS
-    String[] titulos = {"Medición","Registro","Curva Diagnóstica","Monitor","Configuración"};
+    String[] titulos = {"Medición","Registro","Monitor","Curva Diagnóstica","Configuración"};
     int[] icons = {R.drawable.ic_menu_view,
-            R.drawable.ic_menu_register, R.drawable.ic_curva,  R.drawable.ic_monitor,
+            R.drawable.ic_menu_register, R.drawable.ic_monitor, R.drawable.ic_curva,
             R.drawable.ic_menu_manage};
 
     private Context context;
@@ -62,11 +62,11 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
                 Lista lista = new Lista();
                 return lista;
             case 2:
-                Curva curva = new Curva();
-                return curva;
-            case 3:
                 Monitor monitor = new Monitor();
                 return monitor;
+            case 3:
+                Curva curva = new Curva();
+                return curva;
             case 4:
                 Configuracion configuracion = new Configuracion();
                 return configuracion;

@@ -164,7 +164,7 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
                 canvas2 = new Canvas(bitmap2);
                 paint2 = new Paint(Paint.ANTI_ALIAS_FLAG);
                 paint2.setColor(getResources().getColor(R.color.colorLetraClara));
-                canvas2.translate(ancho2/10, alto2/1.8f);
+                canvas2.translate(ancho2/10, alto2/1.5f);
                 //canvas2.drawText("Concentracion [mg/mL]",0,0,paint2);
                 canvas2.translate(-ancho2/3.5f, 0);
                 canvas2.rotate(-90,ancho2/1.2f,0);

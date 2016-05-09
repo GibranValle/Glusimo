@@ -8,7 +8,7 @@
     >
 
     <TextView
-        android:layout_marginTop="@dimen/margen_chiquis"
+        android:layout_marginTop="@dimen/margen_mini"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,7 +20,7 @@
     <LinearLayout
         android:layout_marginLeft="@dimen/margen_chiquis"
         android:layout_marginRight="@dimen/margen_chiquis"
-        android:layout_marginTop="@dimen/margen_chiquis"
+        android:layout_marginTop="@dimen/margen_mini"
         android:layout_weight="1"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="@dimen/margen_chiquis"
+        android:layout_marginTop="@dimen/margen_mini"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -70,6 +70,7 @@
     </LinearLayout>
 
     <TextView
+        android:layout_marginTop="@dimen/margen_mini"
         android:layout_marginRight="@dimen/margen_mediano"
         android:layout_marginLeft="@dimen/margen_grande"
         android:layout_weight="1"
