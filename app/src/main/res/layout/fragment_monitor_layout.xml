@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondoapp"
+    >
+
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="@string/titulo_monitor"
+        android:id="@+id/titulo_fragment_monitor"
+        style="@style/tituloFragment"
+    />
+
+    <LinearLayout
+        android:layout_marginLeft="@dimen/margen_chiquis"
+        android:layout_marginRight="@dimen/margen_chiquis"
+        android:layout_marginTop="@dimen/margen_chiquis"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/spinners_fechas"
+        >
+
+        <Spinner
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/fecha_inicio"
+        />
+
+        <Spinner
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/fecha_final"
+        />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/margen_chiquis"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        >
+        <ImageView
+            style="@style/tituloFragment"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/ejeY_monitor"
+            />
+
+        <ImageView
+            android:layout_weight="6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/canvas_monitor"
+        />
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginLeft="@dimen/margen_grande"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/textView6"
+        style="@style/tituloFragment"
+        android:text="@string/eje_tiempo"
+    />
+    <TextView
+        android:layout_weight="1"
+        android:id="@+id/monitor_escala"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        style="@style/tituloFragment"
+        android:text="@string/info_tendencias"
+    />
+
+</LinearLayout>

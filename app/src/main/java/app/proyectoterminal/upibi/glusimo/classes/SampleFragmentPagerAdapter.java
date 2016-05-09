@@ -18,15 +18,16 @@ import app.proyectoterminal.upibi.glusimo.fragments.Configuracion;
 import app.proyectoterminal.upibi.glusimo.fragments.Curva;
 import app.proyectoterminal.upibi.glusimo.fragments.Lista;
 import app.proyectoterminal.upibi.glusimo.fragments.Medicion;
+import app.proyectoterminal.upibi.glusimo.fragments.Monitor;
 
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
 
-    final int PAGE_COUNT = 4;
+    final int PAGE_COUNT = 5;
     // METODO IMPLEMENTADO PARA RECUPERAR TITULOS
-    String[] titulos = {"Medición","Registro","Curva Diagnóstica","Configuración"};
+    String[] titulos = {"Medición","Registro","Curva Diagnóstica","Monitor","Configuración"};
     int[] icons = {R.drawable.ic_menu_view,
-            R.drawable.ic_menu_today, R.drawable.ic_menu_search,
-            R.drawable.ic_menu_manage};
+            R.drawable.ic_menu_view, R.drawable.ic_menu_view,  R.drawable.ic_menu_view,
+            R.drawable.ic_menu_view};
 
     private Context context;
 
@@ -64,6 +65,9 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
                 Curva curva = new Curva();
                 return curva;
             case 3:
+                Monitor monitor = new Monitor();
+                return monitor;
+            case 4:
                 Configuracion configuracion = new Configuracion();
                 return configuracion;
             default:
@@ -76,7 +80,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter{
     public CharSequence getPageTitle(int position) {
         // Generate title based on item position
         Drawable image = context.getResources().getDrawable(icons[position]);
-        image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
+        image.setBounds(0, 0, 75, 75);
         // Replace blank spaces with image icon
         SpannableString sb = new SpannableString("   " + titulos[position]);
         ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);

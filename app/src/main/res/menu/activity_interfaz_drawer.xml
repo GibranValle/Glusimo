@@ -15,6 +15,10 @@
             android:icon="@drawable/ic_menu_search"
             android:title="@string/nav_search" />
         <item
+            android:id="@+id/nav_monitor"
+            android:icon="@drawable/ic_menu_search"
+            android:title="@string/nav_search" />
+        <item
             android:id="@+id/nav_config"
             android:icon="@drawable/ic_menu_manage"
             android:title="@string/nav_config" />

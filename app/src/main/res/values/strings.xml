@@ -163,4 +163,7 @@
     <string name="error_eliminar_db2">"Error: No existen registros que borrar"</string>
     <string name="error_spinner">"Seleccione una curva a graficar"</string>
 
+    <!-- Monitor -->
+    <string name="titulo_monitor">"Monitor de glucemia"</string>
+
 </resources>
