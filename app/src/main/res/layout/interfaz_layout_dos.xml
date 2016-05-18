@@ -61,19 +61,54 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/margen_chiquis"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:background="@color/colorOff"
             />
 
         <Button
             android:id="@+id/boton_conexion"
             style="@style/consola"
+            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/margen_chiquis"
-            android:layout_weight="1"
             android:background="@color/colorOff"
             android:text="@string/bt_button" />
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/niveles"
+            android:layout_weight="0.75"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/margen_chiquis"
+            android:orientation="horizontal"
+        >
+
+            <ImageView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/bateria"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/bat_100"
+                android:layout_marginRight="@dimen/margen_chiquis"
+            />
+
+            <ImageView
+                android:layout_weight="1.5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/farmaco"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/dos_100"
+                android:layout_marginRight="@dimen/margen_chiquis"
+                />
+        </LinearLayout>
 
     </LinearLayout>
 

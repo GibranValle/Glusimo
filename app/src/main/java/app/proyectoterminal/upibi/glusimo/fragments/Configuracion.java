@@ -69,25 +69,25 @@ public class Configuracion extends Fragment implements AdapterView.OnItemClickLi
         switch (position)
         {
             case 0:
-                Log.i(TAG,"configuracion de medicion");
+                Log.i(TAG,"configuracion de medicion "+position);
                 i = new Intent(getContext(),Fragment_Configuraciones.class);
                 i.putExtra("linea",position);
                 startActivity(i);
                 break;
             case 1:
-                Log.i(TAG,"configuracion de registro");
+                Log.i(TAG,"configuracion de registro "+position);
                 i = new Intent(getContext(),Fragment_Configuraciones.class);
                 i.putExtra("linea",position);
                 startActivity(i);
                 break;
             case 2:
-                Log.i(TAG,"configuracion de curva");
+                Log.i(TAG,"configuracion de curva "+position);
                 i = new Intent(getContext(),Fragment_Configuraciones.class);
                 i.putExtra("linea",position);
                 startActivity(i);
                 break;
             case 3:
-                Log.i(TAG,"configuracion de monitor");
+                Log.i(TAG,"configuracion de monitor   "+position);
                 i = new Intent(getContext(),Fragment_Configuraciones.class);
                 i.putExtra("linea",position);
                 startActivity(i);

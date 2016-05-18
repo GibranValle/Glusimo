@@ -135,6 +135,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         switch (posicion)
         {
             case 0: // MEDICION
+                Log.i(TAG,"medicion");
                 frame_medicion.setVisibility(View.VISIBLE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.GONE);
@@ -158,6 +159,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 editSuperHiper.setText(""+hiperglucemia_severa);
                 break;
             case 1: // REGISTRO
+                Log.i(TAG,"reg");
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.VISIBLE);
                 frame_curva.setVisibility(View.GONE);
@@ -168,6 +170,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
 
                 break;
             case 2: // CURVA
+                Log.i(TAG,"curva");
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.VISIBLE);
@@ -177,6 +180,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 titulo.setText(texto);
                 break;
             case 3: // MONITOR
+                Log.i(TAG,"monitor");
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.GONE);
@@ -244,9 +248,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                     finish();
                     break;
 
-
-
-                case 3:
+                case 2:
                     Log.i(TAG,"configuracion de curva");
                     editor = respaldo.edit();
                     switch (posicionSpinner)
@@ -363,7 +365,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                     }
                     break;
 
-                case 2:
+                case 3:
                     Log.i(TAG,"configuracion de monitor");
                     monitorizar = monitorizar_cb.isChecked();
                     frec = Integer.parseInt(editFrec.getText().toString());

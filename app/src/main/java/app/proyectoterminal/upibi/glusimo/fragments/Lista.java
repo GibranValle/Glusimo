@@ -107,10 +107,12 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         sp_salud = (Spinner) getActivity().findViewById(R.id.filtro_estado);
 
         // agregar los filtros
+        /*
         año.add("Año:");
         mes.add("Mes:");
         dia.add("Día:");
         salud.add("Estado:");
+        */
 
         // Crear los adapatadores para el spinner
         adapterAño = new ArrayAdapter<>
@@ -224,6 +226,11 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
     }
     void actualizarSpinner()
     {
+        año.clear();
+        mes.clear();
+        dia.clear();
+        salud.clear();
+
         Log.i(TAG,"Actualizando spinner de Lista");
         String añosRecuperados, mesesRecuperados, diasRecuperados, estadosRecuperados;
         añosRecuperados = manager.recuperarTodosAños();
@@ -242,25 +249,21 @@ public class Lista extends Fragment implements AdapterView.OnItemSelectedListene
         if(añosRecuperados.length()==0)
         {
             // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
-            año.clear();
             año.add("Año: ");
         }
         if(mesesRecuperados.length()==0)
         {
             // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
-            mes.clear();
             mes.add("Mes: ");
         }
         if(diasRecuperados.length()==0)
         {
             // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
-            dia.clear();
             dia.add("Dia: ");
         }
         if(estadosRecuperados.length()==0)
         {
             // SI ESTA COLUMNA ESTA VACIA, LIMPIAR EL SPINNER
-            salud.clear();
             salud.add("Estado: ");
         }
 

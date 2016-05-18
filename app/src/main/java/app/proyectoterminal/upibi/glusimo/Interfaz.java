@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,11 +51,15 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
     /** ///////////////////// VARIABLES GLOBALES ///////////////////////////////////*/
     ViewPager viewPager;
     SharedPreferences respaldo;
+    SharedPreferences.Editor editor;
+
     TextView estado_conexion, estado_paciente;
     Button boton_conexion;
     EventBus bus = EventBus.getDefault();
+    LinearLayout niveles;
     BluetoothSPP bt;
     String address, name;
+    ImageView bateria, reservorio;
     // TIMER
     Timer timer;
     TimerTask timerTask;
@@ -77,10 +83,12 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         Log.v(TAG, "On Create");
 
         bus.register(this);
-
+        bateria = (ImageView) findViewById(R.id.bateria);
+        reservorio = (ImageView) findViewById(R.id.farmaco);
         estado_conexion = (TextView) findViewById(R.id.consola);
         estado_paciente = (TextView) findViewById(R.id.consola_paciente);
         boton_conexion = (Button) findViewById(R.id.boton_conexion);
+        niveles = (LinearLayout) findViewById(R.id.niveles);
 
         //  ----------------- BLUETOOTH -----------------------------------------//
         bt = new BluetoothSPP(this);
@@ -98,17 +106,123 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
             {
                 String dato;
                 int valor;
+                Log.d(TAG,"mensaje completo: "+message);
                 //textRead.append(message + "\n");
-                if(message.startsWith("V"))
+
+                if(message.startsWith("B"))
                 {
+                    //MEDICION DE BATERIA
+                    Log.d(TAG,"mensaje recibido: "+message+" largo: "+message.length());
+                    dato = message.substring(1,message.length());
+                    valor = Integer.parseInt(dato);
+                    // modificar valor para obtener algo real.
+                    Log.d(TAG,"conversion correcta a entero: "+valor);
+                    // logica de valor
+                    if(valor > 90)
+                    {
+                        Log.d(TAG,"bateria llena");
+                        // poner imagen de bateria llena 91-100%
+                        bateria.setImageResource(R.drawable.bat_100);
+                    }
+
+                    else if(valor > 70)
+                    {
+                        Log.d(TAG,"bateria al 71%%");
+                        // poner imagen de bateria llena 71-91%
+                        bateria.setImageResource(R.drawable.bat_80);
+                    }
+
+                    else if(valor > 50)
+                    {
+                        Log.d(TAG,"bateria 51%");
+                        // poner imagen de bateria llena 51-70%
+                        bateria.setImageResource(R.drawable.bat_60);
+                    }
+
+                    else if(valor > 30)
+                    {
+                        Log.d(TAG,"bateria 31%");
+                        // poner imagen de bateria llena 31-50%
+                        bateria.setImageResource(R.drawable.bat_40);
+                    }
+
+                    else if(valor > 15)
+                    {
+                        // poner imagen de bateria llena 16-30%
+                        Log.d(TAG,"bateria 16%");
+                        bateria.setImageResource(R.drawable.bat_20);
+                    }
+
+                    else if(valor >= 0)
+                    {
+                        // poner imagen de bateria llena 0-15%
+                        Log.d(TAG,"bateria 0%");
+                        bateria.setImageResource(R.drawable.bat_0);
+                    }
+                }
+
+                else if(message.startsWith("D"))
+                {
+                    //MEDICION DE DOSIFICADOR (FARMACO)
                     Log.d(TAG,"mensaje recibido: "+message+" largo: "+message.length());
                     dato = message.substring(1,message.length());
                     valor = Integer.parseInt(dato);
                     Log.d(TAG,"conversion correcta a entero: "+valor);
-                    bus.post(new EnviarIntEvent(valor));
+                    // logica de valor
+                    if(valor > 90)
+                    {
+                        Log.d(TAG,"dosificador lleno");
+                        // poner imagen de dosificador lleno 91-100%
+                        reservorio.setImageResource(R.drawable.dos_100);
+                    }
+
+                    else if(valor > 70)
+                    {
+                        Log.d(TAG,"dosificador al 71%");
+                        // poner imagen de dosificador lleno 71-90%
+                        reservorio.setImageResource(R.drawable.dos_80);
+                    }
+
+                    else if(valor > 50)
+                    {
+                        Log.d(TAG,"dosificador al 51%");
+                        // poner imagen de dosificador lleno 51-70%
+                        reservorio.setImageResource(R.drawable.dos_60);
+                    }
+
+                    else if(valor > 30)
+                    {
+                        Log.d(TAG,"dosificador al 31%");
+                        // poner imagen de dosificador lleno 31-50%
+                        reservorio.setImageResource(R.drawable.dos_40);
+                    }
+
+                    else if(valor > 15)
+                    {
+                        Log.d(TAG,"dosificador al 16%");
+                        // poner imagen de dosificador lleno 66-30%
+                        reservorio.setImageResource(R.drawable.dos_20);
+                    }
+
+                    else if(valor >= 0)
+                    {
+                        Log.d(TAG,"dosificador 0%");
+                        // poner imagen de beteria vacia   0 - 15%
+                        reservorio.setImageResource(R.drawable.dos_0);
+                    }
                 }
 
-
+                else if(message.startsWith("G"))
+                {
+                    //MEDICION DE GLUCEMIA
+                    Log.d(TAG,"mensaje recibido: "+message+" largo: "+message.length());
+                    dato = message.substring(1,message.length());
+                    valor = Integer.parseInt(dato);
+                    Log.d(TAG,"conversion correcta a entero: "+valor);
+                    // modificar valor para obtener algo real.
+                    bus.post(new EnviarIntEvent(valor));
+                    Log.d(TAG,"enviando glucemia: "+valor);
+                }
             }
         });
 
@@ -121,6 +235,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 estado_conexion.setText(R.string.bt_dc);
                 estado_conexion.setBackgroundResource(R.color.colorOff);
                 boton_conexion.setVisibility(View.VISIBLE);
+                niveles.setVisibility(View.GONE);
                 Log.e(TAG,"SE PERDIÓ LA CONEXION");
                 bus.post(new EnviarStringEvent("ID"));
                 monitoreando = false;
@@ -142,6 +257,12 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG,"LISTENER FALLIDO");
                 conectado = false;
+                editor = respaldo.edit();
+                editor.putBoolean("conectado", conectado);
+                if(editor.commit())
+                {
+                    Log.d(TAG,"conectado guardado");
+                }
                 monitoreando = false;
                 pararMonitoreo();
             }
@@ -160,6 +281,7 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                 {
                     // Do something when successfully connected
                     // CAMBIAR TEXTO DE CONSOLA CONEXION
+                    niveles.setVisibility(View.VISIBLE);
                     estado_conexion.setText(R.string.bt_ct);
                     estado_conexion.setBackgroundResource(R.color.colorOn);
                     // ESCONDER BOTON DE CONEXION
@@ -168,9 +290,15 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                             getString(R.string.bt_exito)+" "+name,
                             Toast.LENGTH_SHORT).show();
                     conectado = true;
+                    editor = respaldo.edit();
+                    editor.putBoolean("conectado", conectado);
+                    if(editor.commit())
+                    {
+                        Log.d(TAG,"conectado guardado");
+                    }
                     if(monitorizar)
                     {
-                        // MONITOREO ONLINE
+                        // DECIRLE AL DEVICE QUE SE ESTABLECIÓ LA CONEXION Y SE QUIERE MONITOREAR
                         bt.send("O",true);
                         monitoreando = true;
                         long periodo = frecuencia_monitoreo*60*1000;
@@ -178,7 +306,9 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                     }
                     else
                     {
+                        // AVISAR AL DEVICE QUE SE ESTABLECIÓ LA CONEXION
                         bt.send("C",true);
+                        // MONITOREO ONLINE
                     }
                     // CAMBIAR INSTRUCCIÓN DEL FRAGMENT
                     bus.post(new EnviarStringEvent("IC"));
@@ -525,15 +655,13 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
         Log.d(TAG,"mensaje recibido en Activity: "+datos+" con id: "+id);
         // Procesar la primera letra para saber de que fragment viene
 
-        // FRAGMENT DE MEDICION
         if(id.equals("M"))
         {
             String mensaje = datos.substring(1,datos.length());
             Log.d(TAG,"Mensaje desde medición "+mensaje);
 
-            if(mensaje.startsWith("C"))
+            if(mensaje.startsWith("M"))
             {
-                // Medicion necesita saber el estado de conexion
                 if(conectado)
                 {
                     bt.send("M",true);
@@ -546,10 +674,24 @@ public class Interfaz extends AppCompatActivity implements NavigationView.OnNavi
                             Toast.LENGTH_SHORT).show();
                 }
             }
-
-            // realizar tarea segun el mensaje desde medicion
+            else if(mensaje.startsWith("D"))
+            {
+                if(conectado)
+                {
+                    // EL MODO DEMO ESTA ACTIVADO
+                    bt.send("D", true);
+                    Log.d(TAG, "SE HA ENVIADO UN MENSAJE DESDE INTERFAZ, COMO MODO DEMO");
+                }
+                else
+                {
+                    Log.d(TAG,"sin conexion, mensaje no enviado");
+                    Toast.makeText(Interfaz.this, getResources().getString(R.string.conectar),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
+        // realizar tarea segun el mensaje desde medicion
         else if(id.equals("D"))
         {
             String mensaje = datos.substring(1,datos.length());

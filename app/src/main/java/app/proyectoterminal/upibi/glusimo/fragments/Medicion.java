@@ -53,6 +53,7 @@ public class Medicion extends Fragment implements View.OnClickListener
 
     // variables para lanzar demo
     boolean dm = false;
+    boolean conectado = false;
     int conteoClicks = 0;
     private static final int glucemias[] = {70, 100, 150, 250};
 
@@ -86,9 +87,12 @@ public class Medicion extends Fragment implements View.OnClickListener
 
         respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
         max = respaldo.getInt("max",500);
+        dm = respaldo.getBoolean("demo_medicion",false);
+        conectado = respaldo.getBoolean("conectado",false);
         medidor.setMax(max);
 
-        if(!dm)
+        Log.i(TAG,"modo demo: "+dm);
+        if(dm)
         {
             titulo.setText(R.string.texto_arco_demo);
         }
@@ -125,22 +129,38 @@ public class Medicion extends Fragment implements View.OnClickListener
         vibrar(100);
         respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
         dm = respaldo.getBoolean("demo_medicion",false);
-        Log.i(TAG,"demo mode: "+dm);
-        if(dm)
+        conectado = respaldo.getBoolean("conectado",false);
+        Log.i(TAG,"demo mode: "+dm +" conectado: "+conectado);
+        if(conectado)
         {
-            if(conteoClicks == 4)
+            // conectado
+            if(dm)
             {
-                conteoClicks = 0;
+                // MODO DEMO
+                Log.i(TAG,"petición para enviar mensaje por bluetooth como demo");
+                bus.post(new EnviarStringEvent("MD"));
             }
-            DatoRecibido(glucemias[conteoClicks]);
-            Log.i(TAG,"enviando en bus para guardar");
-            bus.post(new EnviarIntEvent(glucemias[conteoClicks]));
-            conteoClicks = conteoClicks + 1;
+            else
+            {
+                // ENVIO NORMAL
+                Log.i(TAG,"petición para enviar mensaje por bluetooth");
+                bus.post(new EnviarStringEvent("MM"));
+            }
         }
+
         else
         {
-            Log.i(TAG,"petición para enviar mensaje por bluetooth");
-            bus.post(new EnviarStringEvent("MC"));
+            // desconectado
+            if(dm)
+            {
+                if (conteoClicks == 4) {
+                    conteoClicks = 0;
+                }
+                DatoRecibido(glucemias[conteoClicks]);
+                Log.i(TAG, "enviando en bus para guardar");
+                bus.post(new EnviarIntEvent(glucemias[conteoClicks]));
+                conteoClicks = conteoClicks + 1;
+            }
         }
 
         /*
@@ -371,12 +391,25 @@ public class Medicion extends Fragment implements View.OnClickListener
     @Subscribe
     public void onEvent(EnviarIntEvent event)
     {
-        if(!dm)
+        dm = respaldo.getBoolean("demo_medicion",false);
+        conectado = respaldo.getBoolean("conectado",false);
+        if(conectado)
         {
             Log.i(TAG,"numero recibido en bus medición: "+event.numero);
             if(event.numero <= 1000)
             {
                 DatoRecibido(event.numero);
+            }
+        }
+        else
+        {
+            if(!dm)
+            {
+                Log.i(TAG,"numero recibido en bus medición: "+event.numero);
+                if(event.numero <= 1000)
+                {
+                    DatoRecibido(event.numero);
+                }
             }
         }
     }
