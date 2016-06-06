@@ -178,4 +178,10 @@
     <string name="titulo_monitor">"Monitor de glucemia"</string>
     <string name="titulo_monitor_off">"Monitor de glucemia"</string>
 
+    <string name="cb_calibrar">Probar dosificador</string>
+    <string name="ajuste">Ajuste manual:</string>
+    <string name="hint_dosificador">1</string>
+    <string name="titulo_dosificador">Configuración de dosificador</string>
+
+
 </resources>

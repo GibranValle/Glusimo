@@ -221,6 +221,74 @@
 
 
     <FrameLayout
+        android:layout_weight="6"
+        android:id="@+id/frame_dosificador"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <CheckBox
+                style="@style/elemento_lista"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cb_calibrar"
+                android:id="@+id/cb_ajuste" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    style="@style/elemento_lista"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ajuste"
+                    android:id="@+id/dosificador_texto" />
+
+                <EditText
+                    android:hint="@string/hint_dosificador"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColorHint="@color/colorLetraHint"
+                    android:inputType="number"
+                    android:ems="20"
+                    android:id="@+id/edit_ajuste" />
+            </LinearLayout>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/slider"
+                android:layout_marginRight="@dimen/margen_mediano"
+                android:layout_marginLeft="@dimen/margen_mediano"
+                android:layout_marginTop="@dimen/margen_chiquis"
+                android:layout_gravity="center_horizontal" />
+
+            <ImageView
+                android:layout_marginRight="@dimen/margen_mediano"
+                android:layout_marginLeft="@dimen/margen_mediano"
+                android:layout_marginTop="@dimen/margen_chiquis"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:id="@+id/inyeccion"
+                android:src="@drawable/jeringa"
+                android:layout_gravity="center_horizontal" />
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/frame_curva"
         android:layout_weight="6"
         android:layout_width="match_parent"

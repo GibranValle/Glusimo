@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,25 +38,27 @@ import app.proyectoterminal.upibi.glusimo.classes.DataBaseManager;
  * SE ENLISTAN MAS DEVICES AL HACE UN DISCOVERY CUANDO SE ELIGE UN DEVICE
  * SE REGRESA LA DIRECCION MAC A LA PARENT ACTIVITY EN EL INTENT RESULT
  */
-public class Fragment_Configuraciones extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+public class Fragment_Configuraciones extends Activity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener, SeekBar.OnSeekBarChangeListener {
 
     private Button aceptar, cancelar, eliminar;
     private SharedPreferences respaldo;
     private SharedPreferences.Editor editor;
     private TextView titulo;
     private EditText editMax, editHipo, editHiper, editSuperHiper, editFrec;
-    private EditText editLA, editLB, editLC, editLD, editLE, editLF, editLG;
-    private CheckBox demo_medicion, monitorizar_cb;
+    private EditText editLA, editLB, editLC, editLD, editLE, editLF, editLG, editAjuste;
+    private CheckBox demo_medicion, monitorizar_cb, ajustar;
     private Intent i;
     int posicion, hipoglucemia, hiperglucemia, hiperglucemia_severa, max, frec;
-    int LA, LB, LC, LD, LE, LF, LG;
+    int LA, LB, LC, LD, LE, LF, LG, ajuste;
     boolean dm, monitorizar;
     private String texto;
-    private FrameLayout frame_medicion, frame_registro, frame_curva, frame_monitor;
+    private FrameLayout frame_medicion, frame_registro, frame_curva, frame_monitor, frame_dosificador;
     private Spinner spinner;
     int posicionSpinner;
     private DataBaseManager manager;
     EventBus bus = EventBus.getDefault();
+    SeekBar barra;
+    boolean ajustando;
 
     private static final int curvaGlucosaNormal[] = {84, 130, 127, 100, 85, 82, 80};
     private static final int curvaGlucosaPrediabetes[] = {90, 169, 160, 134, 143, 121,99};
@@ -88,10 +91,14 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         frame_registro = (FrameLayout) findViewById(R.id.frame_registro);
         frame_curva = (FrameLayout) findViewById(R.id.frame_curva);
         frame_monitor = (FrameLayout) findViewById(R.id.frame_monitor);
+        frame_dosificador = (FrameLayout) findViewById(R.id.frame_dosificador);
         titulo = (TextView) findViewById(R.id.titulo_fragment_config);
 
         demo_medicion = (CheckBox) findViewById(R.id.cb_medicion);
         monitorizar_cb = (CheckBox) findViewById(R.id.cb_monitor);
+        ajustar = (CheckBox) findViewById(R.id.cb_ajuste);
+
+        barra = (SeekBar) findViewById(R.id.slider);
 
         editMax = (EditText) findViewById(R.id.edit_max);
         editHipo = (EditText) findViewById(R.id.edit_hipo);
@@ -105,6 +112,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         editLF = (EditText) findViewById(R.id.edit_lecturaF);
         editLG = (EditText) findViewById(R.id.edit_lecturaG);
         editFrec = (EditText) findViewById(R.id.edit_frec);
+        editAjuste = (EditText) findViewById(R.id.edit_ajuste);
         spinner = (Spinner) findViewById(R.id.spinner_curvas);
 
         // recuperar la configuracion previa
@@ -136,6 +144,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         {
             case 0: // MEDICION
                 Log.i(TAG,"medicion");
+                frame_dosificador.setVisibility(View.GONE);
                 frame_medicion.setVisibility(View.VISIBLE);
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.GONE);
@@ -160,6 +169,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 break;
             case 1: // REGISTRO
                 Log.i(TAG,"reg");
+                frame_dosificador.setVisibility(View.GONE);
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.VISIBLE);
                 frame_curva.setVisibility(View.GONE);
@@ -175,11 +185,13 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 frame_registro.setVisibility(View.GONE);
                 frame_curva.setVisibility(View.VISIBLE);
                 frame_monitor.setVisibility(View.GONE);
+                frame_dosificador.setVisibility(View.GONE);
 
                 texto = getResources().getString(R.string.titulo_curva);
                 titulo.setText(texto);
                 break;
             case 3: // MONITOR
+                frame_dosificador.setVisibility(View.GONE);
                 Log.i(TAG,"monitor");
                 frame_medicion.setVisibility(View.GONE);
                 frame_registro.setVisibility(View.GONE);
@@ -194,6 +206,26 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
                 monitorizar = respaldo.getBoolean("monitorizar",true);
                 editFrec.setText(""+frec);
                 monitorizar_cb.setChecked(monitorizar);
+
+            case 4: // DOSIFICADOR
+                Log.i(TAG,"dosificador");
+                frame_dosificador.setVisibility(View.VISIBLE);
+                frame_medicion.setVisibility(View.GONE);
+                frame_registro.setVisibility(View.GONE);
+                frame_curva.setVisibility(View.GONE);
+                frame_monitor.setVisibility(View.GONE);
+                spinner.setVisibility(View.GONE);
+                texto = getResources().getString(R.string.titulo_dosificador);
+                titulo.setText(texto);
+                ajustar.setVisibility(View.GONE);
+                barra.setVisibility(View.GONE);
+
+                // cada 5 minutos = 60/12 = 5 mins
+                ajuste = respaldo.getInt("ajuste", 1);
+                ajustando = respaldo.getBoolean("ajustando",false);
+                editFrec.setText(""+frec);
+                ajustar.setChecked(ajustando);
+                barra.setProgress(ajuste*10);
         }
 
 
@@ -202,7 +234,7 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
         cancelar.setOnClickListener(this);
         eliminar.setOnClickListener(this);
         demo_medicion.setOnCheckedChangeListener(this);
-
+        barra.setOnSeekBarChangeListener(this);
         // carga los datos en el edit text
 
     }
@@ -412,7 +444,25 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
     {
-        dm = isChecked;
+        if(buttonView.getId() == R.id.cb_medicion)
+        {
+            dm = isChecked;
+        }
+
+        if(buttonView.getId() == R.id.cb_ajuste)
+        {
+            if(isChecked)
+            {
+                ajustar.setVisibility(View.VISIBLE);
+                barra.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                ajustar.setVisibility(View.GONE);
+                barra.setVisibility(View.GONE);
+            }
+        }
+
     }
 
     @Override
@@ -539,5 +589,19 @@ public class Fragment_Configuraciones extends Activity implements View.OnClickLi
     }
 
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        editAjuste.setText(""+progress);
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
 }
 

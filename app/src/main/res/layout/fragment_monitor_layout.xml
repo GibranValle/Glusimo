@@ -7,17 +7,36 @@
     android:background="@drawable/fondoapp"
     >
 
-    <TextView
+    <LinearLayout
         android:layout_marginTop="@dimen/margen_mini"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:text="@string/titulo_monitor"
-        android:id="@+id/consola_monitor"
-        style="@style/tituloFragment"
-    />
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_marginTop="@dimen/margen_mini"
+            android:layout_width="0dp"
+            android:layout_weight="2.5"
+            android:layout_height="match_parent"
+            android:text="@string/titulo_monitor"
+            android:id="@+id/consola_monitor"
+            style="@style/tituloFragment"
+            />
+
+        <ImageView
+            android:layout_marginTop="@dimen/margen_mini"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/jeringa"
+            android:id="@+id/jeringa" />
+    </LinearLayout>
+
+
 
     <LinearLayout
+
         android:layout_marginLeft="@dimen/margen_chiquis"
         android:layout_marginRight="@dimen/margen_chiquis"
         android:layout_marginTop="@dimen/margen_mini"

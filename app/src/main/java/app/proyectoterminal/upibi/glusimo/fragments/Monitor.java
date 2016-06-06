@@ -1,6 +1,7 @@
 package app.proyectoterminal.upibi.glusimo.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -43,7 +44,7 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
 
     TextView escala, consola;
     // VARIABLES PARA GRAFICAR
-    ImageView espacio;
+    ImageView espacio, jeringa;
     Bitmap bitmap;
     Canvas canvas;
     Paint paint;
@@ -102,6 +103,7 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
         spFechaFinal = (Spinner) getActivity().findViewById(R.id.fecha_final);
         espacio = (ImageView) getActivity().findViewById(R.id.canvas_monitor);
         ejeY = (ImageView) getActivity().findViewById(R.id.ejeY_monitor);
+        jeringa = (ImageView) getActivity().findViewById(R.id.jeringa);
 
         respaldo = getActivity().getSharedPreferences("MisDatos", Context.MODE_PRIVATE);
         monitorizar = respaldo.getBoolean("monitorizar",true);
@@ -122,6 +124,7 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
         // FUNCIONES PARA EL CLICK
         spFechaInicial.setOnItemSelectedListener(this);
         spFechaFinal.setOnItemSelectedListener(this);
+        jeringa.setOnClickListener(this);
 
         if(monitorizar)
         {
@@ -342,79 +345,99 @@ public class Monitor extends Fragment implements View.OnClickListener, AdapterVi
     @Override
     public void onClick(View v)
     {
-        vibrar(100);
-        contruirVectores();
-        empezarCanvas();
-        long offset, size, max, dt=15;
-        float gain;
-        long xo, xf;
-        float yo, yf;
 
-        Log.i(TAG,"TAMAÑOS: "+tiempos.size()+" "+glucemias.size());
-        // encontrar el maximo de un list
-        try
+        if(v.getId() == R.id.jeringa)
         {
-        max = Collections.max(glucemias);
+            vibrar(100);
+            Log.i(TAG,"configuracion de medicion "+3);
+            Intent i = new Intent(getContext(),Fragment_Configuraciones.class);
+            i.putExtra("linea",3);
+            startActivity(i);
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            max = 250;
-        }
-        // convertir las listas a arrays
-        Long[] x = tiempos.toArray(new Long[tiempos.size()]);
-        Integer[] y = glucemias.toArray(new Integer[glucemias.size()]);
-        Log.i(TAG,"x: "+ Arrays.toString(x)+" y: "+Arrays.toString(y));
-        offset = x[0];
-        size = x.length;
-        gain = (float) alto/(max+10);
-        Log.i(TAG,"ganancia calculada: "+gain);
-        if(size==1)
-        {
-            Log.i(TAG,"Graficar 1 punto");
-            // GRAFIQUE UN PUNTO
-            paint.setColor(getResources().getColor(R.color.colorLetraClara));
-            paint.setStrokeWidth(5);
-            canvas.drawCircle(ancho/2,alto/2,20,paint);
-            espacio.invalidate();
-            // calcular escala
-            escala.setText("Escala:  "+  2*max/10+"mg/dL");
-        }
-        else if(size == 2)
-        {
-            Log.i(TAG,"Graficar 1 recta");
-            // GRAFIQUE UN PUNTO
-            paint.setColor(getResources().getColor(R.color.colorLetraClara));
-            paint.setStrokeWidth(5);
-            xo = 0;
-            yo = (alto - (gain*y[0]));
-            xf = ancho;
-            yf = (alto - (gain*y[1]));
-            canvas.drawLine(xo,yo,xf,yf,paint);
-            espacio.invalidate();
-            dt = x[1]-x[0];
-            // calcular escala
-            escala.setText("Escala:  "+  max/10+"mg/dL  |  "+dt+"min");
-        }
-        else if(size >=3)
-        {
-            Log.i(TAG,"Graficar lineas");
-            paint.setColor(getResources().getColor(R.color.colorLetraClara));
-            paint.setStrokeWidth(5);
-            // hacer un for
-            for(int c = 0; c<size-1;c++)
-            {
-                xo = c*ancho/(size-1);
-                yo = (alto - (gain*y[c]));
-                xf = (c+1)*ancho/(size-1);
-                yf = (alto - (gain*y[c+1]));
-                canvas.drawLine(xo,yo,xf,yf,paint);
-                Log.i(TAG,"puntos: "+xo+" "+yo+" "+xf+" "+yf);
+
+        if(v.getId() == R.id.canvas) {
+
+            vibrar(100);
+            contruirVectores();
+            empezarCanvas();
+            long offset = 0, size = 0, max = 0, dt = 15;
+            float gain = 0;
+            long xo, xf;
+            float yo, yf;
+            Long[] x = new Long[0];
+            Integer[] y = new Integer[0];
+            Log.i(TAG, "TAMAÑOS: " + tiempos.size() + " " + glucemias.size());
+            // encontrar el maximo de un list
+            if (tiempos.size() > 0) {
+                try {
+                    max = Collections.max(glucemias);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    max = 250;
+                }
+                // convertir las listas a arrays
+                x = tiempos.toArray(new Long[tiempos.size()]);
+                y = glucemias.toArray(new Integer[glucemias.size()]);
+                Log.i(TAG, "x: " + Arrays.toString(x) + " y: " + Arrays.toString(y));
+                offset = x[0];
+                size = x.length;
+                gain = (float) alto / (max + 10);
+                Log.i(TAG, "ganancia calculada: " + gain);
             }
-            espacio.invalidate();
-            // calcular escala
-            dt = x[(int) size-1]-x[0];
-            escala.setText("Escala:  "+  max/10+"mg/dL  |  "+dt+"min");
+
+
+            if (size == 1) {
+                Log.i(TAG, "Graficar 1 punto");
+                // GRAFIQUE UN PUNTO
+                paint.setColor(getResources().getColor(R.color.colorLetraClara));
+                paint.setStrokeWidth(5);
+                canvas.drawCircle(ancho / 2, alto / 2, 20, paint);
+                espacio.invalidate();
+                // calcular escala
+                escala.setText("Escala:  " + 2 * max / 10 + "mg/dL");
+            } else if (size == 2) {
+                Log.i(TAG, "Graficar 1 recta");
+                // GRAFIQUE UN PUNTO
+                paint.setColor(getResources().getColor(R.color.colorLetraClara));
+                paint.setStrokeWidth(5);
+                xo = 0;
+                yo = (alto - (gain * y[0]));
+                xf = ancho;
+                yf = (alto - (gain * y[1]));
+                canvas.drawLine(xo, yo, xf, yf, paint);
+                espacio.invalidate();
+                dt = x[1] - x[0];
+                escala.setText("Escala:  " + max / 10 + "mg/dL  |  " + dt + "min");
+            } else if (size >= 3) {
+                Log.i(TAG, "Graficar lineas");
+                paint.setColor(getResources().getColor(R.color.colorLetraClara));
+                paint.setStrokeWidth(5);
+                // hacer un for
+                for (int c = 0; c < size - 1; c++) {
+                    xo = c * ancho / (size - 1);
+                    yo = (alto - (gain * y[c]));
+                    xf = (c + 1) * ancho / (size - 1);
+                    yf = (alto - (gain * y[c + 1]));
+                    canvas.drawLine(xo, yo, xf, yf, paint);
+                    Log.i(TAG, "puntos: " + xo + " " + yo + " " + xf + " " + yf);
+                }
+                espacio.invalidate();
+                // calcular escala
+                dt = x[(int) size - 1] - x[0];
+                escala.setText("Escala:  " + max / 10 + "mg/dL  |  " + dt + " min");
+
+                Log.d(TAG, "dt: " + dt);
+                if (dt > 60) {
+                    dt = dt / 60;
+                    escala.setText("Escala:  " + max / 10 + "mg/dL  |  " + dt + " hrs");
+                }
+
+                if (dt > 24) {
+                    dt = dt / 24;
+                    escala.setText("Escala:  " + max / 10 + "mg/dL  |  " + dt + " dias");
+                }
+                // calcular escala
+            }
         }
     }
 
